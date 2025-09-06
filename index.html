@@ -105,6 +105,7 @@
     <button onclick="copyText('newusername')">📋 Copy New Username</button>
     <button onclick="copyText('password')">📋 Copy Password</button>
     <button onclick="copyText('birthdate')">📋 Copy Birthdate</button>
+    <button onclick="openCurrentIG()">Open IG</button>
   </div>
 
   <button class="refresh-btn" onclick="refreshData()">⟳</button>
@@ -188,7 +189,12 @@
       document.getElementById("editNewUsername").style.display = "none";
       document.getElementById("saveBtn").style.display = "none";
     }
-
+    function openCurrentIG() {
+      const user = currentUsers[currentIndex];
+      if (user && user.username) {
+        window.open(`https://instagram.com/${user.username}`, "_blank");
+      }
+    }
     loadData();
   </script>
 </body>
