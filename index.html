@@ -1,201 +1,212 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Username Changer Profiles</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile Viewer</title>
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #a8edea, #fed6e3);
       display: flex;
-      flex-direction: column;
+      justify-content: center;
       align-items: center;
-      justify-content: flex-start;
       min-height: 100vh;
+      margin: 0;
+      padding: 10px;
     }
-    h2 {
-      margin: 20px;
-      color: #333;
-      font-size: 22px;
-    }
-    .card {
-      background: white;
+    .container {
+      background: #fff;
       border-radius: 20px;
-      padding: 25px;
-      width: 90%;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      padding: 20px;
+      width: 100%;
       max-width: 400px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-      margin-bottom: 20px;
+      text-align: center;
+    }
+    .field {
+      margin: 10px 0;
       text-align: left;
     }
-    .card p {
-      margin: 10px 0;
+    .field label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+    .field span, .field input {
       font-size: 16px;
-      color: #444;
+      display: inline-block;
+      margin-right: 5px;
+    }
+    .field input {
+      padding: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
     }
     button {
       margin: 5px;
-      padding: 10px 16px;
+      padding: 10px 15px;
       border: none;
-      border-radius: 25px;
-      background: #2196F3;
-      color: white;
-      font-size: 15px;
+      border-radius: 12px;
       cursor: pointer;
-      transition: 0.2s;
+      font-size: 14px;
+      transition: 0.3s;
     }
-    button:hover { opacity: 0.85; }
-    button:active { transform: scale(0.97); }
-
-    .nav-buttons, .copy-buttons {
-      margin-bottom: 10px;
-      text-align: center;
+    .nav-btn {
+      background: #007bff;
+      color: white;
     }
-
-    .refresh-btn {
+    .copy-btn {
+      background: #28a745;
+      color: white;
+    }
+    .edit-btn {
+      background: #ffc107;
+      color: black;
+    }
+    .save-btn {
+      background: #17a2b8;
+      color: white;
+    }
+    .floating-refresh {
       position: fixed;
       bottom: 20px;
       right: 20px;
-      background: #ff6f61;
+      background: #ff4081;
+      color: white;
       border-radius: 50%;
-      width: 60px;
-      height: 60px;
+      width: 50px;
+      height: 50px;
       display: flex;
-      align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      align-items: center;
       font-size: 24px;
-    }
-
-    #editNewUsername {
-      margin-top: 5px;
-      padding: 5px;
-      font-size: 14px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
   </style>
 </head>
 <body>
-  <h2>Username Changer Viewer</h2>
-  <div class="card" id="profileCard">
-    <p><b>Name:</b> <span id="name"></span></p>
-    <p><b>Old Username:</b> <span id="oldusername"></span></p>
-    <p><b>New Username:</b> 
-      <span id="newusername"></span><br>
-      <input type="text" id="editNewUsername" style="display:none;">
-      <button onclick="editUsername()">✏️ Edit</button>
-      <button onclick="saveUsername()" style="display:none;" id="saveBtn">💾 Save</button>
-    </p>
-    <p><b>Password:</b> <span id="password"></span></p>
-    <p><b>Birthdate:</b> <span id="birthdate"></span></p>
-    <p><b>ID:</b> <span id="userid"></span></p>
-  </div>
-  
-  <div class="nav-buttons">
-    <button onclick="prevProfile()">⏮ Previous</button>
-    <button onclick="nextProfile(); runNextContainer()">Next ⏭</button>
-  </div>
-
-  <div class="copy-buttons">
-    <button onclick="copyText('name')">📋 Copy Name</button>
-    <button onclick="copyText('oldusername')">📋 Copy Old Username</button>
-    <button onclick="copyText('newusername')">📋 Copy New Username</button>
-    <button onclick="copyText('password')">📋 Copy Password</button>
-    <button onclick="copyText('birthdate')">📋 Copy Birthdate</button>
-    <button onclick="openCurrentIG()">Open IG</button>
+  <div class="container">
+    <h2>Profile</h2>
+    <div class="field"><label>Name:</label> <span id="name"></span> <button class="copy-btn" onclick="copyText('name')">📋 Copy</button></div>
+    <div class="field"><label>Old Username:</label> 
+      <span id="oldusername"></span> 
+      <input id="oldusernameInput" style="display:none;">
+      <button class="copy-btn" onclick="copyText('oldusername')">📋 Copy</button>
+      <button class="edit-btn" onclick="toggleEdit('oldusername')">✏️ Edit</button>
+    </div>
+    <div class="field"><label>New Username:</label> 
+      <span id="newusername"></span> 
+      <input id="newusernameInput" style="display:none;">
+      <button class="copy-btn" onclick="copyText('newusername')">📋 Copy</button>
+      <button class="edit-btn" onclick="toggleEdit('newusername')">✏️ Edit</button>
+    </div>
+    <div class="field"><label>Password:</label> <span id="password"></span> <button class="copy-btn" onclick="copyText('password')">📋 Copy</button></div>
+    <div class="field"><label>Birthdate:</label> <span id="birthdate"></span> <button class="copy-btn" onclick="copyText('birthdate')">📋 Copy</button></div>
+    <div class="field"><label>ID:</label> <span id="id"></span> <button class="copy-btn" onclick="copyText('id')">📋 Copy</button></div>
+    
+    <button class="save-btn" onclick="saveEdits()">💾 Save</button>
+    <br>
+    <button class="nav-btn" onclick="prevProfile()">⏮ Previous</button>
+    <button class="nav-btn" onclick="nextProfile(); runNextContainer()">Next ⏭</button>
+    <br>
+    <button class="nav-btn" onclick="openCurrentIG()">📱 Open IG</button>
   </div>
 
-  <button class="refresh-btn" onclick="refreshData()">⟳</button>
+  <div class="floating-refresh" onclick="loadProfiles()">⟳</div>
 
   <script>
-    function runNextContainer() {
-    window.location.href = "shortcuts://run-shortcut?name=NextIG";
-  }
+    const apiUrl = "https://script.google.com/macros/s/AKfycbzjygQeEi6TqGQqssc9HgHBxBDG4ROEMnsRCef7y6NA0rZq3N7IMvn10oZdzHtZKfotlA/exec";
     let profiles = [];
     let currentIndex = 0;
 
-    async function loadData() {
-      const url = "https://script.google.com/macros/s/AKfycbzjygQeEi6TqGQqssc9HgHBxBDG4ROEMnsRCef7y6NA0rZq3N7IMvn10oZdzHtZKfotlA/exec"; // replace with your Google Apps Script Web App URL
-      const res = await fetch(url);
+    async function loadProfiles() {
+      const res = await fetch(apiUrl);
       profiles = await res.json();
       currentIndex = 0;
-      showProfile(currentIndex);
+      displayProfile();
     }
 
-    function showProfile(index) {
-      if (profiles.length === 0) return;
-      const p = profiles[index];
-      document.getElementById("name").innerText = p.name;
-      document.getElementById("oldusername").innerText = p.oldusername;
-      document.getElementById("newusername").innerText = p.newusername;
-      document.getElementById("password").innerText = p.password;
-      document.getElementById("birthdate").innerText = p.birthdate;
-      document.getElementById("userid").innerText = p.id;
-    }
-
-    function nextProfile() {
-      if (currentIndex < profiles.length - 1) {
-        currentIndex++;
-        showProfile(currentIndex);
-      }
+    function displayProfile() {
+      const p = profiles[currentIndex];
+      document.getElementById("name").textContent = p.name;
+      document.getElementById("oldusername").textContent = p.oldusername;
+      document.getElementById("newusername").textContent = p.newusername;
+      document.getElementById("password").textContent = p.password;
+      document.getElementById("birthdate").textContent = p.birthdate;
+      document.getElementById("id").textContent = p.id;
+      document.getElementById("oldusernameInput").style.display = "none";
+      document.getElementById("newusernameInput").style.display = "none";
     }
 
     function prevProfile() {
       if (currentIndex > 0) {
         currentIndex--;
-        showProfile(currentIndex);
+        displayProfile();
       }
+    }
+
+    function nextProfile() {
+      if (currentIndex < profiles.length - 1) {
+        currentIndex++;
+        displayProfile();
+      }
+    }
+
+    function runNextContainer() {
+      window.location.href = "shortcuts://run-shortcut?name=NextIG";
     }
 
     function copyText(field) {
-      const text = document.getElementById(field).innerText;
-      navigator.clipboard.writeText(text).then(() => {
-        alert(field.charAt(0).toUpperCase() + field.slice(1) + " copied!");
-      });
+      const text = document.getElementById(field).textContent;
+      navigator.clipboard.writeText(text);
+      alert(field + " copied: " + text);
     }
 
-    function refreshData() {
-      loadData();
+    function toggleEdit(field) {
+      const span = document.getElementById(field);
+      const input = document.getElementById(field + "Input");
+      if (input.style.display === "none") {
+        input.value = span.textContent;
+        span.style.display = "none";
+        input.style.display = "inline-block";
+      } else {
+        span.textContent = input.value;
+        span.style.display = "inline-block";
+        input.style.display = "none";
+      }
     }
 
-    // --- Edit and Save New Username ---
-    function editUsername() {
-      document.getElementById("editNewUsername").style.display = "inline";
-      document.getElementById("saveBtn").style.display = "inline";
-      document.getElementById("editNewUsername").value = document.getElementById("newusername").innerText;
-    }
+    async function saveEdits() {
+      const p = profiles[currentIndex];
+      const oldusername = document.getElementById("oldusernameInput").style.display !== "none" ? document.getElementById("oldusernameInput").value : p.oldusername;
+      const newusername = document.getElementById("newusernameInput").style.display !== "none" ? document.getElementById("newusernameInput").value : p.newusername;
 
-    async function saveUsername() {
-      const newUsername = document.getElementById("editNewUsername").value;
-      const id = document.getElementById("userid").innerText;
+      const updated = { id: p.id, oldusername, newusername };
 
-      const res = await fetch("YOUR_WEB_APP_URL", {
+      const res = await fetch(apiUrl, {
         method: "POST",
-        body: JSON.stringify({ id: id, newusername: newUsername }),
+        body: JSON.stringify(updated),
         headers: { "Content-Type": "application/json" }
       });
-
       const result = await res.json();
       if (result.success) {
-        document.getElementById("newusername").innerText = newUsername;
-        alert("✅ New Username updated!");
+        alert("Saved successfully!");
+        loadProfiles();
       } else {
-        alert("❌ Update failed: " + result.message);
+        alert("Error saving: " + result.message);
       }
+    }
 
-      document.getElementById("editNewUsername").style.display = "none";
-      document.getElementById("saveBtn").style.display = "none";
-    }
     function openCurrentIG() {
-      const user = currentUsers[currentIndex];
-      if (user && user.username) {
-        window.open(`https://instagram.com/${user.username}`, "_blank");
+      const p = profiles[currentIndex];
+      if (p && p.newusername) {
+        window.open(`https://instagram.com/${p.newusername}`, "_blank");
       }
     }
-    loadData();
+
+    loadProfiles();
   </script>
 </body>
 </html>
