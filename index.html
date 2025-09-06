@@ -145,7 +145,13 @@
       else { showToast("Error: "+result.message); }
     }
 
-    function openCurrentIG(){ window.open(`https://instagram.com/${p.newusername}`, "_blank"); }
+    function openCurrentIG(){ 
+  const p=profiles[currentIndex]; 
+  if(p && p.newusername){ 
+    window.open(`https://instagram.com/${p.newusername}`,"_blank"); 
+  } 
+}
+
 
     function copyText(field){
       const text=document.getElementById(field).textContent;
