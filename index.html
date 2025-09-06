@@ -66,7 +66,7 @@
     <h2>Profile</h2>
 
     <div class="field"><label>Name:</label><span id="name"></span>
-      <button class="copy-btn" onclick="copyText('name')">📋</button>
+      <button class="copy-btn" onclick="copyText('name'); openCurrentIG()">📋</button>
     </div>
 
     <div class="field"><label>Old Username:</label><span id="oldusername"></span>
@@ -145,7 +145,7 @@
       else { showToast("Error: "+result.message); }
     }
 
-    function openCurrentIG(){ window.location.href = "instagram://app"; }
+    function openCurrentIG(){ window.open(`https://instagram.com/${p.newusername}`, "_blank"); }
 
     function copyText(field){
       const text=document.getElementById(field).textContent;
