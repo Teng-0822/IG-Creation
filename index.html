@@ -40,7 +40,13 @@
     }
     .nav-btn { background: #007bff; color: #fff; }
     .copy-btn { background: #28a745; color: #fff; }
-    .edit-btn { background: #ffc107; color: #000; }
+    .edit-btn { 
+      background: #ffc107; 
+      color: #000; 
+      font-size: 12px;   /* smaller font */
+      padding: 4px 8px;  /* smaller padding */
+      border-radius: 6px;
+    }
     .save-btn { background: #17a2b8; color: #fff; }
     .ig-btn { background: #e1306c; color: #fff; }
     .floating-refresh {
@@ -83,6 +89,7 @@
       <button class="copy-btn" onclick="copyText('oldusername')">Copy Old</button>
       <button class="copy-btn" onclick="copyText('newusername')">Copy New</button>
       <button class="copy-btn" onclick="copyText('password')">Copy Pass</button>
+      <button class="copy-btn" onclick="copyText('birthdate')">Copy Birthdate</button>
     </div>
 
     <!-- Action buttons -->
@@ -103,7 +110,15 @@
     async function loadProfiles() {
       const res = await fetch(apiUrl);
       profiles = await res.json();
-      currentIndex = 0;
+
+      // Restore last profile index
+      const savedIndex = localStorage.getItem("currentIndex");
+      if (savedIndex !== null && savedIndex < profiles.length) {
+        currentIndex = parseInt(savedIndex, 10);
+      } else {
+        currentIndex = 0;
+      }
+
       displayProfile();
     }
 
@@ -113,11 +128,28 @@
         document.getElementById(f).textContent = p[f] || "";
         if(document.getElementById(f+"Input")) document.getElementById(f+"Input").style.display="none";
       });
+
+      // Save current index
+      localStorage.setItem("currentIndex", currentIndex);
     }
 
-    function prevProfile(){ if(currentIndex>0){currentIndex--;displayProfile();} }
-    function nextProfile(){ if(currentIndex<profiles.length-1){currentIndex++;displayProfile();} }
-    function runNextContainer(){ window.location.href="shortcuts://run-shortcut?name=NextIG"; }
+    function prevProfile(){
+      if(currentIndex > 0){
+        currentIndex--;
+        displayProfile();
+      }
+    }
+
+    function nextProfile(){
+      if(currentIndex < profiles.length - 1){
+        currentIndex++;
+        displayProfile();
+      }
+    }
+
+    function runNextContainer(){
+      window.location.href="shortcuts://run-shortcut?name=NextIG";
+    }
 
     function copyText(field){
       const text=document.getElementById(field).textContent;
@@ -128,8 +160,15 @@
     function toggleEdit(field){
       const span=document.getElementById(field);
       const input=document.getElementById(field+"Input");
-      if(input.style.display==="none"){ input.value=span.textContent; span.style.display="none"; input.style.display="inline-block"; }
-      else { span.textContent=input.value; span.style.display="inline-block"; input.style.display="none"; }
+      if(input.style.display==="none"){
+        input.value=span.textContent;
+        span.style.display="none";
+        input.style.display="inline-block";
+      } else {
+        span.textContent=input.value;
+        span.style.display="inline-block";
+        input.style.display="none";
+      }
     }
 
     async function saveEdits(){
@@ -140,14 +179,18 @@
       const updated={ id:p.id, oldusername, newusername };
       const res=await fetch(apiUrl,{ method:"POST", body:JSON.stringify(updated), headers:{"Content-Type":"application/json"} });
       const result=await res.json();
-      if(result.success){ alert("Saved!"); loadProfiles(); } else { alert("Error: "+result.message); }
+      if(result.success){ alert("Saved!"); loadProfiles(); }
+      else { alert("Error: "+result.message); }
     }
 
     function openCurrentIG(){
       const p=profiles[currentIndex];
-      if(p && p.newusername){ window.open(`https://instagram.com/${p.newusername}`,"_blank"); }
+      if(p && p.newusername){
+        window.open(`https://instagram.com/${p.newusername}`,"_blank");
+      }
     }
 
+    // Initial load
     loadProfiles();
   </script>
 </body>
