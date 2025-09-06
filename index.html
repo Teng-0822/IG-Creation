@@ -25,109 +25,72 @@
     }
     h2 { text-align: center; margin-bottom: 20px; }
 
-    .field {
-      margin: 8px 0;
-      display: flex;
-      align-items: center;
-    }
-    .field label {
-      font-weight: bold;
-      margin-right: 6px;
-      white-space: nowrap;
-    }
-    .field span,
+    .field { margin: 8px 0; display: flex; align-items: center; }
+    .field label { font-weight: bold; margin-right: 6px; white-space: nowrap; }
+    .field span, .field input { flex: 1; font-size: 15px; }
     .field input {
-      flex: 1;
-      font-size: 15px;
+      padding: 4px; border-radius: 6px; border: 1px solid #ccc; display: none;
     }
-    .field input {
-      padding: 4px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      display: none;
-    }
-    .edit-btn { 
-      background: #ffc107; 
-      color: #000; 
-      font-size: 12px; 
-      padding: 4px 6px; 
-      margin-left: 5px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
+    .edit-btn { background: #ffc107; color: #000; font-size: 12px; padding: 4px 6px; margin-left: 5px; border-radius: 6px; cursor: pointer; }
+    .copy-btn { background: #28a745; color: #fff; font-size: 12px; padding: 4px 6px; margin-left: 5px; border-radius: 6px; cursor: pointer; }
 
-    .actions, .copy-actions { margin-top: 15px; text-align: center; }
+    .actions { margin-top: 15px; text-align: center; }
     button {
-      margin: 5px;
-      padding: 10px 14px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 14px;
-      transition: 0.3s;
+      margin: 5px; padding: 10px 14px; border: none; border-radius: 10px;
+      cursor: pointer; font-size: 14px; transition: 0.3s;
     }
     .nav-btn { background: #007bff; color: #fff; }
-    .copy-btn { background: #28a745; color: #fff; }
     .save-btn { background: #17a2b8; color: #fff; }
     .ig-btn { background: #e1306c; color: #fff; }
 
-    .floating-refresh {
-      position: fixed; bottom: 20px; right: 20px;
-      background: #ff4081; color: white;
-      border-radius: 50%; width: 50px; height: 50px;
+    .floating-refresh, .floating-random {
+      position: fixed; bottom: 20px; width: 50px; height: 50px;
       display: flex; justify-content: center; align-items: center;
-      font-size: 24px; cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      border-radius: 50%; font-size: 24px; cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3); color: white;
     }
+    .floating-refresh { right: 20px; background: #ff4081; }
+    .floating-random { right: 80px; background: #3f51b5; }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
+      background: rgba(0,0,0,0.8); color: white; padding: 10px 16px;
+      border-radius: 8px; font-size: 14px; opacity: 0; transition: opacity 0.3s ease;
+    }
+    .toast.show { opacity: 1; }
   </style>
 </head>
 <body>
   <div class="container">
     <h2>Profile</h2>
 
-    <div class="field">
-      <label>Name:</label>
-      <span id="name"></span>
+    <div class="field"><label>Name:</label><span id="name"></span>
+      <button class="copy-btn" onclick="copyText('name')">📋</button>
     </div>
 
-    <div class="field">
-      <label>Old Username:</label>
-      <span id="oldusername"></span>
+    <div class="field"><label>Old Username:</label><span id="oldusername"></span>
       <input id="oldusernameInput">
       <button class="edit-btn" onclick="toggleEdit('oldusername')">✏️</button>
+      <button class="copy-btn" onclick="copyText('oldusername')">📋</button>
     </div>
 
-    <div class="field">
-      <label>New Username:</label>
-      <span id="newusername"></span>
+    <div class="field"><label>New Username:</label><span id="newusername"></span>
       <input id="newusernameInput">
       <button class="edit-btn" onclick="toggleEdit('newusername')">✏️</button>
+      <button class="copy-btn" onclick="copyText('newusername')">📋</button>
     </div>
 
-    <div class="field">
-      <label>Password:</label>
-      <span id="password"></span>
+    <div class="field"><label>Password:</label><span id="password"></span>
+      <button class="copy-btn" onclick="copyText('password')">📋</button>
     </div>
 
-    <div class="field">
-      <label>Birthdate:</label>
-      <span id="birthdate"></span>
+    <div class="field"><label>Birthdate:</label><span id="birthdate"></span>
+      <button class="copy-btn" onclick="copyText('birthdate')">📋</button>
     </div>
 
-    <div class="field">
-      <label>ID:</label>
-      <span id="id"></span>
-    </div>
+    <div class="field"><label>ID:</label><span id="id"></span></div>
 
-    <!-- Copy buttons grouped -->
-    <div class="copy-actions">
-      <button class="copy-btn" onclick="copyText('name')">Copy Name</button>
-      <button class="copy-btn" onclick="copyText('oldusername')">Copy Old</button>
-      <button class="copy-btn" onclick="copyText('newusername')">Copy New</button>
-      <button class="copy-btn" onclick="copyText('password')">Copy Pass</button>
-    </div>
-
-    <!-- Action buttons -->
     <div class="actions">
       <button class="save-btn" onclick="saveEdits()">💾 Save</button>
       <button class="ig-btn" onclick="openCurrentIG()">📱 IG</button><br>
@@ -137,6 +100,9 @@
   </div>
 
   <div class="floating-refresh" onclick="loadProfiles()">⟳</div>
+  <div class="floating-random" onclick="randomCelebrity()">🎲</div>
+
+  <div id="toast" class="toast"></div>
 
   <script>
     const apiUrl = "https://script.google.com/macros/s/AKfycbzjygQeEi6TqGQqssc9HgHBxBDG4ROEMnsRCef7y6NA0rZq3N7IMvn10oZdzHtZKfotlA/exec";
@@ -145,14 +111,7 @@
     async function loadProfiles() {
       const res = await fetch(apiUrl);
       profiles = await res.json();
-
-      const savedIndex = localStorage.getItem("currentIndex");
-      if (savedIndex !== null && savedIndex < profiles.length) {
-        currentIndex = parseInt(savedIndex, 10);
-      } else {
-        currentIndex = 0;
-      }
-
+      currentIndex = localStorage.getItem("currentIndex") ? parseInt(localStorage.getItem("currentIndex")) : 0;
       displayProfile();
     }
 
@@ -165,55 +124,49 @@
       localStorage.setItem("currentIndex", currentIndex);
     }
 
-    function prevProfile(){
-      if(currentIndex > 0){ currentIndex--; displayProfile(); }
-    }
-
-    function nextProfile(){
-      if(currentIndex < profiles.length - 1){ currentIndex++; displayProfile(); }
-    }
-
-    function runNextContainer(){
-      window.location.href="shortcuts://run-shortcut?name=NextIG";
-    }
-
-    function copyText(field){
-      const text=document.getElementById(field).textContent;
-      navigator.clipboard.writeText(text);
-      alert(field+" copied: "+text);
-    }
+    function prevProfile(){ if(currentIndex>0){ currentIndex--; displayProfile(); } }
+    function nextProfile(){ if(currentIndex<profiles.length-1){ currentIndex++; displayProfile(); } }
+    function runNextContainer(){ window.location.href="shortcuts://run-shortcut?name=NextIG"; }
 
     function toggleEdit(field){
-      const span=document.getElementById(field);
-      const input=document.getElementById(field+"Input");
-      if(input.style.display==="none"){
-        input.value=span.textContent;
-        span.style.display="none";
-        input.style.display="inline-block";
-      } else {
-        span.textContent=input.value;
-        span.style.display="inline-block";
-        input.style.display="none";
-      }
+      const span=document.getElementById(field), input=document.getElementById(field+"Input");
+      if(input.style.display==="none"){ input.value=span.textContent; span.style.display="none"; input.style.display="inline-block"; }
+      else { span.textContent=input.value; span.style.display="inline-block"; input.style.display="none"; }
     }
 
     async function saveEdits(){
       const p=profiles[currentIndex];
       const oldusername=document.getElementById("oldusernameInput").style.display!=="none"?document.getElementById("oldusernameInput").value:p.oldusername;
       const newusername=document.getElementById("newusernameInput").style.display!=="none"?document.getElementById("newusernameInput").value:p.newusername;
-
       const updated={ id:p.id, oldusername, newusername };
       const res=await fetch(apiUrl,{ method:"POST", body:JSON.stringify(updated), headers:{"Content-Type":"application/json"} });
       const result=await res.json();
-      if(result.success){ alert("Saved!"); loadProfiles(); }
-      else { alert("Error: "+result.message); }
+      if(result.success){ showToast("Saved!"); loadProfiles(); }
+      else { showToast("Error: "+result.message); }
     }
 
-    function openCurrentIG(){
-      const p=profiles[currentIndex];
-      if(p && p.newusername){
-        window.open(`https://instagram.com/${p.newusername}`,"_blank");
-      }
+    function openCurrentIG(){ const p=profiles[currentIndex]; if(p && p.newusername){ window.open(`https://instagram.com/${p.newusername}`,"_blank"); } }
+
+    function copyText(field){
+      const text=document.getElementById(field).textContent;
+      navigator.clipboard.writeText(text);
+      showToast(field+" copied!");
+    }
+
+    function showToast(msg){
+      const t=document.getElementById("toast");
+      t.textContent=msg; t.classList.add("show");
+      setTimeout(()=>{ t.classList.remove("show"); },1000);
+    }
+
+    const celebrities=[
+      "Selena Gomez","Kylie Jenner","Dwayne Johnson","Ariana Grande","Kim Kardashian","Beyoncé","Khloé Kardashian","Kendall Jenner","Taylor Swift","Jennifer Lopez","Nicki Minaj","Miley Cyrus","Katy Perry","Zendaya","Kevin Hart","Cardi B","LeBron James","Demi Lovato","Leonardo DiCaprio","Vin Diesel","Zac Efron","Will Smith","Tom Cruise","Angelina Jolie","Brad Pitt","Scarlett Johansson","Chris Evans","Chris Hemsworth","Robert Downey Jr.","Mark Ruffalo","Jeremy Renner","Tom Holland","Zendaya","Timothée Chalamet","Florence Pugh","Natalie Portman","Anne Hathaway","Emma Stone","Emma Watson","Margot Robbie","Gal Gadot","Halle Berry","Sandra Bullock","Julia Roberts","Reese Witherspoon","Jennifer Aniston","Courteney Cox","Matthew Perry","Lisa Kudrow","Matt LeBlanc","David Schwimmer","Steve Carell","John Krasinski","Mindy Kaling","BJ Novak","Rainn Wilson","Ed Helms","Jenna Fischer","Ellie Kemper","Jonah Hill","Channing Tatum","Matthew McConaughey","Jake Gyllenhaal","Ryan Reynolds","Ryan Gosling","Blake Lively","Jessica Alba","Eva Mendes","Megan Fox","Shia LaBeouf","Kristen Stewart","Robert Pattinson","Taylor Lautner","Dakota Johnson","Jamie Dornan","Jennifer Lawrence","Josh Hutcherson","Liam Hemsworth","Woody Harrelson","Donald Glover","Childish Gambino","Chance the Rapper","Travis Scott","Post Malone","Billie Eilish","Olivia Rodrigo","Doja Cat","Saweetie","Lil Nas X","Snoop Dogg","Dr. Dre","Ice Cube","Eminem","50 Cent","Jay-Z","Kanye West","Travis Barker","Machine Gun Kelly","Lana Del Rey","Halsey"
+    ];
+
+    function randomCelebrity(){
+      const rand=celebrities[Math.floor(Math.random()*celebrities.length)];
+      navigator.clipboard.writeText(rand);
+      showToast("Copied: "+rand);
     }
 
     loadProfiles();
