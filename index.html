@@ -96,7 +96,7 @@
   
   <div class="nav-buttons">
     <button onclick="prevProfile()">⏮ Previous</button>
-    <button onclick="nextProfile()">Next ⏭</button>
+    <button onclick="nextProfile(); runNextContainer()">Next ⏭</button>
   </div>
 
   <div class="copy-buttons">
@@ -110,6 +110,9 @@
   <button class="refresh-btn" onclick="refreshData()">⟳</button>
 
   <script>
+    function runNextContainer() {
+    window.location.href = "shortcuts://run-shortcut?name=NextIG";
+  }
     let profiles = [];
     let currentIndex = 0;
 
