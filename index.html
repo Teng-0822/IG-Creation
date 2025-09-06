@@ -22,13 +22,41 @@
       padding: 20px;
       width: 100%;
       max-width: 400px;
-      text-align: center;
     }
-    .field { margin: 10px 0; text-align: left; }
-    .field label { font-weight: bold; display: block; margin-bottom: 3px; }
-    .field span, .field input { font-size: 15px; }
-    .field input { padding: 5px; border-radius: 6px; border: 1px solid #ccc; width: 100%; }
-    .actions, .copy-actions { margin-top: 15px; }
+    h2 { text-align: center; margin-bottom: 20px; }
+
+    .field {
+      margin: 8px 0;
+      display: flex;
+      align-items: center;
+    }
+    .field label {
+      font-weight: bold;
+      margin-right: 6px;
+      white-space: nowrap;
+    }
+    .field span,
+    .field input {
+      flex: 1;
+      font-size: 15px;
+    }
+    .field input {
+      padding: 4px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      display: none;
+    }
+    .edit-btn { 
+      background: #ffc107; 
+      color: #000; 
+      font-size: 12px; 
+      padding: 4px 6px; 
+      margin-left: 5px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .actions, .copy-actions { margin-top: 15px; text-align: center; }
     button {
       margin: 5px;
       padding: 10px 14px;
@@ -40,15 +68,9 @@
     }
     .nav-btn { background: #007bff; color: #fff; }
     .copy-btn { background: #28a745; color: #fff; }
-    .edit-btn { 
-      background: #ffc107; 
-      color: #000; 
-      font-size: 12px;   /* smaller font */
-      padding: 4px 8px;  /* smaller padding */
-      border-radius: 6px;
-    }
     .save-btn { background: #17a2b8; color: #fff; }
     .ig-btn { background: #e1306c; color: #fff; }
+
     .floating-refresh {
       position: fixed; bottom: 20px; right: 20px;
       background: #ff4081; color: white;
@@ -63,25 +85,39 @@
   <div class="container">
     <h2>Profile</h2>
 
-    <div class="field"><label>Name:</label><span id="name"></span></div>
+    <div class="field">
+      <label>Name:</label>
+      <span id="name"></span>
+    </div>
 
     <div class="field">
       <label>Old Username:</label>
       <span id="oldusername"></span>
-      <input id="oldusernameInput" style="display:none;">
+      <input id="oldusernameInput">
       <button class="edit-btn" onclick="toggleEdit('oldusername')">✏️</button>
     </div>
 
     <div class="field">
       <label>New Username:</label>
       <span id="newusername"></span>
-      <input id="newusernameInput" style="display:none;">
+      <input id="newusernameInput">
       <button class="edit-btn" onclick="toggleEdit('newusername')">✏️</button>
     </div>
 
-    <div class="field"><label>Password:</label><span id="password"></span></div>
-    <div class="field"><label>Birthdate:</label><span id="birthdate"></span></div>
-    <div class="field"><label>ID:</label><span id="id"></span></div>
+    <div class="field">
+      <label>Password:</label>
+      <span id="password"></span>
+    </div>
+
+    <div class="field">
+      <label>Birthdate:</label>
+      <span id="birthdate"></span>
+    </div>
+
+    <div class="field">
+      <label>ID:</label>
+      <span id="id"></span>
+    </div>
 
     <!-- Copy buttons grouped -->
     <div class="copy-actions">
@@ -89,7 +125,6 @@
       <button class="copy-btn" onclick="copyText('oldusername')">Copy Old</button>
       <button class="copy-btn" onclick="copyText('newusername')">Copy New</button>
       <button class="copy-btn" onclick="copyText('password')">Copy Pass</button>
-      <button class="copy-btn" onclick="copyText('birthdate')">Copy Birthdate</button>
     </div>
 
     <!-- Action buttons -->
@@ -111,7 +146,6 @@
       const res = await fetch(apiUrl);
       profiles = await res.json();
 
-      // Restore last profile index
       const savedIndex = localStorage.getItem("currentIndex");
       if (savedIndex !== null && savedIndex < profiles.length) {
         currentIndex = parseInt(savedIndex, 10);
@@ -128,23 +162,15 @@
         document.getElementById(f).textContent = p[f] || "";
         if(document.getElementById(f+"Input")) document.getElementById(f+"Input").style.display="none";
       });
-
-      // Save current index
       localStorage.setItem("currentIndex", currentIndex);
     }
 
     function prevProfile(){
-      if(currentIndex > 0){
-        currentIndex--;
-        displayProfile();
-      }
+      if(currentIndex > 0){ currentIndex--; displayProfile(); }
     }
 
     function nextProfile(){
-      if(currentIndex < profiles.length - 1){
-        currentIndex++;
-        displayProfile();
-      }
+      if(currentIndex < profiles.length - 1){ currentIndex++; displayProfile(); }
     }
 
     function runNextContainer(){
@@ -190,7 +216,6 @@
       }
     }
 
-    // Initial load
     loadProfiles();
   </script>
 </body>
