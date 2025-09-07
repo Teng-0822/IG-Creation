@@ -153,11 +153,8 @@
     }
 
     function openCurrentIG(){
-      const p=profiles[currentIndex];
-      if(p && p.newusername){
-        window.location.href = `instagram://user?username=${p.newusername}`;
-      }
-    }
+      window.open('https://instagram.com', '_blank')
+     s    }
 
     function copyText(field){
       const text=document.getElementById(field).textContent;
