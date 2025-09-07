@@ -53,6 +53,7 @@
     .floating-random { right: 80px; background: #3f51b5; }
     .floating-bio { right: 140px; background: #9c27b0; }
     .floating-caption { right: 200px; background: #009688; }
+    .floating-first {  right: 260px;  background: #ff9800; }
 
     /* Toast */
     .toast {
@@ -106,6 +107,7 @@
   <div class="floating-btn floating-random" onclick="randomCelebrity()">🎲</div>
   <div class="floating-btn floating-bio" onclick="randomBio()">🌸</div>
   <div class="floating-btn floating-caption" onclick="randomCaption()">📝</div>
+  <div class="floating-btn floating-first" onclick="firstProfile()">⏮</div>
 
   <div id="toast" class="toast"></div>
 
@@ -203,6 +205,12 @@
       navigator.clipboard.writeText(rand);
       showToast("Caption copied!");
     }
+    function firstProfile() {
+      currentIndex = 0;
+      displayProfile();
+      showToast("Back to first profile");
+    }
+
 
     loadProfiles();
   </script>
