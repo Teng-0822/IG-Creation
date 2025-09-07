@@ -152,9 +152,22 @@
       else { showToast("Error: "+result.message); }
     }
 
-    function openCurrentIG(){
-    window.location.href = "instagram://app";
-    }
+    function openCurrentIG() {
+  const p = profiles[currentIndex];
+  if (p && p.newusername) {
+    localStorage.setItem("lastIG", p.newusername);
+    window.location.href = `instagram://user?username=${p.newusername}`;
+  }
+}
+
+// Auto-resume last IG profile
+function resumeLastIG() {
+  const last = localStorage.getItem("lastIG");
+  if (last) {
+    window.location.href = `instagram://user?username=${last}`;
+  }
+}
+
 
     function copyText(field){
       const text=document.getElementById(field).textContent;
