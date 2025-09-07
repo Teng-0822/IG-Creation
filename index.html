@@ -43,14 +43,16 @@
     .save-btn { background: #17a2b8; color: #fff; }
     .ig-btn { background: #e1306c; color: #fff; }
 
-    .floating-refresh, .floating-random {
+    .floating-btn {
       position: fixed; bottom: 20px; width: 50px; height: 50px;
       display: flex; justify-content: center; align-items: center;
-      border-radius: 50%; font-size: 24px; cursor: pointer;
+      border-radius: 50%; font-size: 22px; cursor: pointer;
       box-shadow: 0 4px 10px rgba(0,0,0,0.3); color: white;
     }
     .floating-refresh { right: 20px; background: #ff4081; }
     .floating-random { right: 80px; background: #3f51b5; }
+    .floating-bio { right: 140px; background: #9c27b0; }
+    .floating-caption { right: 200px; background: #009688; }
 
     /* Toast */
     .toast {
@@ -66,23 +68,23 @@
     <h2>Profile</h2>
 
     <div class="field"><label>Name:</label><span id="name"></span>
-      <button class="copy-btn" onclick="copyText('name'); openCurrentIG()">📋</button>
+      <button class="copy-btn" onclick="copyText('name')">📋</button>
     </div>
 
     <div class="field"><label>Old Username:</label><span id="oldusername"></span>
       <input id="oldusernameInput">
       <button class="edit-btn" onclick="toggleEdit('oldusername')">✏️</button>
-      <button class="copy-btn" onclick="copyText('oldusername'); openCurrentIG()">📋</button>
+      <button class="copy-btn" onclick="copyText('oldusername')">📋</button>
     </div>
 
     <div class="field"><label>New Username:</label><span id="newusername"></span>
       <input id="newusernameInput">
       <button class="edit-btn" onclick="toggleEdit('newusername')">✏️</button>
-      <button class="copy-btn" onclick="copyText('newusername'); openCurrentIG()">📋</button>
+      <button class="copy-btn" onclick="copyText('newusername')">📋</button>
     </div>
 
     <div class="field"><label>Password:</label><span id="password"></span>
-      <button class="copy-btn" onclick="copyText('password'); openCurrentIG()">📋</button>
+      <button class="copy-btn" onclick="copyText('password')">📋</button>
     </div>
 
     <div class="field"><label>Birthdate:</label><span id="birthdate"></span>
@@ -93,14 +95,17 @@
 
     <div class="actions">
       <button class="save-btn" onclick="saveEdits()">💾 Save</button>
-      <button class="ig-btn" onclick="openCurrentIG(); openCurrentIG()">📱 IG</button><br>
+      <button class="ig-btn" onclick="openCurrentIG()">📱 IG</button><br>
       <button class="nav-btn" onclick="prevProfile()">⏮ Prev</button>
       <button class="nav-btn" onclick="nextProfile(); runNextContainer()">Next ⏭</button><br>
     </div>
   </div>
 
-  <div class="floating-refresh" onclick="loadProfiles()">⟳</div>
-  <div class="floating-random" onclick="randomCelebrity(); openCurrentIG()">🎲</div>
+  <!-- Floating buttons -->
+  <div class="floating-btn floating-refresh" onclick="loadProfiles()">⟳</div>
+  <div class="floating-btn floating-random" onclick="randomCelebrity()">🎲</div>
+  <div class="floating-btn floating-bio" onclick="randomBio()">🌸</div>
+  <div class="floating-btn floating-caption" onclick="randomCaption()">📝</div>
 
   <div id="toast" class="toast"></div>
 
@@ -145,13 +150,12 @@
       else { showToast("Error: "+result.message); }
     }
 
-    function openCurrentIG(){ 
-  const p=profiles[currentIndex]; 
-  if(p && p.newusername){ 
-    window.open(`https://instagram.com/${p.newusername}`,"_blank"); 
-  } 
-}
-
+    function openCurrentIG(){
+      const p=profiles[currentIndex];
+      if(p && p.newusername){
+        window.location.href = `instagram://user?username=${p.newusername}`;
+      }
+    }
 
     function copyText(field){
       const text=document.getElementById(field).textContent;
@@ -165,14 +169,39 @@
       setTimeout(()=>{ t.classList.remove("show"); },1000);
     }
 
-    const celebrities=[
-      "Selena Gomez","Kylie Jenner","Dwayne Johnson","Ariana Grande","Kim Kardashian","Beyoncé","Khloé Kardashian","Kendall Jenner","Taylor Swift","Jennifer Lopez","Nicki Minaj","Miley Cyrus","Katy Perry","Zendaya","Kevin Hart","Cardi B","LeBron James","Demi Lovato","Leonardo DiCaprio","Vin Diesel","Zac Efron","Will Smith","Tom Cruise","Angelina Jolie","Brad Pitt","Scarlett Johansson","Chris Evans","Chris Hemsworth","Robert Downey Jr.","Mark Ruffalo","Jeremy Renner","Tom Holland","Zendaya","Timothée Chalamet","Florence Pugh","Natalie Portman","Anne Hathaway","Emma Stone","Emma Watson","Margot Robbie","Gal Gadot","Halle Berry","Sandra Bullock","Julia Roberts","Reese Witherspoon","Jennifer Aniston","Courteney Cox","Matthew Perry","Lisa Kudrow","Matt LeBlanc","David Schwimmer","Steve Carell","John Krasinski","Mindy Kaling","BJ Novak","Rainn Wilson","Ed Helms","Jenna Fischer","Ellie Kemper","Jonah Hill","Channing Tatum","Matthew McConaughey","Jake Gyllenhaal","Ryan Reynolds","Ryan Gosling","Blake Lively","Jessica Alba","Eva Mendes","Megan Fox","Shia LaBeouf","Kristen Stewart","Robert Pattinson","Taylor Lautner","Dakota Johnson","Jamie Dornan","Jennifer Lawrence","Josh Hutcherson","Liam Hemsworth","Woody Harrelson","Donald Glover","Childish Gambino","Chance the Rapper","Travis Scott","Post Malone","Billie Eilish","Olivia Rodrigo","Doja Cat","Saweetie","Lil Nas X","Snoop Dogg","Dr. Dre","Ice Cube","Eminem","50 Cent","Jay-Z","Kanye West","Travis Barker","Machine Gun Kelly","Lana Del Rey","Halsey"
-    ];
-
+    // Random celebrity
+    const celebrities=[ "Selena Gomez","Kylie Jenner","Dwayne Johnson","Ariana Grande","Kim Kardashian","Beyoncé","Khloé Kardashian","Kendall Jenner","Taylor Swift","Jennifer Lopez","Nicki Minaj","Miley Cyrus","Katy Perry","Zendaya","Kevin Hart","Cardi B","LeBron James","Demi Lovato","Leonardo DiCaprio","Vin Diesel","Zac Efron","Will Smith","Tom Cruise","Angelina Jolie","Brad Pitt","Scarlett Johansson","Chris Evans","Chris Hemsworth","Robert Downey Jr.","Mark Ruffalo","Jeremy Renner","Tom Holland","Zendaya","Timothée Chalamet","Florence Pugh","Natalie Portman","Anne Hathaway","Emma Stone","Emma Watson","Margot Robbie","Gal Gadot","Halle Berry","Sandra Bullock","Julia Roberts","Reese Witherspoon","Jennifer Aniston","Courteney Cox","Matthew Perry","Lisa Kudrow","Matt LeBlanc","David Schwimmer","Steve Carell","John Krasinski","Mindy Kaling","BJ Novak","Rainn Wilson","Ed Helms","Jenna Fischer","Ellie Kemper","Jonah Hill","Channing Tatum","Matthew McConaughey","Jake Gyllenhaal","Ryan Reynolds","Ryan Gosling","Blake Lively","Jessica Alba","Eva Mendes","Megan Fox","Shia LaBeouf","Kristen Stewart","Robert Pattinson","Taylor Lautner","Dakota Johnson","Jamie Dornan","Jennifer Lawrence","Josh Hutcherson","Liam Hemsworth","Woody Harrelson","Donald Glover","Childish Gambino","Chance the Rapper","Travis Scott","Post Malone","Billie Eilish","Olivia Rodrigo","Doja Cat","Saweetie","Lil Nas X","Snoop Dogg","Dr. Dre","Ice Cube","Eminem","50 Cent","Jay-Z","Kanye West","Travis Barker","Machine Gun Kelly","Lana Del Rey","Halsey"];
     function randomCelebrity(){
       const rand=celebrities[Math.floor(Math.random()*celebrities.length)];
       navigator.clipboard.writeText(rand);
       showToast("Copied: "+rand);
+    }
+
+    // Random bio
+    const girlyEmojis=["💖","💕","🌸","✨","🌷","💅","👑","💓","🦋","💜"];
+    function randomBio(){
+      const e1=girlyEmojis[Math.floor(Math.random()*girlyEmojis.length)];
+      const e2=girlyEmojis[Math.floor(Math.random()*girlyEmojis.length)];
+      const bio=`21 ${e1}\nSingle ${e2}`;
+      navigator.clipboard.writeText(bio);
+      showToast("Bio copied!");
+    }
+
+    // Random caption
+    const captions=[
+      "no reason, just liked these","this light felt kinda nice","another day, another outfit i almost didn’t wear",
+      "nothing crazy, just me","this felt like a good time to post","little snapshot of life rn","things are okay and that’s enough",
+      "thought these looked kinda cute","just going with it","small things are the big things","no big caption, just vibes",
+      "in my own little world","guess who remembered to take pics for once","this week in a few photos",
+      "not much going on but that’s fine","just here, doing my best","felt kinda peaceful",
+      "no idea what i’m doing but okay","life lately, kinda like this","trying to stay present","quiet moments and blurry photos",
+      "moodboard: this","little calm in the chaos","brain = fog, photos = cute","looked up and liked the view",
+      "current setting: soft","just a few saved memories","this version of me feels good","casually existing"
+    ];
+    function randomCaption(){
+      const rand=captions[Math.floor(Math.random()*captions.length)];
+      navigator.clipboard.writeText(rand);
+      showToast("Caption copied!");
     }
 
     loadProfiles();
