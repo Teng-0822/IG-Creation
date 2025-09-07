@@ -69,23 +69,23 @@
     <h2>Profile</h2>
 
     <div class="field"><label>Name:</label><span id="name"></span>
-      <button class="copy-btn" onclick="copyText('name')">📋</button>
+      <button class="copy-btn" onclick="copyText('name'); openCurrentIG()">📋</button>
     </div>
 
     <div class="field"><label>Old Username:</label><span id="oldusername"></span>
       <input id="oldusernameInput">
       <button class="edit-btn" onclick="toggleEdit('oldusername')">✏️</button>
-      <button class="copy-btn" onclick="copyText('oldusername')">📋</button>
+      <button class="copy-btn" onclick="copyText('oldusername'); openCurrentIG()">📋</button>
     </div>
 
     <div class="field"><label>New Username:</label><span id="newusername"></span>
       <input id="newusernameInput">
       <button class="edit-btn" onclick="toggleEdit('newusername')">✏️</button>
-      <button class="copy-btn" onclick="copyText('newusername')">📋</button>
+      <button class="copy-btn" onclick="copyText('newusername'); openCurrentIG()">📋</button>
     </div>
 
     <div class="field"><label>Password:</label><span id="password"></span>
-      <button class="copy-btn" onclick="copyText('password')">📋</button>
+      <button class="copy-btn" onclick="copyText('password'); openCurrentIG()">📋</button>
     </div>
 
     <div class="field"><label>Birthdate:</label><span id="birthdate"></span>
@@ -104,9 +104,9 @@
 
   <!-- Floating buttons -->
   <div class="floating-btn floating-refresh" onclick="loadProfiles()">⟳</div>
-  <div class="floating-btn floating-random" onclick="randomCelebrity()">🎲</div>
-  <div class="floating-btn floating-bio" onclick="randomBio()">🌸</div>
-  <div class="floating-btn floating-caption" onclick="randomCaption()">📝</div>
+  <div class="floating-btn floating-random" onclick="randomCelebrity(); openCurrentIG()">🎲</div>
+  <div class="floating-btn floating-bio" onclick="randomBio(); openCurrentIG()">🌸</div>
+  <div class="floating-btn floating-caption" onclick="randomCaption(); openCurrentIG()">📝</div>
   <div class="floating-btn floating-first" onclick="firstProfile()">⏮</div>
 
   <div id="toast" class="toast"></div>
@@ -153,8 +153,8 @@
     }
 
     function openCurrentIG(){
-      window.open('https://instagram.com', '_blank')
-     s    }
+    window.location.href = "instagram://app";
+    }
 
     function copyText(field){
       const text=document.getElementById(field).textContent;
