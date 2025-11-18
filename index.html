@@ -54,12 +54,15 @@
       border-radius: 50%; font-size: 22px; cursor: pointer;
       box-shadow: 0 4px 10px rgba(0,0,0,0.3); color: white;
     }
-    .floating-refresh { right: 20px; background: #ff4081; }
-    .floating-random { right: 80px; background: #3f51b5; }
-    .floating-bio { right: 140px; background: #9c27b0; }
-    .floating-caption { right: 200px; background: #009688; }
-    .floating-first {  right: 260px;  background: #ff9800; }
-    .floating-list { right: 320px; background: #4caf50; }
+    .floating-refresh { bottom: 20px; right: 20px; background: #ff4081; }
+    .floating-random { bottom: 20px; right: 80px; background: #3f51b5; }
+    .floating-bio { bottom: 20px; right: 140px; background: #9c27b0; }
+    .floating-caption { bottom: 20px; right: 200px; background: #009688; }
+    .floating-first {  bottom: 20px; right: 260px;  background: #ff9800; }
+    .floating-list { bottom: 20px; right: 320px; background: #4caf50; }
+
+    
+    .floating-copyUN { bottom: 40px; right: 20px; background: #4caf50; }
     /* Toast */
     .toast {
       position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
@@ -143,6 +146,9 @@
   </div>
   
   <!-- Floating buttons -->
+  <div class="floating-btn floating-copyUN" onclick="copyText('oldusername'); runCreateTH()">CU</div>
+
+  
   <div class="floating-btn floating-refresh" onclick="loadProfiles()">⟳</div>
   <div class="floating-btn floating-random" onclick="randomCelebrity(); openCurrentIG()">🎲</div>
   <div class="floating-btn floating-bio" onclick="randomBio(); openCurrentIG()">🌸</div>
@@ -184,6 +190,7 @@
     function prevProfile(){ if(currentIndex>0){ currentIndex--; displayProfile(); } }
     function nextProfile(){ if(currentIndex<profiles.length-1){ currentIndex++; displayProfile(); } }
     function runNextContainer(){ window.location.href="shortcuts://run-shortcut?name=NextIG"; }
+    function runCreateTH(){ window.location.href="shortcuts://run-shortcut?name=CreateTh"; }
 
     function toggleEdit(field){
       const span=document.getElementById(field), input=document.getElementById(field+"Input");
