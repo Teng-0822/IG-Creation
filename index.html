@@ -63,6 +63,8 @@
 
     
     .floating-copyUN { bottom: 80px; right: 20px; background: #4caf50; }
+    .floating-CopyunT { bottom: 80px; right: 80px; background: #ff9800; }
+    .floating-Pw { bottom: 800px; right: 140px; background: #009688; }
     /* Toast */
     .toast {
       position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
@@ -119,7 +121,7 @@
       <button class="copy-btn" onclick="copyText('oldusername'); openCurrentIG()">📋</button>
     </div>
 
-    <div class="field"><label>New Username:</label><span id="newusername"></span>
+    <div class="field"><label>Authenticator:</label><span id="newusername"></span>
       <input id="newusernameInput">
       <button class="edit-btn" onclick="toggleEdit('newusername')">✏️</button>
       <button class="copy-btn" onclick="copyText('newusername'); openCurrentIG()">📋</button>
@@ -147,6 +149,8 @@
   
   <!-- Floating buttons -->
   <div class="floating-btn floating-copyUN" onclick="copyText('oldusername'); runCreateTH()">CU</div>
+  <div class="floating-btn floating-CopyunT" onclick="copyText('oldusername'); openCurrentTG()">ThU</div>
+  <div class="floating-btn floating-Pw" onclick="copyText('password'); openCurrentTG()">Pw</div>
 
   
   <div class="floating-btn floating-refresh" onclick="loadProfiles()">⟳</div>
@@ -212,6 +216,11 @@
     function openCurrentIG() {
     window.open(`https://Instagram.com/`, "_blank");
     }
+
+    function openCurrentTG() {
+    window.open(`https://Threads.com/`, "_blank");
+    }
+    
 
     function copyText(field){
       const text=document.getElementById(field).textContent;
