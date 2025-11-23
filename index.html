@@ -72,6 +72,8 @@
     .floating-TGAU { bottom: 380px; right: 20px; background: #4caf50; }
     .floating-TGP { bottom: 320px; right: 20px; background: #4caf50; }
 
+    .floating-Next { bottom: 140px; right: 140px; background: #3f51b5; }
+    .floating-Prev { bottom: 140px; right: 200px; background: #3f51b5; }
 
     
     /* Toast */
@@ -168,10 +170,10 @@
         <button class="copy-btn" onclick="copyText('id')">📋</button>
     </div> -->
 
-    <div class="actions">      
+    <!-- <div class="actions">      
       <button class="nav-btn" onclick="prevProfile()">⏮ Prev</button>
-      <button class="nav-btn" onclick="nextProfile(); runNextContainer()">Next ⏭</button><br>
-    </div> 
+      <button class="nav-btn" onclick="nextProfile(); runNext()">Next ⏭</button><br>
+    </div> -->
  
     <!-- Twofac -->
   <div class="row">
@@ -188,6 +190,9 @@
     
   </div>
   <!-- Floating buttons -->
+  <div class="floating-btn floating-Next" onclick="nextProfile(); runNext()">⏭</div>
+  <div class="floating-btn floating-Prev" onclick="prevProfile()">⏮</div>
+  
   <div class="floating-btn floating-TGP" onclick="copyText('password'); openCurrentIG()">IGP</div>
   <div class="floating-btn floating-TGAU" onclick="copyText('newusername')">AU</div>
   <div class="floating-btn floating-TGUN" onclick="copyText('oldusername'); openCurrentIG()">UN</div>
@@ -238,7 +243,7 @@
 
     function prevProfile(){ if(currentIndex>0){ currentIndex--; displayProfile(); } }
     function nextProfile(){ if(currentIndex<profiles.length-1){ currentIndex++; displayProfile(); } }
-    function runNextContainer(){ window.location.href="shortcuts://run-shortcut?name=NextIG"; }
+    function runNext(){ window.location.href="shortcuts://run-shortcut?name=NextIG"; }
     function runCreateTH(){ window.location.href="shortcuts://run-shortcut?name=CreateTh"; }
 
     function toggleEdit(field){
