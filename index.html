@@ -199,7 +199,7 @@
 
   
   <div class="floating-btn floating-refresh" onclick="loadProfiles()">⟳</div>
-  <div class="floating-btn floating-random" onclick="randomCelebrity(); openCurrentIG()">🎲</div>
+  <div class="floating-btn floating-random" onclick="randomCelebrity()">🎲</div>
   <div class="floating-btn floating-bio" onclick="randomBio(); openCurrentIG()">🌸</div>
   <div class="floating-btn floating-caption" onclick="randomCaption(); openCurrentIG()">📝</div>
   <div class="floating-btn floating-first" onclick="firstProfile()">⏮</div>
@@ -282,10 +282,25 @@
     // Random celebrity
     const celebrities=[ "Selena Gomez","Kylie Jenner","Dwayne Johnson","Ariana Grande","Kim Kardashian","Beyoncé","Khloé Kardashian","Kendall Jenner","Taylor Swift","Jennifer Lopez","Nicki Minaj","Miley Cyrus","Katy Perry","Zendaya","Kevin Hart","Cardi B","LeBron James","Demi Lovato","Leonardo DiCaprio","Vin Diesel","Zac Efron","Will Smith","Tom Cruise","Angelina Jolie","Brad Pitt","Scarlett Johansson","Chris Evans","Chris Hemsworth","Robert Downey Jr.","Mark Ruffalo","Jeremy Renner","Tom Holland","Zendaya","Timothée Chalamet","Florence Pugh","Natalie Portman","Anne Hathaway","Emma Stone","Emma Watson","Margot Robbie","Gal Gadot","Halle Berry","Sandra Bullock","Julia Roberts","Reese Witherspoon","Jennifer Aniston","Courteney Cox","Matthew Perry","Lisa Kudrow","Matt LeBlanc","David Schwimmer","Steve Carell","John Krasinski","Mindy Kaling","BJ Novak","Rainn Wilson","Ed Helms","Jenna Fischer","Ellie Kemper","Jonah Hill","Channing Tatum","Matthew McConaughey","Jake Gyllenhaal","Ryan Reynolds","Ryan Gosling","Blake Lively","Jessica Alba","Eva Mendes","Megan Fox","Shia LaBeouf","Kristen Stewart","Robert Pattinson","Taylor Lautner","Dakota Johnson","Jamie Dornan","Jennifer Lawrence","Josh Hutcherson","Liam Hemsworth","Woody Harrelson","Donald Glover","Childish Gambino","Chance the Rapper","Travis Scott","Post Malone","Billie Eilish","Olivia Rodrigo","Doja Cat","Saweetie","Lil Nas X","Snoop Dogg","Dr. Dre","Ice Cube","Eminem","50 Cent","Jay-Z","Kanye West","Travis Barker","Machine Gun Kelly","Lana Del Rey","Halsey"];
     function randomCelebrity(){
-      const rand=celebrities[Math.floor(Math.random()*celebrities.length)];
-      navigator.clipboard.writeText(rand);
-      showToast("Copied: "+rand);
-    }
+  const rand = celebrities[Math.floor(Math.random() * celebrities.length)];
+
+  // Copy to clipboard
+  navigator.clipboard.writeText(rand);
+
+  // Open Instagram search
+  const searchUrl = "https://www.instagram.com/explore/search/keyword/?q=" + encodeURIComponent(rand);
+  window.open(searchUrl, "_blank");
+
+  // Toast message
+  showToast("Opening IG Search: " + rand);
+}
+
+    
+    // function randomCelebrity(){
+    // const rand=celebrities[Math.floor(Math.random()*celebrities.length)];
+    // navigator.clipboard.writeText(rand);
+    // showToast("Copied: "+rand);
+    // }
 
     // Random bio
     const girlyEmojis=["💖","💕","🌸","✨","🌷","💅","👑","💓","🦋","💜"];
