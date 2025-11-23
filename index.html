@@ -170,10 +170,14 @@
         <button class="copy-btn" onclick="copyText('id')">📋</button>
     </div> -->
 
-    <!-- <div class="actions">      
+    <div class="actions">      
+      <div class="actions">
+      <button class="save-btn" onclick="saveEdits()">💾 Save</button>
+      <button class="ig-btn" onclick="openCurrentIG()">📱 IG</button><br>
       <button class="nav-btn" onclick="prevProfile()">⏮ Prev</button>
-      <button class="nav-btn" onclick="nextProfile(); runNext()">Next ⏭</button><br>
-    </div> -->
+      <button class="nav-btn" onclick="nextProfile(); runNextContainer()">Next ⏭</button><br>
+    </div>
+    </div> 
  
     <!-- Twofac -->
   <div class="row">
@@ -243,7 +247,7 @@
 
     function prevProfile(){ if(currentIndex>0){ currentIndex--; displayProfile(); } }
     function nextProfile(){ if(currentIndex<profiles.length-1){ currentIndex++; displayProfile(); } }
-    function runNext(){ window.location.href="shortcuts://run-shortcut?name=NextIG"; }
+    function runNextContainer(){ window.location.href="shortcuts://run-shortcut?name=NextIG"; }
     function runCreateTH(){ window.location.href="shortcuts://run-shortcut?name=CreateTh"; }
     function runCont(){ window.location.href="shortcuts://run-shortcut?name=NextIGTH"; }
 
