@@ -162,23 +162,7 @@
      <!-- <button class="copy-btn" onclick="copyText('password'); openCurrentIG()">📋</button> -->
     </div>
 
-     <!--<div class="field"><label>Birthdate:</label><span id="birthdate"></span>
-      <button class="copy-btn" onclick="copyText('birthdate')">📋</button> 
-    </div> 
-
-    <div class="field"><label>ID:</label><span id="id"></span>
-        <button class="copy-btn" onclick="copyText('id')">📋</button>
-    </div> -->
-
-    <div class="actions">      
-      <div class="actions">
-      <button class="save-btn" onclick="saveEdits()">💾 Save</button>
-      <button class="ig-btn" onclick="openCurrentIG()">📱 IG</button><br>
-      <button class="nav-btn" onclick="prevProfile()">⏮ Prev</button>
-      <button class="nav-btn" onclick="nextProfile(); runNextContainer()">Next ⏭</button><br>
-    </div>
-    </div> 
- 
+     
     <!-- Twofac -->
   <div class="row">
     <input id="secret" placeholder="Enter Base32 Secret (e.g. JBSW...)" style="width:100%" />
@@ -194,8 +178,8 @@
     
   </div>
   <!-- Floating buttons -->
-  <div class="floating-btn floating-Next" onclick="runCont()">Next</div>
-  <div class="floating-btn floating-Prev" onclick="prevProfile()">⏮</div>
+  <div class="floating-btn floating-Next" onclick="runCont(); nextProfile()">Nx</div>
+  <div class="floating-btn floating-Prev" onclick="prevProfile()">Pv</div>
   
   <div class="floating-btn floating-TGP" onclick="copyText('password'); openCurrentIG()">IGP</div>
   <div class="floating-btn floating-TGAU" onclick="copyText('newusername')">AU</div>
