@@ -190,7 +190,7 @@
     
   </div>
   <!-- Floating buttons -->
-  <div class="floating-btn floating-Next" onclick="nextProfile(); Contain()">⏭</div>
+  <div class="floating-btn floating-Next" onclick="nextProfile(); runCont()">⏭</div>
   <div class="floating-btn floating-Prev" onclick="prevProfile()">⏮</div>
   
   <div class="floating-btn floating-TGP" onclick="copyText('password'); openCurrentIG()">IGP</div>
@@ -245,7 +245,7 @@
     function nextProfile(){ if(currentIndex<profiles.length-1){ currentIndex++; displayProfile(); } }
     function runNext(){ window.location.href="shortcuts://run-shortcut?name=NextIG"; }
     function runCreateTH(){ window.location.href="shortcuts://run-shortcut?name=CreateTh"; }
-    function Contain(){ window.location.href="shortcuts://run-shortcut?name=NextIGTH"; }
+    function runCont(){ window.location.href="shortcuts://run-shortcut?name=NextIGTH"; }
 
     function toggleEdit(field){
       const span=document.getElementById(field), input=document.getElementById(field+"Input");
