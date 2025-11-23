@@ -117,13 +117,13 @@
 
     <div class="field"><label>Old Username:</label><span id="oldusername"></span>
       <input id="oldusernameInput">
-      <button class="edit-btn" onclick="toggleEdit('oldusername')">✏️</button>
+      <!-- <button class="edit-btn" onclick="toggleEdit('oldusername')">✏️</button> -->
       <button class="copy-btn" onclick="copyText('oldusername'); openCurrentIG()">📋</button>
     </div>
 
     <div class="field"><label>Authenticator:</label><span id="newusername"></span>
       <input id="newusernameInput">
-      <button class="edit-btn" onclick="toggleEdit('newusername')">✏️</button>
+       <!-- <button class="edit-btn" onclick="toggleEdit('newusername')">✏️</button>-->
       <button class="copy-btn" onclick="copyText('newusername'); openCurrentIG()">📋</button>
     </div>
 
@@ -140,8 +140,6 @@
     </div>
 
     <div class="actions">
-      <button class="save-btn" onclick="saveEdits()">💾 Save</button>
-      <button class="ig-btn" onclick="openCurrentIG()">📱 IG</button><br>
       <button class="nav-btn" onclick="prevProfile()">⏮ Prev</button>
       <button class="nav-btn" onclick="nextProfile(); runNextContainer()">Next ⏭</button><br>
     </div>
