@@ -104,7 +104,27 @@
         float: right; font-size: 22px;
         cursor: pointer; font-weight: bold;
       }
-    
+    /* Twofactor */
+      .row {
+      margin: 12px 0;
+    }
+    .code-box {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .code {
+      font-size: 36px;
+      font-weight: bold;
+      letter-spacing: 4px;
+    }
+    .small {
+      font-size: 12px;
+      color: #666;
+      margin-top: 5px;
+    }
   </style>
 </head>
 <body>
@@ -139,10 +159,23 @@
         <button class="copy-btn" onclick="copyText('id')">📋</button>
     </div>
 
-    <div class="actions">
+    <div class="actions">      
       <button class="nav-btn" onclick="prevProfile()">⏮ Prev</button>
       <button class="nav-btn" onclick="nextProfile(); runNextContainer()">Next ⏭</button><br>
     </div>
+ 
+    <!-- Twofac -->
+  <div class="row">
+    <input id="secret" placeholder="Enter Base32 Secret (e.g. JBSW...)" style="width:100%" />
+  </div>
+
+  <div class="code-box">
+    <div id="totp" class="code">------</div>
+    <button id="copyBtn">Copy</button>
+  </div>
+
+  <div class="small">Next update in <span id="countdown">—</span>s</div>
+    
   </div>
   
   <!-- Floating buttons -->
@@ -303,6 +336,108 @@
           closeModal();
         }
       }
+
+//Twofactor
+    function base32toBytes(base32) {
+  base32 = (base32 || '').replace(/=+$/,'').replace(/[^A-Z2-7]/gi,'').toUpperCase();
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+  let bits = 0, value = 0, bytes = [];
+  for (let i=0; i < base32.length; i++) {
+    const idx = alphabet.indexOf(base32[i]);
+    if (idx === -1) continue;
+    value = (value << 5) | idx;
+    bits += 5;
+    if (bits >= 8) {
+      bits -= 8;
+      bytes.push((value >> bits) & 0xFF);
+    }
+  }
+  return new Uint8Array(bytes);
+}
+
+/* Counter to buffer */
+function counterToBuffer(counter) {
+  const buf = new ArrayBuffer(8);
+  const view = new DataView(buf);
+  const high = Math.floor(counter / 2**32);
+  const low = counter >>> 0;
+  view.setUint32(0, high);
+  view.setUint32(4, low);
+  return buf;
+}
+
+/* HMAC-SHA1 */
+async function hmacSha1(keyBytes, counterBuf) {
+  const cryptoKey = await crypto.subtle.importKey(
+    'raw',
+    keyBytes,
+    { name: 'HMAC', hash: 'SHA-1' },
+    false,
+    ['sign']
+  );
+  const sig = await crypto.subtle.sign('HMAC', cryptoKey, counterBuf);
+  return new Uint8Array(sig);
+}
+
+/* Truncate */
+function truncate(hmacBytes, digits) {
+  const offset = hmacBytes[hmacBytes.length - 1] & 0x0f;
+  const code = ((hmacBytes[offset] & 0x7f) << 24) |
+               ((hmacBytes[offset+1] & 0xff) << 16) |
+               ((hmacBytes[offset+2] & 0xff) << 8) |
+               (hmacBytes[offset+3] & 0xff);
+  return (code % 10**digits).toString().padStart(digits, '0');
+}
+
+/* Generate TOTP (fixed 30s, 6 digits) */
+async function generateTOTP(secret) {
+  const keyBytes = base32toBytes(secret);
+  if (keyBytes.length === 0) return null;
+
+  const period = 30;
+  const digits = 6;
+  const counter = Math.floor(Date.now() / 1000 / period);
+
+  const hmac = await hmacSha1(keyBytes, counterToBuffer(counter));
+  return truncate(hmac, digits);
+}
+
+/* UI elements */
+const secretEl = document.getElementById('secret');
+const codeEl = document.getElementById('totp');
+const countdownEl = document.getElementById('countdown');
+const copyBtn = document.getElementById('copyBtn');
+
+async function update() {
+  const secret = secretEl.value.trim();
+  const period = 30;
+
+  const now = Math.floor(Date.now() / 1000);
+  const remaining = period - (now % period);
+  countdownEl.textContent = remaining;
+
+  if (!secret) {
+    codeEl.textContent = "------";
+    return;
+  }
+
+  const code = await generateTOTP(secret);
+  codeEl.textContent = code || "invalid";
+}
+
+setInterval(update, 1000);
+update();
+
+/* Copy button */
+copyBtn.addEventListener('click', async () => {
+  const code = codeEl.textContent.trim();
+  if (code && code !== "------" && code !== "invalid") {
+    await navigator.clipboard.writeText(code);
+    copyBtn.textContent = "Copied!";
+    setTimeout(() => copyBtn.textContent = "Copy", 1200);
+  }
+});
+
     
   </script>
 </body>
