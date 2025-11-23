@@ -65,6 +65,15 @@
     .floating-copyUN { bottom: 80px; right: 20px; background: #4caf50; }
     .floating-CopyunT { bottom: 80px; right: 80px; background: #ff9800; }
     .floating-Pw { bottom: 80px; right: 140px; background: #009688; }
+
+    
+    .floating-TGN { bottom: 240px; right: 20px; background: #4caf50; }
+    .floating-TGUN { bottom: 200px; right: 20px; background: #4caf50; }
+    .floating-TGAU { bottom: 160px; right: 20px; background: #4caf50; }
+    .floating-TGP { bottom: 120px; right: 20px; background: #4caf50; }
+
+
+    
     /* Toast */
     .toast {
       position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
@@ -129,40 +138,40 @@
 </head>
 <body>
   <div class="container">
-    <h2>Profile</h2>
+    <h3>Profile</h3>
 
     <div class="field"><label>Name:</label><span id="name"></span>
-      <button class="copy-btn" onclick="copyText('name'); openCurrentIG()">📋</button>
+     <!-- <button class="copy-btn" onclick="copyText('name'); openCurrentIG()">📋</button>-->
     </div>
 
-    <div class="field"><label>Old Username:</label><span id="oldusername"></span>
+    <div class="field"><label>Username:</label><span id="oldusername"></span>
       <input id="oldusernameInput">
-      <!-- <button class="edit-btn" onclick="toggleEdit('oldusername')">✏️</button> -->
-      <button class="copy-btn" onclick="copyText('oldusername'); openCurrentIG()">📋</button>
+      <!-- <button class="edit-btn" onclick="toggleEdit('oldusername')">✏️</button>
+      <button class="copy-btn" onclick="copyText('oldusername'); openCurrentIG()">📋</button> -->
     </div>
 
     <div class="field"><label>Authenticator:</label><span id="newusername"></span>
       <input id="newusernameInput">
-       <!-- <button class="edit-btn" onclick="toggleEdit('newusername')">✏️</button>-->
-      <button class="copy-btn" onclick="copyText('newusername'); openCurrentIG()">📋</button>
+       <!-- <button class="edit-btn" onclick="toggleEdit('newusername')">✏️</button>
+      <button class="copy-btn" onclick="copyText('newusername')">📋</button> -->
     </div>
 
     <div class="field"><label>Password:</label><span id="password"></span>
-      <button class="copy-btn" onclick="copyText('password'); openCurrentIG()">📋</button>
+     <!-- <button class="copy-btn" onclick="copyText('password'); openCurrentIG()">📋</button> -->
     </div>
 
-    <div class="field"><label>Birthdate:</label><span id="birthdate"></span>
-      <button class="copy-btn" onclick="copyText('birthdate')">📋</button>
-    </div>
+     <!--<div class="field"><label>Birthdate:</label><span id="birthdate"></span>
+      <button class="copy-btn" onclick="copyText('birthdate')">📋</button> 
+    </div> 
 
     <div class="field"><label>ID:</label><span id="id"></span>
         <button class="copy-btn" onclick="copyText('id')">📋</button>
-    </div>
+    </div> -->
 
     <div class="actions">      
       <button class="nav-btn" onclick="prevProfile()">⏮ Prev</button>
       <button class="nav-btn" onclick="nextProfile(); runNextContainer()">Next ⏭</button><br>
-    </div>
+    </div> 
  
     <!-- Twofac -->
   <div class="row">
@@ -177,8 +186,12 @@
   <div class="small">Next update in <span id="countdown">—</span>s</div>
     
   </div>
-  
   <!-- Floating buttons -->
+  <div class="floating-btn floating-TGP" onclick="copyText('password'); openCurrentIG()">IGP</div>
+  <div class="floating-btn floating-TGAU" onclick="copyText('newusername')">AU</div>
+  <div class="floating-btn floating-TGUN" onclick="copyText('oldusername'); openCurrentIG()">UN</div>
+  <div class="floating-btn floating-TGN" onclick="copyText('name'); openCurrentIG()"">Na</div>
+  
   <div class="floating-btn floating-copyUN" onclick="copyText('oldusername'); runCreateTH()">CU</div>
   <div class="floating-btn floating-CopyunT" onclick="copyText('oldusername'); openCurrentTG()">ThU</div>
   <div class="floating-btn floating-Pw" onclick="copyText('password'); openCurrentTG()">Pw</div>
