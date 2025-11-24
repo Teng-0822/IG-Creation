@@ -60,20 +60,20 @@
     .floating-caption { bottom: 20px; right: 200px; background: #009688; }
     .floating-first {  bottom: 20px; right: 260px;  background: #ff9800; }
     .floating-list { bottom: 20px; right: 320px; background: #4caf50; }
-
     
     .floating-copyUN { bottom: 80px; right: 20px; background: #4caf50; }
     .floating-CopyunT { bottom: 80px; right: 80px; background: #ff9800; }
     .floating-Pw { bottom: 80px; right: 140px; background: #009688; }
 
-    
-    .floating-TGN { bottom: 500px; right: 20px; background: #4caf50; }
-    .floating-TGUN { bottom: 440px; right: 20px; background: #4caf50; }
-    .floating-TGAU { bottom: 380px; right: 20px; background: #4caf50; }
-    .floating-TGP { bottom: 320px; right: 20px; background: #4caf50; }
+    .floating-CrC { bottom: 140px; right: 200px; background: #4caf50; }
+    .floating-TGN { bottom: 140px; right: 200px; background: #4caf50; }
+    .floating-TGUN { bottom: 140px; right: 140px; background: #4caf50; }
+    .floating-TGAU { bottom: 140px; right: 80px; background: #4caf50; }
+    .floating-TGP { bottom: 140px; right: 20px; background: #4caf50; }
 
-    .floating-Next { bottom: 140px; right: 140px; background: #3f51b5; }
-    .floating-Prev { bottom: 140px; right: 200px; background: #3f51b5; }
+    .floating-NxOnly { bottom: 200px; right: 80px; background: #3f51b5; }
+    .floating-Next { bottom: 200px; right: 140px; background: #3f51b5; }
+    .floating-Prev { bottom: 200px; right: 200px; background: #3f51b5; }
 
     
     /* Toast */
@@ -169,6 +169,7 @@
     
   </div>
   <!-- Floating buttons -->
+  <div class="floating-btn floating-NxOnly" onclick="nextProfile()">Nx</div>
   <div class="floating-btn floating-Next" onclick="runCont(); nextProfile()">Nx</div>
   <div class="floating-btn floating-Prev" onclick="prevProfile()">Pv</div>
   
@@ -176,6 +177,7 @@
   <div class="floating-btn floating-TGAU" onclick="copyText('newusername')">AU</div>
   <div class="floating-btn floating-TGUN" onclick="copyText('oldusername'); openCurrentIG()">UN</div>
   <div class="floating-btn floating-TGN" onclick="copyText('name'); openCurrentIG()"">Na</div>
+  <div class="floating-btn floating-CrC" onclick="copyText('oldusername'); Createcon()"">Na</div>
   
   <div class="floating-btn floating-copyUN" onclick="copyText('oldusername'); runCreateTH()">CU</div>
   <div class="floating-btn floating-CopyunT" onclick="copyText('oldusername'); openCurrentTG()">ThU</div>
@@ -221,7 +223,7 @@
 
     function prevProfile(){ if(currentIndex>0){ currentIndex--; displayProfile(); } }
     function nextProfile(){ if(currentIndex<profiles.length-1){ currentIndex++; displayProfile(); } }
-    function runNextContainer(){ window.location.href="shortcuts://run-shortcut?name=NextIG"; }
+    function Createcon(){ window.location.href="shortcuts://run-shortcut?name=CreateIGCon"; }
     function runCreateTH(){ window.location.href="shortcuts://run-shortcut?name=CreateTh"; }
     function runCont(){ window.location.href="shortcuts://run-shortcut?name=NextIGTH"; }
 
