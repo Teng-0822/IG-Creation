@@ -168,11 +168,11 @@
   </div>
   <div class="small">Next update in <span id="countdown">—</span>s</div>
   <h4>Your IP Address:</h4>
-  <div id="ip">Loading...</div>
+  <div id="ip">Loading...</div> <button id="refreshBtn" onclick="refreshAndOpen()">🔄 Refresh IP + Check</button>
     
   </div>
   <!-- Floating buttons -->
-  <div class="floating-btn floating-IP" onclick="refreshLink(); refreshAndOpen()">IP</div>
+  <div class="floating-btn floating-IP" onclick="refreshLink()">IP</div>
   <div class="floating-btn floating-NxOnly" onclick="nextProfile()">=></div>
   <div class="floating-btn floating-Next" onclick="runCont(); nextProfile()">Nx</div>
   <div class="floating-btn floating-Prev" onclick="prevProfile()">Pv</div>
