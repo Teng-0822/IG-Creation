@@ -166,12 +166,13 @@
     <div id="totp" class="code">------</div>
     <button id="copyBtn">Copy</button>
   </div>
-
   <div class="small">Next update in <span id="countdown">—</span>s</div>
+  <h4>Your IP Address:</h4>
+  <div id="ip">Loading...</div>
     
   </div>
   <!-- Floating buttons -->
-  <div class="floating-btn floating-IP" onclick="refreshLink()">IP</div>
+  <div class="floating-btn floating-IP" onclick="refreshLink(); refreshAndOpen()">IP</div>
   <div class="floating-btn floating-NxOnly" onclick="nextProfile()">=></div>
   <div class="floating-btn floating-Next" onclick="runCont(); nextProfile()">Nx</div>
   <div class="floating-btn floating-Prev" onclick="prevProfile()">Pv</div>
@@ -232,10 +233,10 @@
     function runCont(){ window.location.href="shortcuts://run-shortcut?name=NextIGTH"; }
 
     function refreshLink() {
-        document.getElementById("refreshFrame").src =
-            "https://i.fxdx.in/actionlinks/do/changeip/wa1t2WWkTZ-OF0EEzv5SVg" + 
-            "?t=" + Date.now(); // prevents cache
-    }
+        fetch("https://i.fxdx.in/actionlinks/do/changeip/wa1t2WWkTZ-OF0EEzv5SVg")
+        .then(r => console.log("Triggered:", r))
+        .catch(err => console.log("Error:", err));
+  }
     
     function toggleEdit(field){
       const span=document.getElementById(field), input=document.getElementById(field+"Input");
@@ -470,6 +471,53 @@ pasteBtn.addEventListener('click', async () => {
     alert("Clipboard paste not allowed by browser.");
   }
 });
+
+/* IP */
+    let userIP = '';
+    let scamalyticsWindow = null;
+
+    // Get IP on page load
+    fetch('https://api.ipify.org?format=json')
+      .then(res => res.json())
+      .then(data => {
+        userIP = data.ip;
+        document.getElementById("ip").textContent = userIP;
+      })
+      .catch(() => {
+        document.getElementById("ip").textContent = "Failed to load IP.";
+      });
+
+    function refreshAndOpen() {
+      const btn = document.getElementById("refreshBtn");
+
+      // Start loading
+      btn.disabled = true;
+      const oldText = btn.innerHTML;
+      btn.innerHTML = "⏳ Loading...";
+
+      // Open a blank tab immediately
+      if (!scamalyticsWindow || scamalyticsWindow.closed) {
+        scamalyticsWindow = window.open('about:blank', '_blank');
+      }
+
+      // Fetch new IP and update
+      fetch('https://api.ipify.org?format=json')
+        .then(res => res.json())
+        .then(data => {
+          userIP = data.ip;
+          document.getElementById("ip").textContent = userIP;
+
+          const url = `https://scamalytics.com/ip/${userIP}`;
+          scamalyticsWindow.location.href = url;
+          scamalyticsWindow.focus();
+        })
+        .finally(() => {
+          // End loading
+          btn.innerHTML = oldText;
+          btn.disabled = false;
+        });
+    }
+
     
 loadProfiles();
     
