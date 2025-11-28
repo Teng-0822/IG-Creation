@@ -71,6 +71,7 @@
     .floating-TGAU { bottom: 140px; right: 80px; background: #4caf50; }
     .floating-TGP { bottom: 140px; right: 20px; background: #4caf50; }
 
+    .floating-IP { bottom: 200px; right: 20px; background: #3f51b5; }
     .floating-NxOnly { bottom: 200px; right: 80px; background: #3f51b5; }
     .floating-Next { bottom: 200px; right: 140px; background: #3f51b5; }
     .floating-Prev { bottom: 200px; right: 200px; background: #3f51b5; }
@@ -170,6 +171,7 @@
     
   </div>
   <!-- Floating buttons -->
+  <div class="floating-btn floating-IP" onclick="refreshLink()">IP</div>
   <div class="floating-btn floating-NxOnly" onclick="nextProfile()">=></div>
   <div class="floating-btn floating-Next" onclick="runCont(); nextProfile()">Nx</div>
   <div class="floating-btn floating-Prev" onclick="prevProfile()">Pv</div>
@@ -229,6 +231,12 @@
     function runCreateTH(){ window.location.href="shortcuts://run-shortcut?name=CreateTh"; }
     function runCont(){ window.location.href="shortcuts://run-shortcut?name=NextIGTH"; }
 
+    function refreshLink() {
+        document.getElementById("refreshFrame").src =
+            "https://i.fxdx.in/actionlinks/do/changeip/wa1t2WWkTZ-OF0EEzv5SVg" + 
+            "?t=" + Date.now(); // prevents cache
+    }
+    
     function toggleEdit(field){
       const span=document.getElementById(field), input=document.getElementById(field+"Input");
       if(input.style.display==="none"){ input.value=span.textContent; span.style.display="none"; input.style.display="inline-block"; }
