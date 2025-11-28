@@ -141,7 +141,7 @@
   </style>
 </head>
 <body>
-  <div class="container">
+  <!--<div class="container"> -->
     <div class="field"><label>Name:</label><span id="name"></span>
     </div>
     <div class="field"><label>Username:</label><span id="oldusername"></span>
@@ -151,7 +151,7 @@
     <input id="newusernameInput">
     </div>
     <div class="field"><label>Password:</label><span id="password"></span>
-    </div>
+    <!--</div> -->
 
      
     <!-- Twofac -->
@@ -165,7 +165,8 @@
     <button id="copyBtn">Copy</button>
   </div>
   <div class="small">Next update in <span id="countdown">—</span>s</div>
-  <div id="ip"><label>Your IP Address:</label>Loading...</div> <button id="refreshBtn" onclick="refreshAndOpen()">🔄 Refresh IP + Check</button>
+  <label>Your IP Address:</label>
+  <div id="ip">Loading...</div> <button id="refreshBtn" onclick="refreshAndOpen()">🔄 Refresh IP + Check</button>
     
   </div>
   <!-- Floating buttons -->
