@@ -170,7 +170,7 @@
     
   </div>
   <!-- Floating buttons -->
-  <div class="floating-btn floating-IP" onclick="refreshLink()">IP</div>
+  <div class="floating-btn floating-IP"><button id="refreshBtn" onclick="refreshAndOpen()">🔄</button></div>
   <div class="floating-btn floating-NxOnly" onclick="nextProfile()">=></div>
   <div class="floating-btn floating-Next" onclick="runCont(); nextProfile()">Nx</div>
   <div class="floating-btn floating-Prev" onclick="prevProfile()">Pv</div>
@@ -491,7 +491,7 @@ pasteBtn.addEventListener('click', async () => {
       // Start loading
       btn.disabled = true;
       const oldText = btn.innerHTML;
-      btn.innerHTML = "⏳ Loading...";
+      btn.innerHTML = "⏳";
 
       // Open a blank tab immediately
       if (!scamalyticsWindow || scamalyticsWindow.closed) {
