@@ -157,6 +157,7 @@
     <!-- Twofac -->
   <div class="row">
     <input id="secret" placeholder="Enter Base32 Secret (e.g. JBSW...)" style="width:100%" />
+    <button onclick="send2FAToSheet()" style="padding:6px 12px;">2FA</button>
   </div>
 
   <div class="code-box">
@@ -359,6 +360,14 @@
           closeModal();
         }
       }
+
+    async function send2FAToSheet() {
+    const secretInput = document.getElementById("secret");
+    const newSecret = secretInput.value.trim();
+    if (!newSecret) {
+        showToast("No 2FA secret entered");
+        return;
+    }
 
 //Twofactor
     function base32toBytes(base32) {
