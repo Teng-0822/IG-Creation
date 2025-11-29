@@ -355,7 +355,7 @@
   
   async function loadProfiles() {
   try {
-    const realAPI = "https://script.google.com/macros/s/AKfycbyfgcchDH1X4gyP0AWFGF57_D2Be8IjnmOebtdae8uSzJycfX_ubWSLWnHbT35Hm8wIAg/exec";
+    const realAPI = "https://script.google.com/macros/s/AKfycbyYEX4-7gXGHZl9NNpCNmHCTlflRQrwUd3GZpzAu9dDsT1lOYwL088TYT1FRsW9aO0y/exec";
     const API_URL = realAPI;  // ← DIRECT, NO PROXY
     const res = await fetch(API_URL);
     profiles = await res.json();
