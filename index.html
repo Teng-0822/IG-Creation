@@ -173,6 +173,12 @@
   <label>Your IP Address:</label>
   <div id="ip">Loading...</div> <button id="refreshBtn" onclick="refreshAndOpen()">IP</button>
    </div>
+
+  <div style="display:flex; gap:10px; align-items:center; justify-content:center; margin-top:10px;">
+  <input id="rotateLink" placeholder="Enter Rotate IP URL" style="flex:1; padding:6px 10px;" />
+  <button id="rotateBtn" onclick="rotateIP()" style="padding:6px 12px;">Rot</button>
+</div>
+
     
   </div>
   <!-- Floating buttons -->
@@ -212,7 +218,7 @@
   <div id="toast" class="toast"></div>
 
   <script>
-    const apiUrl = "https://script.google.com/macros/s/AKfycbzmn31amYcS6Aar5klFIESkgfs71U0Y3iUFj04thE5FYbljigOA6vLXs_Bf76yCiBZF9w/exec" //"https://script.google.com/macros/s/AKfycbwGm4ouDR7CNIhDhdosW8oCIn_apcAm_PBiDoDCyKJp_6Ogg3gvZYM2CTK0Zg2xASP1gQ/exec";
+    const apiUrl = "https://script.google.com/macros/s/AKfycbzymxVsbFeZCHSrVV3GOzwKIQY67ReKYlJoM0ioiD6W9IUCXeierG74VFndonmtcWHTng/exec" //"https://script.google.com/macros/s/AKfycbwGm4ouDR7CNIhDhdosW8oCIn_apcAm_PBiDoDCyKJp_6Ogg3gvZYM2CTK0Zg2xASP1gQ/exec";
     let profiles = [], currentIndex = 0;
 
     async function loadProfiles() {
@@ -279,7 +285,15 @@
       t.textContent=msg; t.classList.add("show");
       setTimeout(()=>{ t.classList.remove("show"); },1000);
     }
+ //IP Rotate
+    function rotateIP() {
+  const btn = document.getElementById("rotateBtn");
+  const url = document.getElementById("rotateLink").value.trim();
 
+  if (!url) {
+    showToast("Please enter a valid link.");
+    return;
+  }
     // Random celebrity
     const celebrities=[ "Selena Gomez","Kylie Jenner","Dwayne Johnson","Ariana Grande","Kim Kardashian","Beyoncé","Khloé Kardashian","Kendall Jenner","Taylor Swift","Jennifer Lopez","Nicki Minaj","Miley Cyrus","Katy Perry","Zendaya","Kevin Hart","Cardi B","LeBron James","Demi Lovato","Leonardo DiCaprio","Vin Diesel","Zac Efron","Will Smith","Tom Cruise","Angelina Jolie","Brad Pitt","Scarlett Johansson","Chris Evans","Chris Hemsworth","Robert Downey Jr.","Mark Ruffalo","Jeremy Renner","Tom Holland","Zendaya","Timothée Chalamet","Florence Pugh","Natalie Portman","Anne Hathaway","Emma Stone","Emma Watson","Margot Robbie","Gal Gadot","Halle Berry","Sandra Bullock","Julia Roberts","Reese Witherspoon","Jennifer Aniston","Courteney Cox","Matthew Perry","Lisa Kudrow","Matt LeBlanc","David Schwimmer","Steve Carell","John Krasinski","Mindy Kaling","BJ Novak","Rainn Wilson","Ed Helms","Jenna Fischer","Ellie Kemper","Jonah Hill","Channing Tatum","Matthew McConaughey","Jake Gyllenhaal","Ryan Reynolds","Ryan Gosling","Blake Lively","Jessica Alba","Eva Mendes","Megan Fox","Shia LaBeouf","Kristen Stewart","Robert Pattinson","Taylor Lautner","Dakota Johnson","Jamie Dornan","Jennifer Lawrence","Josh Hutcherson","Liam Hemsworth","Woody Harrelson","Donald Glover","Childish Gambino","Chance the Rapper","Travis Scott","Post Malone","Billie Eilish","Olivia Rodrigo","Doja Cat","Saweetie","Lil Nas X","Snoop Dogg","Dr. Dre","Ice Cube","Eminem","50 Cent","Jay-Z","Kanye West","Travis Barker","Machine Gun Kelly","Lana Del Rey","Halsey"];
     function randomCelebrity(){
