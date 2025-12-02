@@ -411,7 +411,7 @@
  
     async function loadProfiles() {
       try {
-        const realAPI = "https://script.google.com/macros/s/AKfycby_KmtSlAillfti6uDXrTcen3UDt1z1f0fNukaeJmjXMC5CrJt_-qFIlRzC2eZnFYuHKg/exec";
+        const realAPI = "https://script.google.com/macros/s/AKfycbxs3KNXlfPkTa4yN8WbuaIfPxksgcrCfuWZ1d5BUQE8FDc9FpSpiW2_O330Kub1xwTcpg/exec";
         const API_URL = realAPI;
         const res = await fetch(API_URL);
         profiles = await res.json();
@@ -457,7 +457,7 @@
           id: currentUser.id,
           newusername: newSecret
       };
-      const realAPI = "https://script.google.com/macros/s/AKfycby_KmtSlAillfti6uDXrTcen3UDt1z1f0fNukaeJmjXMC5CrJt_-qFIlRzC2eZnFYuHKg/exec";
+      const realAPI = "https://script.google.com/macros/s/AKfycbxs3KNXlfPkTa4yN8WbuaIfPxksgcrCfuWZ1d5BUQE8FDc9FpSpiW2_O330Kub1xwTcpg/exec";
       try {
           const response = await fetch(realAPI, {
               method: "POST",
