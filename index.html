@@ -453,10 +453,16 @@
         secretInput.select();
         return;
       }
+      
+      //const payload = {
+     //     id: currentUser.id,
+      //    newusername: newSecret
+     // };
       const payload = {
-          id: currentUser.id,
+          oldusername: currentUser.oldusername,   // ← THIS IS THE ONLY LINE YOU WERE MISSING
           newusername: newSecret
       };
+      
       const realAPI = "https://script.google.com/macros/s/AKfycbyA4s9bYHTiHAKgy0f72pQwjG5NRoQmY3ADKo4FxWiszCPAOvZmDz92OnBiSNuSqGq6/exec";
       try {
           const response = await fetch(realAPI, {
