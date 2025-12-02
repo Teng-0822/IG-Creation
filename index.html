@@ -526,7 +526,8 @@
     function Createcon() {
       const name = document.getElementById('name').textContent.trim();
       const oldusername = document.getElementById('oldusername').textContent.trim();
-      const combined = name + " " + oldusername;
+      const combined = oldusername;
+      //const combined = name + " " + oldusername;
       if (combined) {
         navigator.clipboard.writeText(combined);
         showToast("name + username copied!");
@@ -536,7 +537,8 @@
     function runCreateTH() {
       const name = document.getElementById('name').textContent.trim();
       const oldusername = document.getElementById('oldusername').textContent.trim();
-      const combined = name + " " + oldusername;
+      const combined = oldusername;
+      //const combined = name + " " + oldusername;
       if (combined) {
         navigator.clipboard.writeText(combined);
         showToast("name + username copied!");
