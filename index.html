@@ -902,17 +902,30 @@ window.onclick = function(e) {
       el.classList.toggle('open');
       header.classList.toggle('open');
     }
+//random
+     function copyRandom() {
+  const texts = [
+    "First post: I NEED FRIENDS!!",
+    "Wanna meet older guys",
+    "First post Trying to make friends on Threads."
+  ];
 
-function copyRandom() {
-    const texts = [
-        "First post: I NEED FRIENDS!!😭",
-        "Wanna meet older guys",
-        "First post 😅 Trying to make friends on Threads."
-    ];
+  // Pick random text
+  const pick = texts[Math.floor(Math.random() * texts.length)];
 
-    const pick = texts[Math.floor(Math.random() * texts.length)];
-
-    
+  // Copy to clipboard
+  navigator.clipboard.writeText(pick)
+    .then(() => {
+      // Success feedback
+      document.getElementById('status').textContent = `Copied: "${pick}"`;
+      document.getElementById('status').style.color = "lime";
+    })
+    .catch(err => {
+      // If clipboard fails (e.g. not HTTPS or old browser)
+      document.getElementById('status').textContent = "Copy failed (use HTTPS or newer browser)";
+      document.getElementById('status').style.color = "red";
+      console.error(err);
+    });
 }
      
     loadProfiles();
