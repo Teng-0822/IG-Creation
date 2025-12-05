@@ -216,9 +216,8 @@
 }
 
 #ipBar {
-  background: rgb(20,20,50);     /* solid, no transparency */
-  backdrop-filter: none;         /* remove halo/glow effect */
-  border: 1px solid #333;
+  background: rgb(20,20,50);        /* solid, no transparency */
+  border: 1px solid #333;           /* normal dark border */
   border-radius: 12px;
   padding: 10px 14px;
   margin: 12px 0;
@@ -231,6 +230,11 @@
   justify-content: center;
   gap: 12px;
   flex-wrap: wrap;
+
+  /* 🔥 remove glowing effects */
+  backdrop-filter: none;            /* removes blur glow */
+  box-shadow: none;                 /* ensure no shadow glow */
+  text-shadow: none;                /* remove neon text glow if any */
 }
     #ipBar button {
     height: auto;        /* remove the tiny fixed height */
