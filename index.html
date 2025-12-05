@@ -23,7 +23,7 @@
       -webkit-backdrop-filter: blur(16px);
       border-radius: 20px;
       border: 1px solid rgba(120,100,255,0.25);
-      padding: 18px;
+      padding: 5px;
       margin-bottom: 16px;
       box-shadow: 0 8px 32px rgba(0,0,0,0.5);
     }
@@ -240,7 +240,7 @@
   <!-- Profile Card -->
   <div class="glass-card">
     <div class="collapsible-header open" onclick="toggleSection('profileSection')">
-      <span>Profile Details</span>
+      <span>Profile: <span id="profileHeaderUsername" style="color:#0ff; font-weight:700;">—</span></span>
     </div>
     <div id="profileSection" class="section open">
       <div class="profile-compact">
@@ -254,9 +254,23 @@
 
 <!-- 2FA — 45% SIZE (micro mode) -->
 <div class="glass-card">
+
   <div class="collapsible-header open" onclick="toggleSection('twofaSection')">
-    <span>2FA Authenticator</span>
-  </div>
+    <span style="flex:1;">2FA Authenticator Countdown: 
+      <span id="countdown">--</span>
+    </span>
+
+    <div style="display:flex; justify-content:center; align-items:center; gap:8px; margin:4px 0;">
+      <button id="pasteBtn" style="padding:5px 9px; font-size:10.5px; border-radius:7px;">P</button>
+      
+      <div id="totp" style="font-size:24px; font-weight:900; letter-spacing:4px; color:#0ff; text-shadow:0 0 8px #0ff; min-width:110px; text-align:center;">
+        ------
+      </div>
+      
+      <button id="copyBtn" style="padding:5px 9px; font-size:10.5px; border-radius:7px;">C</button>
+    </div>
+</div>
+
   <div id="twofaSection" class="section open">
     
     <!-- Input + Send (tiny row) -->
@@ -268,26 +282,8 @@
         Send
       </button>
     </div>
-
-    <!-- Countdown (tiny) -->
-    <div style="text-align:center; color:#666; font-size:10px; margin:1px 0 4px;">
-      <span id="countdown">--</span>s
-    </div>
-
-    <!-- TOTP + buttons (ultra tight) -->
-    <div style="display:flex; justify-content:center; align-items:center; gap:8px; margin:4px 0;">
-      <button id="pasteBtn" style="padding:5px 9px; font-size:10.5px; border-radius:7px;">P</button>
-      
-      <div id="totp" style="font-size:24px; font-weight:900; letter-spacing:4px; 
-                           color:#0ff; text-shadow:0 0 8px #0ff; min-width:110px; text-align:center;">
-        ------
-      </div>
-      
-      <button id="copyBtn" style="padding:5px 9px; font-size:10.5px; border-radius:7px;">C</button>
-    </div>
   </div>
 </div>
-
 
 <!-- NEW IP BAR WITH OLD IP DISPLAY -->
 <div id="ipBar">
@@ -415,6 +411,12 @@
         showToast("Load failed – check console");
       }
     }
+
+    function updateHeaderUsername() {
+          const username = document.getElementById("oldusername").textContent.trim() || "—";
+          document.getElementById("profileHeaderUsername").textContent = username;
+        }
+     
     function displayProfile() {
       if (!profiles.length) return;
       const p = profiles[currentIndex];
@@ -426,6 +428,7 @@
       secretInput.value = p.newusername?.trim() || "";
       update();
       localStorage.setItem("currentIndex", currentIndex);
+      updateHeaderUsername();
     }
     async function send2FAToSheet() {
       const secretInput = document.getElementById("secret");
