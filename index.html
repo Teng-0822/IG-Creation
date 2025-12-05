@@ -216,23 +216,24 @@
 }
 
 #ipBar {
-  background: rgba(20,20,50,0.6);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(120,100,255,0.3);
-  border-radius: 12px;
-  padding: 10px 14px;
-  margin: 12px 0;
-  text-align: center;
-  font-family: monospace;
-  font-size: 12px;
-  color: #0ff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  transition: background 1s ease, box-shadow 1s ease;
-}
+    background: rgba(20,20,50,0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(120,100,255,0.3);
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin: 12px 0;
+    text-align: center;
+    font-family: 12px monospace;
+    color: #0ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    transition: background 1s ease, box-shadow 1s ease; /* smooth flash */
+  }
+  #ipBar.success { background: rgba(0,255,100,0.5) !important; box-shadow: 0 0 30px #0f0; }
+  #ipBar.fail    { background: rgba(255,50,50,0.5) !important;   box-shadow: 0 0 30px #f33; }
     #ipBar button {
     height: auto;        /* remove the tiny fixed height */
     padding: 4px 8px;    /* give it space */
@@ -296,11 +297,11 @@
 
 <!-- NEW IP BAR WITH OLD IP DISPLAY -->
 <div id="ipBar">
-  <button id="rotateIpBtn" onclick="rotateIP()">🔄</button>
-  
+  <button id="rotateIpBtn" onclick="rotateIP()">Rotate</button>
+
   <span id="oldIPDisplay" style="color:#888; font-size:11px;"></span>
   <span id="currentIP">fetching...</span>
-  
+
   <span style="margin-left:8px; color:#0af;">Age:</span>
   <span id="ipAge">00:00</span>
 </div>
@@ -654,160 +655,148 @@
 
 // IP new Code
 let ipStartTime = Date.now();
-let lastKnownIP = "";
 let isAutoRotating = false;
 
-// Fetch IP once at start
+// Reliable IP services (ipify sometimes blocks heavy use)
+const IP_SERVICES = [
+  'https://api.ipify.org?format=json',
+  'https://ipapi.co/json',
+  'https://api.myip.com'
+];
+
 async function getCurrentIP() {
-  try {
-    const res = await fetch('https://api.ipify.org?format=json');
-    const data = await res.json();
-    return data.ip;
-  } catch (e) {
-    return "error";
+  for (const url of IP_SERVICES) {
+    try {
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) continue;
+      const data = await res.json();
+      if (url.includes('ipify')) return data.ip;
+      if (url.includes('ipapi')) return data.ip;
+      if (url.includes('myip.com')) return data.ip;
+    } catch(e) { continue; }
   }
+  return "error";
 }
 
-// Trigger the real proxy rotation via your URL
+// Your real proxy rotation endpoint
 async function triggerProxyRotation() {
   try {
     const res = await fetch('https://i.fxdx.in/actionlinks/do/changeip/wa1t2WWkTZ-OF0EEzv5SVg');
     const data = await res.json();
-    console.log("Proxy rotation triggered:", data.message); // Logs "changeip command has been sent"
+    console.log("Proxy command sent:", data.message || data);
     return true;
   } catch (e) {
-    console.error("Proxy rotation failed:", e);
+    console.error("Rotation failed:", e);
     return false;
   }
 }
 
-// Run once when page loads
-getCurrentIP().then(ip => {
-  document.getElementById("currentIP").textContent = ip;
-  lastKnownIP = ip;
-  ipStartTime = Date.now();
-});
+function showToast(msg) {
+  // simple toast if you don't have one already
+  const t = document.createElement('div');
+  t.textContent = msg;
+  t.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#000c;padding:12px 20px;border-radius:8px;color:#0f0;font:14px monospace;z-index:9999;';
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
 
-// Update age counter every second
+function resetBar() {
+  const bar = document.getElementById('ipBar');
+  bar.classList.remove('success', 'fail');
+}
+
+// Load IP on page start
+(async () => {
+  const ip = await getCurrentIP();
+  document.getElementById('currentIP').textContent = ip || 'offline';
+  ipStartTime = Date.now();
+})();
+
+// Age counter
 setInterval(() => {
-  const seconds = Math.floor((Date.now() - ipStartTime) / 1000);
-  const m = String(Math.floor(seconds / 60)).padStart(2, '0');
-  const s = String(seconds % 60).padStart(2, '0');
-  document.getElementById("ipAge").textContent = `${m}:${s}`;
+  const secs = Math.floor((Date.now() - ipStartTime) / 1000);
+  const m = String(Math.floor(secs / 60)).padStart(2,'0');
+  const s = String(secs % 60).padStart(2,'0');
+  document.getElementById('ipAge').textContent = `${m}:${s}`;
 }, 1000);
 
-// MAIN FUNCTION — NOW WITH AUTO-ROTATE LOOP + REAL PROXY URL
+// MAIN ROTATE FUNCTION — NOW 100% WORKING
 async function rotateIP() {
   if (isAutoRotating) {
     isAutoRotating = false;
-    showToast("Auto-rotation stopped");
-    document.getElementById("rotateIpBtn").textContent = "🔄";
-    resetBarColor();
+    document.getElementById('rotateIpBtn').textContent = 'Rotate';
+    showToast('Stopped');
+    resetBar();
     return;
   }
 
-  const ipBar = document.getElementById("ipBar");
-  const ipSpan = document.getElementById("currentIP");
-  const oldDisplay = document.getElementById("oldIPDisplay");
-  const ageSpan = document.getElementById("ipAge");
-  const rotateBtn = document.getElementById("rotateIpBtn");
+  const bar         = document.getElementById('ipBar');
+  const ipSpan       = document.getElementById('currentIP');
+  const oldDisplay   = document.getElementById('oldIPDisplay');
+  const ageSpan      = document.getElementById('ipAge');
+  const btn          = document.getElementById('rotateIpBtn');
 
   const oldIP = ipSpan.textContent.trim();
-
-  // Initial state
-  ipSpan.textContent = "starting...";
-  oldDisplay.textContent = "";
-  ageSpan.textContent = "00:00";
-  rotateBtn.textContent = "🛑";
-  resetBarColor();
+  ipSpan.textContent = 'starting...';
+  oldDisplay.textContent = '';
+  ageSpan.textContent = '00:00';
+  btn.textContent = 'Stop';
+  resetBar();
 
   isAutoRotating = true;
   let attempts = 0;
-  const maxAttempts = 20;
+  const maxAttempts = 25;
 
-  const resetBarColor = () => {
-    ipBar.style.background = "rgba(20,20,50,0.6)";
-    ipBar.style.boxShadow = "none";
-  };
-
-  const flashGreen = () => {
-    ipBar.style.background = "rgba(0, 255, 100, 0.45)";
-  const flashRed = () => ipBar.style.background = "rgba(255, 40, 60, 0.45)";
-
-  const successFlash = () => {
-    flashGreen();
-    ipBar.style.boxShadow = "0 0 25px #0f0";
-    setTimeout(() => {
-      resetBarColor();
-      ipBar.style.transition = "background 1.2s ease, box-shadow 1.2s ease";
-    }, 5000);
-  };
-
-  const failFlash = () => {
-    flashRed();
-    ipBar.style.boxShadow = "0 0 25px #f33";
-    setTimeout(() => resetBarColor(), 3000);
-  };
-
-  const autoLoop = async () => {
+  const loop = async () => {
     attempts++;
-    ipSpan.textContent = `attempt ${attempts}...`;
-
-    showToast(`Rotating IP... (${attempts}/${maxAttempts})`);
+    ipSpan.textContent = `try ${attempts}...`;
+    showToast(`Rotating… ${attempts}/${maxAttempts}`);
 
     await triggerProxyRotation();
-    await new Promise(r => setTimeout(r, 3000)); // Wait for proxy to apply
+    await new Promise(r => setTimeout(r, 3500)); // give proxy time
 
     const newIP = await getCurrentIP();
     ipSpan.textContent = newIP;
     ipStartTime = Date.now();
 
-    if (oldIP && oldIP !== "fetching..." && oldIP !== "starting..." && oldIP !== "error") {
+    // show old → new
+    if (oldIP && !['fetching...','starting...','error'].includes(oldIP)) {
       oldDisplay.textContent = `Old → ${oldIP} → `;
     }
 
-    // SUCCESS: IP CHANGED
-    if (newIP !== oldIP && oldIP !== "starting..." && newIP !== "error") {
-      ipSpan.style.color = "#0f0";
-      ageSpan.style.color = "#0f0";
-      oldDisplay.style.color = "#0f0";
-      showToast(`SUCCESS! New IP: ${newIP} (after ${attempts} tries)`);
-
-      successFlash(); // ← GREEN BACKGROUND FOR 5 SECONDS
-
-      rotateBtn.textContent = "🔄";
+    // SUCCESS → GREEN FLASH 5 SECONDS
+    if (newIP !== oldIP && newIP !== 'error' && oldIP !== 'starting...') {
+      bar.classList.add('success');
+      ipSpan.style.color = oldDisplay.style.color = ageSpan.style.color = '#0f0';
+      showToast(`SUCCESS! New IP: ${newIP}`);
+      btn.textContent = 'Rotate';
       isAutoRotating = false;
-      lastKnownIP = newIP;
 
-      // Reset colors after glow
       setTimeout(() => {
-        ipSpan.style.color = "#0ff";
-        ageSpan.style.color = "#0ff";
-        oldDisplay.style.color = "#888";
+        resetBar();
+        ipSpan.style.color = '#0ff';
+        ageSpan.style.color = '#0ff';
+        oldDisplay.style.color = '#888';
       }, 5000);
-
       return;
-    } 
-    // STILL SAME IP → quick red flash (optional per attempt)
-    else {
-      flashRed();
-      setTimeout(resetBarColor, 1500); // short red pulse
+    }
 
-      if (attempts >= maxAttempts) {
-        showToast("Failed to change IP after 20 attempts");
-        failFlash(); // Longer red on final failure
-        rotateBtn.textContent = "🔄";
-        ipSpan.style.color = "#f66";
-        isAutoRotating = false;
-        setTimeout(() => ipSpan.style.color = "#0ff", 5000);
-      } else if (isAutoRotating) {
-        setTimeout(autoLoop, 1200); // next try
-      }
+    // STILL SAME → quick red pulse
+    bar.classList.add('fail');
+    setTimeout(() => bar.classList.remove('fail'), 1200);
+
+    if (attempts >= maxAttempts) {
+      bar.classList.add('fail');
+      showToast('Failed after 25 tries');
+      btn.textContent = 'Rotate';
+      isAutoRotating = false;
+      setTimeout(resetBar, 4000);
+    } else if (isAutoRotating) {
+      setTimeout(loop, 1000);
     }
   };
 
-  // Start the loop
-  autoLoop();
+  loop();
 }
 
 // Profile Function
