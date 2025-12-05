@@ -749,6 +749,12 @@ async function rotateIP() {
       ipSpan.style.textShadow = "0 0 15px #0f0";
       ageSpan.style.color = "#00ff00";
       oldDisplay.style.color = "#00ff00";
+
+           // Additional
+      const ipBar = document.getElementById("ipBar");
+      ipBar.style.background = "rgba(0, 255, 0, 0.35)";
+      ipBar.style.borderColor = "rgba(0, 255, 0, 0.5)";
+      
       showToast(`SUCCESS! IP CHANGED after ${attempts} tries → ${newIP}`);
       
       rotateBtn.textContent = "🔄"; // Reset button
