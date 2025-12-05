@@ -698,12 +698,14 @@ setInterval(() => {
 // MAIN FUNCTION — NOW WITH AUTO-ROTATE LOOP + REAL PROXY URL
 async function rotateIP() {
   if (isAutoRotating) {
-    // Stop the loop if already running
     isAutoRotating = false;
     showToast("Auto-rotation stopped");
+    document.getElementById("rotateIpBtn").textContent = "🔄";
+    resetBarColor();
     return;
   }
 
+  const ipBar = document.getElementById("ipBar");
   const ipSpan = document.getElementById("currentIP");
   const oldDisplay = document.getElementById("oldIPDisplay");
   const ageSpan = document.getElementById("ipAge");
@@ -711,86 +713,99 @@ async function rotateIP() {
 
   const oldIP = ipSpan.textContent.trim();
 
-  // Visual feedback: starting rotation
+  // Initial state
   ipSpan.textContent = "starting...";
   oldDisplay.textContent = "";
   ageSpan.textContent = "00:00";
-  rotateBtn.textContent = "🛑"; // Change button to "Stop" during loop
+  rotateBtn.textContent = "🛑";
+  resetBarColor();
 
-  // START AUTO-LOOP: Keep rotating until IP changes
   isAutoRotating = true;
   let attempts = 0;
-  const maxAttempts = 20; // Safety limit: stop after 20 tries (~1 min)
+  const maxAttempts = 20;
+
+  const resetBarColor = () => {
+    ipBar.style.background = "rgba(20,20,50,0.6)";
+    ipBar.style.boxShadow = "none";
+  };
+
+  const flashGreen = () => {
+    ipBar.style.background = "rgba(0, 255, 100, 0.45)";
+  const flashRed = () => ipBar.style.background = "rgba(255, 40, 60, 0.45)";
+
+  const successFlash = () => {
+    flashGreen();
+    ipBar.style.boxShadow = "0 0 25px #0f0";
+    setTimeout(() => {
+      resetBarColor();
+      ipBar.style.transition = "background 1.2s ease, box-shadow 1.2s ease";
+    }, 5000);
+  };
+
+  const failFlash = () => {
+    flashRed();
+    ipBar.style.boxShadow = "0 0 25px #f33";
+    setTimeout(() => resetBarColor(), 3000);
+  };
 
   const autoLoop = async () => {
     attempts++;
     ipSpan.textContent = `attempt ${attempts}...`;
-    showToast(`Auto-rotating... (${attempts})`);
 
-    // Trigger your real proxy rotation URL
+    showToast(`Rotating IP... (${attempts}/${maxAttempts})`);
+
     await triggerProxyRotation();
+    await new Promise(r => setTimeout(r, 3000)); // Wait for proxy to apply
 
-    // Wait for IP to potentially change (your proxy might take 1-2s, so wait 3s total)
-    await new Promise(r => setTimeout(r, 3000));
-
-    // Check new IP
     const newIP = await getCurrentIP();
     ipSpan.textContent = newIP;
     ipStartTime = Date.now();
 
-    // Show Old → New
     if (oldIP && oldIP !== "fetching..." && oldIP !== "starting..." && oldIP !== "error") {
-      oldDisplay.textContent = `Old → ${oldIP}  →  `;
+      oldDisplay.textContent = `Old → ${oldIP} → `;
     }
 
-    // SUCCESS = IP CHANGED → GREEN BLINK 5s + STOP LOOP
-    if (newIP !== oldIP && oldIP !== "starting..." && oldIP !== "fetching..." && newIP !== "error") {
-      ipSpan.style.color = "#00ff00";
-      ipSpan.style.textShadow = "0 0 15px #0f0";
-      ageSpan.style.color = "#00ff00";
-      oldDisplay.style.color = "#00ff00";
-      showToast(`SUCCESS! IP CHANGED after ${attempts} tries → ${newIP}`);
-      
-      rotateBtn.textContent = "🔄"; // Reset button
-      isAutoRotating = false;
+    // SUCCESS: IP CHANGED
+    if (newIP !== oldIP && oldIP !== "starting..." && newIP !== "error") {
+      ipSpan.style.color = "#0f0";
+      ageSpan.style.color = "#0f0";
+      oldDisplay.style.color = "#0f0";
+      showToast(`SUCCESS! New IP: ${newIP} (after ${attempts} tries)`);
 
+      successFlash(); // ← GREEN BACKGROUND FOR 5 SECONDS
+
+      rotateBtn.textContent = "🔄";
+      isAutoRotating = false;
+      lastKnownIP = newIP;
+
+      // Reset colors after glow
       setTimeout(() => {
         ipSpan.style.color = "#0ff";
-        ipSpan.style.textShadow = "0 0 8px #0ff";
         ageSpan.style.color = "#0ff";
         oldDisplay.style.color = "#888";
       }, 5000);
 
-      lastKnownIP = newIP;
-      return; // Stop the loop
+      return;
+    } 
+    // STILL SAME IP → quick red flash (optional per attempt)
+    else {
+      flashRed();
+      setTimeout(resetBarColor, 1500); // short red pulse
 
-    // FAILED THIS ATTEMPT = RED BLINK 2s (quick, since looping)
-    } else {
-      ipSpan.style.color = "#ff0033";
-      ipSpan.style.textShadow = "0 0 15px #f00";
-      ageSpan.style.color = "#ff0033";
-      showToast(`No change yet... (${attempts}/${maxAttempts})`);
-
-      setTimeout(() => {
-        ipSpan.style.color = "#0ff";
-        ipSpan.style.textShadow = "0 0 8px #0ff";
-        ageSpan.style.color = "#0ff";
-      }, 2000); // Shorter red blink during loop
-
-      // Continue loop if not max attempts
-      if (attempts < maxAttempts && isAutoRotating) {
-        setTimeout(autoLoop, 1000); // Next attempt after 1s pause
-      } else if (attempts >= maxAttempts) {
-        showToast("Max attempts reached — stopping. IP did not change.");
-        rotateBtn.textContent = "Rotate";
+      if (attempts >= maxAttempts) {
+        showToast("Failed to change IP after 20 attempts");
+        failFlash(); // Longer red on final failure
+        rotateBtn.textContent = "🔄";
+        ipSpan.style.color = "#f66";
         isAutoRotating = false;
-        ipSpan.style.color = "#ff0033"; // Final red for full failure
         setTimeout(() => ipSpan.style.color = "#0ff", 5000);
+      } else if (isAutoRotating) {
+        setTimeout(autoLoop, 1200); // next try
       }
     }
   };
 
-  // Kick off the loop
+  // Start the loop
   autoLoop();
 }
 
