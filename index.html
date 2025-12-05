@@ -336,7 +336,7 @@
 <div style="display:flex; justify-content:flex-end; width:100%;">
   <div class="util-name">Threads Login</div>
   <div id="threadsButtons">
-    <div class="floating-btn" style="background:#4caf50" onclick="copyRandom(); openCurrentTG()">♳</div>
+    <div class="floating-btn floating-copyUN" style="background:#4caf50" onclick="copyRandom(); openCurrentTG()">♳</div>
     <div class="floating-btn floating-copyUN" style="background:#4caf50" onclick="copyText('oldusername'); runCreateTH()">✍️</div>
     <div class="floating-btn floating-CopyunT" style="background:#ff9800" onclick="copyText('oldusername'); openCurrentTG()">Un</div>
     <div class="floating-btn floating-Pw" style="background:#00acc1" onclick="copyText('password'); openCurrentTG()">🗝️</div>
@@ -844,9 +844,7 @@ function copyRandom() {
 
     const pick = texts[Math.floor(Math.random() * texts.length)];
 
-    navigator.clipboard.writeText(pick)
-        .then(() => alert("Copied: " + pick))
-        .catch(() => alert("Copy failed"));
+    
 }
      
     loadProfiles();
