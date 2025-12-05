@@ -214,6 +214,34 @@
   align-items: center;
   justify-content: center;
 }
+
+#ipBar {
+  background: rgba(20,20,50,0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(120,100,255,0.3);
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin: 12px 0;
+  text-align: center;
+  font-family: monospace;
+  font-size: 13px;
+  color: #0ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+#ipBar button {
+  background: #000;
+  color: #0f9;
+  border: none;
+  border-radius: 8px;
+  width: 38px;
+  height: 38px;
+  font-size: 18px;
+  cursor: pointer;
+}
   </style>
 </head>
 <body>
@@ -270,46 +298,18 @@
 </div>
 
 
-<!-- IP — 45% SIZE (micro mode) -->
-<div class="glass-card">
-  <div class="collapsible-header open" onclick="toggleSection('ipSection')">
-    <span>IP & Rotation</span>
-  </div>
-  <div id="ipSection" class="section open">
-    
-    <!-- Rotate URL + Go (micro) -->
-    <div style="display:flex; gap:5px; margin:6px 0 7px;">
-      <input id="rotateLink" placeholder="URL"
-             style="flex:1; padding:5px 7px; font-size:11px; border-radius:7px;" />
-      <button id="rotateBtn" onclick="rotateIP()"
-              style="padding:5px 7px; font-size:11px; border-radius:7px; min-width:42px;">
-        Go
-      </button>
-    </div>
-
-    <!-- IP Box (now tiny) -->
-    <div id="ipContainer" style="
-      background:rgba(10,10,30,0.95); border-radius:9px; padding:7px 9px;
-      text-align:center; font-family:monospace; font-size:10.8px; line-height:1.3;
-      border:1px solid #222;">
-      
-      <div style="color:#0af; font-size:7.8px; text-transform:uppercase; opacity:0.8;">
-        Old → <span id="oldIP">—</span>
-      </div>
-      
-      <div id="ip" style="color:#0f9; font-size:12.5px; font-weight:bold; letter-spacing:0.6px;">
-        Loading...
-      </div>
-      
-      <button id="refreshBtn" onclick="refreshAndOpen()"
-              style="margin-top:5px; padding:5px 8px; background:#111; color:#0f9;
-                     border-radius:7px; font-size:9.8px; font-weight:bold;">
-        Refresh + Scam
-      </button>
-    </div>
-  </div>
-</div>
+<!-- NEW IP BAR WITH OLD IP DISPLAY -->
+<div id="ipBar">
+  <button id="rotateIpBtn" onclick="rotateIP()">🔄</button>
   
+  <span id="oldIPDisplay" style="color:#888; font-size:11px;"></span>
+  <span id="currentIP">fetching...</span>
+  
+  <span style="margin-left:8px; color:#0af;">Age:</span>
+  <span id="ipAge">00:00</span>
+</div>
+
+
   <!-- Wrap each button group like this for maximum right alignment -->
 <div style="display:flex; justify-content:flex-end; width:100%;">
   <!-- Navigation Buttons (your original colors) -->
@@ -648,85 +648,97 @@
     setInterval(update, 1000);
     update();
 
-    // FULL ORIGINAL IP + refreshAndOpen()
-    let userIP = '';
-    let previousIP = '';
-    let scamalyticsWindow = null;
-    fetch('https://api.ipify.org?format=json')
-      .then(res => res.json())
-      .then(data => {
-        userIP = data.ip;
-        document.getElementById("ip").textContent = userIP;
-        document.getElementById("oldIP").textContent = "No previous IP";
-      })
-      .catch(() => {
-        document.getElementById("ip").textContent = "Failed to load IP.";
-        document.getElementById("oldIP").textContent = "N/A";
-      });
-    function refreshAndOpen() {
-      const btn = document.getElementById("refreshBtn");
-      const oldText = btn.innerHTML;
-      btn.disabled = true;
-      btn.innerHTML = "Loading...";
-      if (!scamalyticsWindow || scamalyticsWindow.closed) {
-        scamalyticsWindow = window.open('about:blank', '_blank');
-      }
-      fetch('https://api.ipify.org?format=json')
-        .then(res => res.json())
-        .then(data => {
-          const newIP = data.ip;
-          if (userIP) {
-            previousIP = userIP;
-            document.getElementById("oldIP").textContent = previousIP;
-          }
-          userIP = newIP;
-          document.getElementById("ip").textContent = userIP;
-          const url = `https://scamalytics.com/ip/${userIP}`;
-          scamalyticsWindow.location.href = url;
-          scamalyticsWindow.focus();
-          if (previousIP && previousIP === userIP) {
-            btn.style.backgroundColor = "#d32f2f";
-            btn.style.color = "white";
-            btn.innerHTML = "No Change Refresh";
-          } else {
-            btn.style.backgroundColor = "#2e7d32";
-            btn.style.color = "white";
-            btn.innerHTML = "Changed! Refresh";
-          }
-        })
-        .catch(() => {
-          btn.style.backgroundColor = "#b71c1c";
-          btn.style.color = "white";
-          btn.innerHTML = "Failed";
-        })
-        .finally(() => {
-          btn.disabled = false;
-        });
-    }
-    function rotateIP() {
-      const btn = document.getElementById("rotateBtn");
-      const url = document.getElementById("rotateLink").value.trim();
-      if (!url) {
-        showToast("Please enter a valid link.");
-        return;
-      }
-      const oldText = btn.innerHTML;
-      btn.disabled = true;
-      btn.innerHTML = "Rotating...";
-      fetch(url).catch(err => console.error("Rotation failed:", err));
-      setTimeout(() => {
-        fetch('https://api.ipify.org?format=json')
-          .then(res => res.json())
-          .then(data => {
-            document.getElementById("ip").textContent = data.ip;
-          })
-          .finally(() => {
-            btn.innerHTML = oldText;
-            btn.disabled = false;
-          });
-      }, 3000);
-    }
 
+// IP new Code
+    let ipStartTime = Date.now();
+let lastKnownIP = "";
+
+// Fetch IP once at start
+async function getCurrentIP() {
+  try {
+    const res = await fetch('https://api.ipify.org?format=json');
+    const data = await res.json();
+    return data.ip;
+  } catch (e) {
+    return "error";
+  }
+}
+
+// Run once when page loads
+getCurrentIP().then(ip => {
+  document.getElementById("currentIP").textContent = ip;
+  lastKnownIP = ip;
+  ipStartTime = Date.now();
+});
+
+// Update age counter every second
+setInterval(() => {
+  const seconds = Math.floor((Date.now() - ipStartTime) / 1000);
+  const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+  const s = String(seconds % 60).padStart(2, '0');
+  document.getElementById("ipAge").textContent = `${m}:${s}`;
+}, 1000);
+
+// MAIN FUNCTION — THIS IS THE ONE THAT BLINKS
+async function rotateIP() {
+  const ipSpan = document.getElementById("currentIP");
+  const oldDisplay = document.getElementById("oldIPDisplay");
+  const ageSpan = document.getElementById("ipAge");
+
+  const oldIP = ipSpan.textContent.trim();
+
+  // Visual feedback: rotating…
+  ipSpan.textContent = "rotating...";
+  oldDisplay.textContent = "";
+  ageSpan.textContent = "00:00";
+
+  // Wait a tiny bit (you can increase to 3000 if your rotation is slow)
+  await new Promise(r => setTimeout(r, 2000));
+
+  // Get new IP
+  const newIP = await getCurrentIP();
+
+  // Update display
+  ipSpan.textContent = newIP;
+  ipStartTime = Date.now();
+
+  // Show Old → New
+  if (oldIP && oldIP !== "fetching..." && oldIP !== "rotating..." && oldIP !== "error") {
+    oldDisplay.textContent = `Old → ${oldIP}  →  `;
+  }
+
+  // SUCCESS = IP CHANGED → GREEN BLINK 5 seconds
+  if (newIP !== oldIP && oldIP !== "rotating..." && oldIP !== "fetching...") {
+    ipSpan.style.color = "#00ff00";
+    ipSpan.style.textShadow = "0 0 15px #0f0";
+    ageSpan.style.color = "#00ff00";
+    showToast("IP CHANGED to " + newIP);
+
+    setTimeout(() => {
+      ipSpan.style.color = "#0ff";
+      ipSpan.style.textShadow = "0 0 8px #0ff";
+      ageSpan.style.color = "#0ff";
+    }, 5000);
+
+  // FAILED = same IP → RED BLINK 5 seconds
+  } else {
+    ipSpan.style.color = "#ff0033";
+    ipSpan.style.textShadow = "0 0 15px #f00";
+    ageSpan.style.color = "#ff0033";
+    showToast("IP DID NOT CHANGE");
+
+    setTimeout(() => {
+      ipSpan.style.color = "#0ff";
+      ipSpan.style.textShadow = "0 0 8px #0ff";
+      ageSpan.style.color = "#0ff";
+    }, 5000);
+  }
+
+  lastKnownIP = newIP;
+}
+
+
+// Profile Function
     function showProfileList() {
   const modal = document.getElementById("profileModal");
   const list = document.getElementById("profileList");
