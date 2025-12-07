@@ -566,11 +566,29 @@
 
 
 function IGedit() {
-  window.open("https://www.instagram.com/accounts/edit/");
+  const username = document.getElementById("oldusername").textContent.trim();
+  if (!username || username === "—" || username === "") {
+    showToast("No username loaded!");
+    window.open("https://www.instagram.com/accounts/edit/", "_blank");
+    return;
+  }
+  // This is the REAL direct link to edit YOUR profile
+  const editUrl = `https://www.instagram.com/${encodeURIComponent(username)}/edit/`;
+  window.open(editUrl, "_blank");
+  showToast(`Opening edit page → @${username}`);
 }
 
 function twoFA() {
- window.open("https://www.accountscenter.instagram.com/password_and_security/two_factor/");
+  const username = document.getElementById("oldusername").textContent.trim();
+  if (!username || username === "—" || username === "") {
+    showToast("No username loaded!");
+    window.open("https://accountscenter.instagram.com/password_and_security/two_factor/", "_blank");
+    return;
+  }
+  // Direct link to 2FA settings for the logged-in account
+  // (this works even without username in URL because Instagram knows who you are)
+  window.open("https://accountscenter.instagram.com/password_and_security/two_factor/", "_blank");
+  showToast("Opening 2FA settings");
 }
 
 
