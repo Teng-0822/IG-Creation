@@ -324,6 +324,7 @@
 <div style="display:flex; justify-content:flex-end; width:100%;">
   <div class="util-name">IG Login</div>
   <div id="advancedButtons">
+    <div class="floating-btn floating-CrC" style="background:linear-gradient(135deg,#8e24aa,#e91e63)" onclick="twoFA()">2FA</div>
     <div class="floating-btn floating-TGP" style="background:linear-gradient(135deg,#e91e63,#6a1b9a,#ffb300)" onclick="copyText('password'); openCurrentIG()">🗝️</div>
     <div class="floating-btn floating-TGAU" style="background:linear-gradient(135deg,#8e24aa,#e91e63,#ffb300)" onclick="copyText('newusername')">Au</div>
     <div class="floating-btn floating-TGUN" style="background:linear-gradient(135deg,#ffb300,#6a1b9a)" onclick="copyText('oldusername'); openCurrentIG()">Un</div>
@@ -347,7 +348,7 @@
   <div id="utilityButtons">
     <div class="floating-btn floating-refresh" style="background:#ff4081" onclick="loadProfiles()">🔄️</div>
     <div class="floating-btn floating-random" style="background:#3949ab" onclick="randomCelebrity()">🎲</div>
-    <div class="floating-btn floating-bio" style="background:#8e24aa" onclick="randomBio(); openCurrentIG()">🌸</div>
+    <div class="floating-btn floating-bio" style="background:#8e24aa" onclick="randomBio(); IGedit()">🌸</div>
     <div class="floating-btn floating-caption" style="background:#00897b" onclick="randomCaption(); openCurrentIG()">📝</div>
     <div class="floating-btn floating-first" style="background:#ff8f00" onclick="firstProfile()">🥇</div>
     <div class="floating-btn floating-list" style="background:#43a047" onclick="showProfileList()">📂</div>
@@ -557,6 +558,12 @@
     }
     function openCurrentIG() {
       window.open("https://instagram.com/", "_blank");
+    }
+     function IGedit() {
+      window.open("https://www.instagram.com/accounts/edit/");
+    }
+     function twoFA() {
+      window.open("https://accountscenter.instagram.com/password_and_security/two_factor/");
     }
     function openCurrentTG() {
       window.open("https://threads.net/", "_blank");
