@@ -324,7 +324,7 @@
 <div style="display:flex; justify-content:flex-end; width:100%;">
   <div class="util-name">IG Login</div>
   <div id="advancedButtons">
-    <div class="floating-btn floating-CrC" style="background:linear-gradient(135deg,#8e24aa,#e91e63)" onclick="twoFA()">2FA</div>
+    <div class="floating-btn floating-CrC" style="background:linear-gradient(135deg,#8e24aa,#e91e63)" onclick="()">2FA</div>
     <div class="floating-btn floating-TGP" style="background:linear-gradient(135deg,#e91e63,#6a1b9a,#ffb300)" onclick="copyText('password'); openCurrentIG()">🗝️</div>
     <div class="floating-btn floating-TGAU" style="background:linear-gradient(135deg,#8e24aa,#e91e63,#ffb300)" onclick="copyText('newusername')">Au</div>
     <div class="floating-btn floating-TGUN" style="background:linear-gradient(135deg,#ffb300,#6a1b9a)" onclick="copyText('oldusername'); openCurrentIG()">Un</div>
@@ -559,15 +559,43 @@
     function openCurrentIG() {
       window.open("https://instagram.com/", "_blank");
     }
-     function IGedit() {
-      window.open("https://www.instagram.com/accounts/edit/");
-    }
-     function twoFA() {
-      window.open("https://accountscenter.instagram.com/password_and_security/two_factor/");
-    }
     function openCurrentTG() {
       window.open("https://threads.net/", "_blank");
     }
+
+//2FA
+     // Detect iOS
+function isIOS() {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+}
+
+function IGedit() {
+  if (isIOS()) {
+    // Try Universal Link first (redirects to app profile; tap Edit Profile manually)
+    setTimeout(() => {
+      window.location.href = "https://www.instagram.com/accounts/edit/";
+    }, 1000);
+  } else {
+    // Desktop/non-iOS: Direct open
+    window.open("https://www.instagram.com/accounts/edit/", "_blank");
+  }
+}
+
+function twoFA() {
+  if (isIOS()) {
+    // Corrected URL; redirects to app's Accounts Center > Security > 2FA
+    setTimeout(() => {
+      window.location.href = "https://www.accountscenter.instagram.com/password_and_security/two_factor/";
+    }, 1000);
+  } else {
+    // Desktop/non-iOS: Direct open
+    window.open("https://www.accountscenter.instagram.com/password_and_security/two_factor/", "_blank");
+  }
+}
+
+
+
+     
     function copyText(field) {
       const text = document.getElementById(field).textContent.trim();
       if (text) {
