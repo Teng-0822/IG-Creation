@@ -563,34 +563,14 @@
       window.open("https://threads.net/", "_blank");
     }
 
-//2FA
-     // Detect iOS
-function isIOS() {
-  return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-}
+
 
 function IGedit() {
-  if (isIOS()) {
-    // Try Universal Link first (redirects to app profile; tap Edit Profile manually)
-    setTimeout(() => {
-      window.location.href = "https://www.instagram.com/accounts/edit/";
-    }, 1000);
-  } else {
-    // Desktop/non-iOS: Direct open
-    window.open("https://www.instagram.com/accounts/edit/", "_blank");
-  }
+  window.open("https://www.instagram.com/accounts/edit/");
 }
 
 function twoFA() {
-  if (isIOS()) {
-    // Corrected URL; redirects to app's Accounts Center > Security > 2FA
-    setTimeout(() => {
-      window.location.href = "https://www.accountscenter.instagram.com/password_and_security/two_factor/";
-    }, 1000);
-  } else {
-    // Desktop/non-iOS: Direct open
-    window.open("https://www.accountscenter.instagram.com/password_and_security/two_factor/", "_blank");
-  }
+ window.open("https://www.accountscenter.instagram.com/password_and_security/two_factor/");
 }
 
 
