@@ -576,7 +576,7 @@ function IGedit() {
     return;
   }
 
-  const editUrl = `https://www.instagram.com/${username}/edit/`;
+  const editUrl = `instagram://user?username=${username}`;
   window.open(editUrl, "_blank");
 
   showToast(`Opening edit page → @${username}`);
