@@ -878,6 +878,7 @@ window.onclick = function(e) {
 }
 
    // DAISYSMS — FINAL VERSION (5-second poll + auto-stop when code arrives)
+
 const API_KEY = 'G1wJwY6tehQmO7uiX3v7nCTSZrU3oc';
 const BASE = 'https://daisysms.com/stubs/handler_api.php';
 const P = u => `https://corsproxy.io/?${encodeURIComponent(u)}`;
@@ -889,7 +890,12 @@ const logEl = document.getElementById('miniLog');
 
 let rentalId = null;
 let phoneNum = null;
-let pollInterval = null; // ← will hold the setInterval
+let pollInterval = null;
+let rentCount = 0; // Track re-rents to bump price/carrier
+let pollCount = 0; // For auto-cancel timeout
+
+const carriers = ['tmo', 'vz', 'att']; // Rotate for fresh numbers
+let currentCarrierIndex = 0;
 
 function log(t) {
     logEl.innerHTML += t + '<br>';
@@ -914,24 +920,29 @@ async function getBalance() {
 }
 
 async function rentIGNumber() {
-    // Better quality numbers (less reused/expired)
+    rentCount++; // Increment for price/carrier bump
+    const effectivePrice = (1.5 + (rentCount * 0.2)).toFixed(1); // 1.5 → 1.7 → 1.9 etc.
+    const carrier = carriers[currentCarrierIndex % carriers.length];
+    currentCarrierIndex++;
+
     const { body } = await api('getNumber', {
         service: 'ig',
-        max_price: '1.5',     // raise if you still get bad numbers
-        carriers: 'tmo'       // optional: tmo/vz/att — remove if you want any carrier
+        max_price: effectivePrice,
+        carriers: carrier
     });
 
     if (body.startsWith('ACCESS_NUMBER:')) {
         const [_, id, num] = body.split(':');
         rentalId = id;
         phoneNum = num;
+        pollCount = 0; // Reset timeout
 
-        phone.textContent = num;
+        phone.textContent = num + ` ($${effectivePrice}, ${carrier.toUpperCase()})`; // Show details for debug
         wait.style.display = 'block';
         code.style.display = 'none';
 
-        log('Rented: ' + num);
-        startPolling(); // ← start 5-second polling
+        log(`Rented fresh: ${num} (price $${effectivePrice}, carrier ${carrier})`);
+        startPolling();
     } else {
         phone.textContent = 'Rent failed';
         log('Rent error: ' + body);
@@ -939,49 +950,59 @@ async function rentIGNumber() {
 }
 
 function startPolling() {
-    // Clear any old polling first
     if (pollInterval) clearInterval(pollInterval);
-
-    // Poll every 5 seconds
     pollInterval = setInterval(checkStatus, 5000);
-    checkStatus(); // immediate first check
+    checkStatus(); // First check now
 }
 
 async function checkStatus() {
     if (!rentalId) return;
+    pollCount++;
 
+    // Always get full SMS text (API docs recommend this)
     const { body, headers } = await api('getStatus', { id: rentalId, text: 1 });
 
-    log('Raw response: ' + body); // debug
+    // Full debug: Log everything
+    log(`--- Poll #${pollCount} ---`);
+    log('Raw body: ' + body);
+    log('Full SMS header (X-Text): ' + (headers['x-text'] || 'EMPTY'));
+    log('--- End Poll ---');
 
-    if (body.includes('STATUS_OK') || body.includes('STATUS_WAIT_CODE')) {
-        // Extract code even if it's formatted like 123 456 or 123-456
-        const fullText = body + (headers['x-text'] || '');
-        const digitsOnly = fullText.replace(/\D/g, ''); // remove spaces, dashes, etc.
-        const match = digitsOnly.match(/\d{4,8}/);
-        
-        if (match) {
-            const smsCode = match[0];
-            code.textContent = smsCode;
+    if (body.includes('STATUS_OK')) {
+        // Aggressive extraction: Concat all text, strip non-digits, grab longest 4-8 digit seq
+        const fullText = body + ' ' + (headers['x-text'] || '');
+        const digitsOnly = fullText.replace(/\D/g, '');
+        const matches = digitsOnly.match(/\d{4,8}/g) || [];
+        const codeCandidate = matches.sort((a, b) => b.length - a.length)[0]; // Longest first
+
+        if (codeCandidate && codeCandidate.length >= 4) {
+            code.textContent = codeCandidate;
             code.style.display = 'block';
             wait.style.display = 'none';
-            log('CODE RECEIVED: ' + smsCode);
+            log(`🎉 CODE FOUND: ${codeCandidate} (from: ${matches.length} digit blocks)`);
 
-            // Stop polling forever until next rent
             clearInterval(pollInterval);
             pollInterval = null;
 
-            // Auto finish the rental (frees your slot)
+            // Mark done (frees slot, per API)
             const done = await api('setStatus', { id: rentalId, status: 6 });
-            log(done.body.includes('ACCESS_ACTIVATION') ? 'Marked as finished' : 'Finish failed');
-            
-            return; // exit early
+            log(done.body.includes('ACCESS_ACTIVATION') ? '✅ Marked finished' : `Finish error: ${done.body}`);
+
+            return;
+        } else {
+            log('STATUS_OK but no valid code extracted—check logs above!');
         }
+    } else if (body.includes('STATUS_WAIT_CODE')) {
+        log('⏳ Still waiting...');
+    } else {
+        log(`Unexpected status: ${body}`);
     }
 
-    // Still waiting → do nothing, next poll in 5 sec
-    if (body === 'STATUS_WAIT_CODE') {
-        log('Still waiting for code...');
+    // Auto-cancel after ~2 mins (24 polls) if stuck
+    if (pollCount >= 24) {
+        log('⏰ Timeout—auto canceling...');
+        await cancelNumber();
+        rentCount = 0; // Reset for next try
     }
 }
 
@@ -1003,21 +1024,26 @@ async function cancelNumber() {
     if (!rentalId) return;
 
     const { body } = await api('setStatus', { id: rentalId, status: 8 });
+    log(`Cancel response: ${body}`); // Debug: See if it really canceled
+
     if (body.includes('ACCESS_CANCEL')) {
-        log('Canceled + refunded');
-        phone.textContent = 'Tap "Rent" to get number';
+        log('✅ Canceled & refunded—next rent will be fresher');
+        phone.textContent = 'Tap 🔑 for fresh number';
         wait.style.display = code.style.display = 'none';
         clearInterval(pollInterval);
         pollInterval = null;
         rentalId = phoneNum = null;
+        pollCount = 0;
     } else {
-        log('Cancel failed: ' + body);
+        log(`❌ Cancel failed: ${body}—try again or check balance`);
     }
 }
 
-// Auto check balance on page load
+// Load balance
 getBalance();
 
+     
+// END of DAISY
     function toggleSection(id) {
       const el = document.getElementById(id);
       const header = el.previousElementSibling;
