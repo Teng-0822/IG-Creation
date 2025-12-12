@@ -595,8 +595,6 @@ function twoFA() {
   showToast("Opening 2FA settings");
 }
 
-
-
      
     function copyText(field) {
       const text = document.getElementById(field).textContent.trim();
@@ -880,161 +878,80 @@ window.onclick = function(e) {
    // DAISYSMS — FINAL VERSION (5-second poll + auto-stop when code arrives)
 
 // DAISYSMS — FINAL COST-OPTIMIZED (No Area Codes, Dec 2025)
-const API_KEY = 'G1wJwY6tehQmO7uiX3v7nCTSZrU3oc';
-const BASE = 'https://daisysms.com/stubs/handler_api.php';
-const P = u => `https://corsproxy.io/?${encodeURIComponent(u)}`;
-
-const phone = document.getElementById('miniPhone');
-const code = document.getElementById('miniCode');
-const wait = document.getElementById('miniWait');
-const logEl = document.getElementById('miniLog');
-
-let rentalId = null;
-let phoneNum = null;
-let pollInterval = null;
-let attempts = 0;
-
-function log(t) {
-    logEl.innerHTML += t + '<br>';
-    logEl.scrollTop = logEl.scrollHeight;
-}
-
-async function api(action, params = {}) {
-    let url = `${BASE}?api_key=${API_KEY}&action=${action}`;
-    for (let k in params) url += `&${k}=${params[k]}`;
-    const res = await fetch(P(url));
-    const body = (await res.text()).trim();
-    const headers = {};
-    res.headers.forEach((v, k) => headers[k.toLowerCase()] = v);
-    return { body, headers };
-}
-
-async function getBalance() {
-    const { body } = await api('getBalance');
-    if (body.startsWith('ACCESS_BALANCE:')) log('Balance: $' + body.split(':')[1]);
-}
-
-async function rentIGNumber() {
-    attempts++;
-    const price = attempts === 1 ? '1.6' : attempts === 2 ? '2.0' : '2.5'; // Bump price to avoid recycled numbers
-    const carrier = attempts % 3 === 1 ? 'tmo' : attempts % 3 === 2 ? 'vz' : 'att'; // Rotate carriers
-
-    const { body, headers } = await api('getNumber', {
-        service: 'ig',
-        max_price: price,
-        carriers: carrier // No areas parameter to save cost
-    });
-
-    if (body.startsWith('ACCESS_NUMBER:')) {
-        const [_, id, num] = body.split(':');
-        rentalId = id;
-        phoneNum = num;
-
-        phone.textContent = num;
-        wait.style.display = 'block';
-        code.style.display = 'none';
-        code.textContent = '000000';
-
-        log(`Rented #${attempts}: ${num} ($${headers['x-price'] || price}, ${carrier.toUpperCase()})`);
-        startPolling();
-    } else {
-        phone.textContent = 'No numbers';
-        log('Rent failed: ' + body);
+    const API_KEY = 'G1wJwY6tehQmO7uiX3v7nCTSZrU3oc';
+    const BASE = 'https://daisysms.com/stubs/handler_api.php';
+    const P = u => `https://corsproxy.io/?${encodeURIComponent(u)}`;
+    const phone = document.getElementById('miniPhone');
+    const code = document.getElementById('miniCode');
+    const wait = document.getElementById('miniWait');
+    const logEl = document.getElementById('miniLog');
+    let rentalId = null, phoneNum = null, poll = null;
+    function log(t){ logEl.innerHTML += t + '<br>'; logEl.scrollTop = 9999; }
+    async function api(a, p={}){
+        let u = `${BASE}?api_key=${API_KEY}&action=${a}`;
+        for(let k in p) u += `&${k}=${p[k]}`;
+        const r = await fetch(P(u));
+        const body = (await r.text()).trim();
+        const h = {}; r.headers.forEach((v,k)=>h[k.toLowerCase()]=v);
+        return {body, h};
     }
-}
-
-function startPolling() {
-    if (pollInterval) clearInterval(pollInterval);
-
-    let polls = 0;
-    pollInterval = setInterval(async () => {
-        polls++;
-        if (!rentalId) return;
-
-        const { body, headers } = await api('getStatus', { id: rentalId, text: 1 });
-
-        // Extract code from body or X-Text, handles any format
-        const fullText = body + ' ' + (headers['x-text'] || '');
-        const digitsOnly = fullText.replace(/\D/g, '');
-        const possibleCodes = digitsOnly.match(/\d{4,8}/g) || [];
-
-        let finalCode = '';
-
-        if (body.includes('STATUS_OK')) {
-            finalCode = body.split(':')[1] || '';
+    async function getBalance(){
+        const {body} = await api('getBalance');
+        if(body.startsWith('ACCESS_BALANCE:')) log('Balance: $'+body.split(':')[1]);
+    }
+    async function rentIGNumber(){
+        const {body} = await api('getNumber', {service:'ig', max_price:'0.8'});
+        if(body.startsWith('ACCESS_NUMBER:')){
+            const [_, id, num] = body.split(':');
+            rentalId = id; phoneNum = num;
+            phone.textContent = num;
+            wait.style.display = 'block';
+            code.style.display = 'none';
+            log('Rented: '+num);
+            startPoll();
+        } else { phone.textContent = 'Failed'; log('Failed: '+body); }
+    }
+    async function check(){
+        if(!rentalId) return;
+        const {body, h} = await api('getStatus', {id:rentalId, text:1});
+        let c = null;
+        if(body.includes('STATUS_OK')){
+            const m = body.match(/\d{4,8}/) || (h['x-text']||'').match(/\d{4,8}/);
+            if(m) c = m[0];
         }
-
-        if (!finalCode && possibleCodes.length > 0) {
-            finalCode = possibleCodes.sort((a, b) => b.length - a.length)[0]; // Longest code (IG is 6 digits)
-        }
-
-        if (finalCode && finalCode.length >= 4) {
-            code.textContent = finalCode;
+        if(c){
+            code.textContent = c;
             code.style.display = 'block';
             wait.style.display = 'none';
-            log(`CODE: ${finalCode}`);
-
-            clearInterval(pollInterval);
-            pollInterval = null;
-
-            // Mark as finished
-            const done = await api('setStatus', { id: rentalId, status: 6 });
-            log(done.body.includes('ACCESS_ACTIVATION') ? 'Finished' : 'Finish failed: ' + done.body);
-
-            attempts = 0; // Reset for next rent
-            return;
+            log('CODE: '+c);
+            clearInterval(poll); poll=null;
         }
-
-        // Log status
-        if (body === 'STATUS_WAIT_CODE') {
-            log(`Waiting... (${polls * 5}s)`);
-        } else {
-            log(`Status: ${body}`);
+    }
+    function startPoll(){ if(poll) clearInterval(poll); poll=setInterval(check,6000); check(); }
+    function copyPhone(el){
+        if(!phoneNum) return;
+        navigator.clipboard.writeText(phoneNum);
+        el.textContent='Copied!';
+        setTimeout(()=>el.textContent=phoneNum,1200);
+    }
+    function copyCode(el){
+        const c = el.textContent;
+        navigator.clipboard.writeText(c);
+        el.textContent='Copied!';
+        setTimeout(()=>el.textContent=c,1500);
+    }
+    async function cancelNumber(){
+        if(!rentalId) return;
+        const {body} = await api('setStatus',{id:rentalId, status:8});
+        if(body.includes('ACCESS_CANCEL')){
+            log('Canceled & refunded');
+            phone.textContent = 'Canceled';
+            wait.style.display = code.style.display = 'none';
+            clearInterval(poll); poll=null; rentalId=phoneNum=null;
         }
+    }
+    getBalance();
 
-        // Auto-cancel after 3 min (36 polls)
-        if (polls >= 36) {
-            log('3 min timeout → auto cancel');
-            await cancelNumber();
-        }
-    }, 5000);
-
-    // Immediate first check
-    setTimeout(() => pollInterval && pollInterval.tick?.(), 100);
-}
-
-function copyPhone(el) {
-    if (!phoneNum) return;
-    navigator.clipboard.writeText(phoneNum);
-    el.textContent = 'Copied!';
-    setTimeout(() => el.textContent = phoneNum, 1200);
-}
-
-function copyCode(el) {
-    const c = el.textContent;
-    navigator.clipboard.writeText(c);
-    el.textContent = 'Copied!';
-    setTimeout(() => el.textContent = c, 1500);
-}
-
-async function cancelNumber() {
-    if (!rentalId) return;
-
-    const { body } = await api('setStatus', { id: rentalId, status: 8 });
-
-    log(body.includes('ACCESS_CANCEL') ? 'Canceled + refunded' : 'Cancel failed: ' + body);
-
-    phone.textContent = 'Tap Rent to get number';
-    wait.style.display = code.style.display = 'none';
-    clearInterval(pollInterval);
-    pollInterval = null;
-    rentalId = phoneNum = null;
-}
-
-getBalance();
-
-
-     
 // END of DAISY
     function toggleSection(id) {
       const el = document.getElementById(id);
