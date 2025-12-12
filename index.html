@@ -878,6 +878,8 @@ window.onclick = function(e) {
 }
 
    // DAISYSMS — FINAL VERSION (5-second poll + auto-stop when code arrives)
+
+// DAISYSMS — FINAL COST-OPTIMIZED (No Area Codes, Dec 2025)
 const API_KEY = 'G1wJwY6tehQmO7uiX3v7nCTSZrU3oc';
 const BASE = 'https://daisysms.com/stubs/handler_api.php';
 const P = u => `https://corsproxy.io/?${encodeURIComponent(u)}`;
@@ -914,13 +916,13 @@ async function getBalance() {
 
 async function rentIGNumber() {
     attempts++;
-    const price = attempts === 1 ? '1.6' : attempts === 2 ? '2.0' : '2.5';
-    const carrier = attempts % 3 === 1 ? 'tmo' : attempts % 3 === 2 ? 'vz' : 'att';
+    const price = attempts === 1 ? '1.6' : attempts === 2 ? '2.0' : '2.5'; // Bump price to avoid recycled numbers
+    const carrier = attempts % 3 === 1 ? 'tmo' : attempts % 3 === 2 ? 'vz' : 'att'; // Rotate carriers
 
     const { body, headers } = await api('getNumber', {
         service: 'ig',
         max_price: price,
-        carriers: carrier
+        carriers: carrier // No areas parameter to save cost
     });
 
     if (body.startsWith('ACCESS_NUMBER:')) {
@@ -951,7 +953,7 @@ function startPolling() {
 
         const { body, headers } = await api('getStatus', { id: rentalId, text: 1 });
 
-        // Extract code — works with spaces, dashes, any format
+        // Extract code from body or X-Text, handles any format
         const fullText = body + ' ' + (headers['x-text'] || '');
         const digitsOnly = fullText.replace(/\D/g, '');
         const possibleCodes = digitsOnly.match(/\d{4,8}/g) || [];
@@ -963,8 +965,7 @@ function startPolling() {
         }
 
         if (!finalCode && possibleCodes.length > 0) {
-            // Take the longest digit sequence (Instagram uses 6 digits)
-            finalCode = possibleCodes.sort((a, b) => b.length - a.length)[0];
+            finalCode = possibleCodes.sort((a, b) => b.length - a.length)[0]; // Longest code (IG is 6 digits)
         }
 
         if (finalCode && finalCode.length >= 4) {
@@ -978,26 +979,28 @@ function startPolling() {
 
             // Mark as finished
             const done = await api('setStatus', { id: rentalId, status: 6 });
-            log(done.body.includes('ACCESS_ACTIVATION') ? 'Finished' : 'Finish failed');
+            log(done.body.includes('ACCESS_ACTIVATION') ? 'Finished' : 'Finish failed: ' + done.body);
 
-            attempts = 0; // reset counter for next real rent
+            attempts = 0; // Reset for next rent
             return;
         }
 
-        // Still waiting
+        // Log status
         if (body === 'STATUS_WAIT_CODE') {
             log(`Waiting... (${polls * 5}s)`);
+        } else {
+            log(`Status: ${body}`);
         }
 
-        // Auto cancel after 3 minutes
+        // Auto-cancel after 3 min (36 polls)
         if (polls >= 36) {
             log('3 min timeout → auto cancel');
-            cancelNumber();
+            await cancelNumber();
         }
     }, 5000);
 
-    // First check immediately
-    setTimeout(() => {}, 100);
+    // Immediate first check
+    setTimeout(() => pollInterval && pollInterval.tick?.(), 100);
 }
 
 function copyPhone(el) {
@@ -1029,6 +1032,7 @@ async function cancelNumber() {
 }
 
 getBalance();
+
 
      
 // END of DAISY
