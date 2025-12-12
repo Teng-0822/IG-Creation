@@ -877,80 +877,146 @@ window.onclick = function(e) {
   if (e.target === modal) closeModal();
 }
 
-    // FULL ORIGINAL DAISYSMS — 100% UNTOUCHED
-    const API_KEY = 'G1wJwY6tehQmO7uiX3v7nCTSZrU3oc';
-    const BASE = 'https://daisysms.com/stubs/handler_api.php';
-    const P = u => `https://corsproxy.io/?${encodeURIComponent(u)}`;
-    const phone = document.getElementById('miniPhone');
-    const code = document.getElementById('miniCode');
-    const wait = document.getElementById('miniWait');
-    const logEl = document.getElementById('miniLog');
-    let rentalId = null, phoneNum = null, poll = null;
-    function log(t){ logEl.innerHTML += t + '<br>'; logEl.scrollTop = 9999; }
-    async function api(a, p={}){
-        let u = `${BASE}?api_key=${API_KEY}&action=${a}`;
-        for(let k in p) u += `&${k}=${p[k]}`;
-        const r = await fetch(P(u));
-        const body = (await r.text()).trim();
-        const h = {}; r.headers.forEach((v,k)=>h[k.toLowerCase()]=v);
-        return {body, h};
+   // DAISYSMS — FINAL VERSION (5-second poll + auto-stop when code arrives)
+const API_KEY = 'G1wJwY6tehQmO7uiX3v7nCTSZrU3oc';
+const BASE = 'https://daisysms.com/stubs/handler_api.php';
+const P = u => `https://corsproxy.io/?${encodeURIComponent(u)}`;
+
+const phone = document.getElementById('miniPhone');
+const code = document.getElementById('miniCode');
+const wait = document.getElementById('miniWait');
+const logEl = document.getElementById('miniLog');
+
+let rentalId = null;
+let phoneNum = null;
+let pollInterval = null; // ← will hold the setInterval
+
+function log(t) {
+    logEl.innerHTML += t + '<br>';
+    logEl.scrollTop = logEl.scrollHeight;
+}
+
+async function api(action, params = {}) {
+    let url = `${BASE}?api_key=${API_KEY}&action=${action}`;
+    for (let k in params) url += `&${k}=${params[k]}`;
+    const res = await fetch(P(url));
+    const body = (await res.text()).trim();
+    const headers = {};
+    res.headers.forEach((v, k) => headers[k.toLowerCase()] = v);
+    return { body, headers };
+}
+
+async function getBalance() {
+    const { body } = await api('getBalance');
+    if (body.startsWith('ACCESS_BALANCE:')) {
+        log('Balance: $' + body.split(':')[1]);
     }
-    async function getBalance(){
-        const {body} = await api('getBalance');
-        if(body.startsWith('ACCESS_BALANCE:')) log('Balance: $'+body.split(':')[1]);
+}
+
+async function rentIGNumber() {
+    // Better quality numbers (less reused/expired)
+    const { body } = await api('getNumber', {
+        service: 'ig',
+        max_price: '1.5',     // raise if you still get bad numbers
+        carriers: 'tmo'       // optional: tmo/vz/att — remove if you want any carrier
+    });
+
+    if (body.startsWith('ACCESS_NUMBER:')) {
+        const [_, id, num] = body.split(':');
+        rentalId = id;
+        phoneNum = num;
+
+        phone.textContent = num;
+        wait.style.display = 'block';
+        code.style.display = 'none';
+
+        log('Rented: ' + num);
+        startPolling(); // ← start 5-second polling
+    } else {
+        phone.textContent = 'Rent failed';
+        log('Rent error: ' + body);
     }
-    async function rentIGNumber(){
-        const {body} = await api('getNumber', {service:'ig', max_price:'0.8'});
-        if(body.startsWith('ACCESS_NUMBER:')){
-            const [_, id, num] = body.split(':');
-            rentalId = id; phoneNum = num;
-            phone.textContent = num;
-            wait.style.display = 'block';
-            code.style.display = 'none';
-            log('Rented: '+num);
-            startPoll();
-        } else { phone.textContent = 'Failed'; log('Failed: '+body); }
-    }
-    async function check(){
-        if(!rentalId) return;
-        const {body, h} = await api('getStatus', {id:rentalId, text:1});
-        let c = null;
-        if(body.includes('STATUS_OK')){
-            const m = body.match(/\d{4,8}/) || (h['x-text']||'').match(/\d{4,8}/);
-            if(m) c = m[0];
-        }
-        if(c){
-            code.textContent = c;
+}
+
+function startPolling() {
+    // Clear any old polling first
+    if (pollInterval) clearInterval(pollInterval);
+
+    // Poll every 5 seconds
+    pollInterval = setInterval(checkStatus, 5000);
+    checkStatus(); // immediate first check
+}
+
+async function checkStatus() {
+    if (!rentalId) return;
+
+    const { body, headers } = await api('getStatus', { id: rentalId, text: 1 });
+
+    log('Raw response: ' + body); // debug
+
+    if (body.includes('STATUS_OK') || body.includes('STATUS_WAIT_CODE')) {
+        // Extract code even if it's formatted like 123 456 or 123-456
+        const fullText = body + (headers['x-text'] || '');
+        const digitsOnly = fullText.replace(/\D/g, ''); // remove spaces, dashes, etc.
+        const match = digitsOnly.match(/\d{4,8}/);
+        
+        if (match) {
+            const smsCode = match[0];
+            code.textContent = smsCode;
             code.style.display = 'block';
             wait.style.display = 'none';
-            log('CODE: '+c);
-            clearInterval(poll); poll=null;
+            log('CODE RECEIVED: ' + smsCode);
+
+            // Stop polling forever until next rent
+            clearInterval(pollInterval);
+            pollInterval = null;
+
+            // Auto finish the rental (frees your slot)
+            const done = await api('setStatus', { id: rentalId, status: 6 });
+            log(done.body.includes('ACCESS_ACTIVATION') ? 'Marked as finished' : 'Finish failed');
+            
+            return; // exit early
         }
     }
-    function startPoll(){ if(poll) clearInterval(poll); poll=setInterval(check,6000); check(); }
-    function copyPhone(el){
-        if(!phoneNum) return;
-        navigator.clipboard.writeText(phoneNum);
-        el.textContent='Copied!';
-        setTimeout(()=>el.textContent=phoneNum,1200);
+
+    // Still waiting → do nothing, next poll in 5 sec
+    if (body === 'STATUS_WAIT_CODE') {
+        log('Still waiting for code...');
     }
-    function copyCode(el){
-        const c = el.textContent;
-        navigator.clipboard.writeText(c);
-        el.textContent='Copied!';
-        setTimeout(()=>el.textContent=c,1500);
+}
+
+function copyPhone(el) {
+    if (!phoneNum) return;
+    navigator.clipboard.writeText(phoneNum);
+    el.textContent = 'Copied!';
+    setTimeout(() => el.textContent = phoneNum, 1200);
+}
+
+function copyCode(el) {
+    const c = el.textContent;
+    navigator.clipboard.writeText(c);
+    el.textContent = 'Copied!';
+    setTimeout(() => el.textContent = c, 1500);
+}
+
+async function cancelNumber() {
+    if (!rentalId) return;
+
+    const { body } = await api('setStatus', { id: rentalId, status: 8 });
+    if (body.includes('ACCESS_CANCEL')) {
+        log('Canceled + refunded');
+        phone.textContent = 'Tap "Rent" to get number';
+        wait.style.display = code.style.display = 'none';
+        clearInterval(pollInterval);
+        pollInterval = null;
+        rentalId = phoneNum = null;
+    } else {
+        log('Cancel failed: ' + body);
     }
-    async function cancelNumber(){
-        if(!rentalId) return;
-        const {body} = await api('setStatus',{id:rentalId, status:8});
-        if(body.includes('ACCESS_CANCEL')){
-            log('Canceled & refunded');
-            phone.textContent = 'Canceled';
-            wait.style.display = code.style.display = 'none';
-            clearInterval(poll); poll=null; rentalId=phoneNum=null;
-        }
-    }
-    getBalance();
+}
+
+// Auto check balance on page load
+getBalance();
 
     function toggleSection(id) {
       const el = document.getElementById(id);
