@@ -5,251 +5,533 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>TOOLS</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-    * { box-sizing: border-box; margin:0; padding:0; }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+    }
+    
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(135deg, #0f0f1e, #1a0033);
+      background: linear-gradient(135deg, #0a0a15 0%, #1a0033 50%, #0f0f1e 100%);
       color: #eee;
       min-height: 100vh;
-      padding: 12px;
+      padding: 16px;
       overscroll-behavior: none;
     }
 
-    /* Glass Card */
     .glass-card {
-      background: rgba(30,30,60,0.45);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-radius: 20px;
-      border: 1px solid rgba(120,100,255,0.25);
-      padding: 5px;
-      margin-bottom: 16px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      background: rgba(25, 25, 50, 0.6);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 24px;
+      border: 1px solid rgba(150, 120, 255, 0.2);
+      padding: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
     }
 
-    /* Collapsible */
+    .glass-card:hover {
+      border-color: rgba(187, 134, 252, 0.4);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+    }
+
     .collapsible-header {
-      display: flex; justify-content: space-between; align-items: center;
-      cursor: pointer; padding: 8px 0; font-weight: 600; color: #bb86fc;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      padding: 12px 8px;
+      font-weight: 700;
+      color: #bb86fc;
+      transition: all 0.3s ease;
+      border-radius: 16px;
     }
-    .collapsible-header::after { content: "👇"; transition: 0.3s; }
-    .collapsible-header.open::after { transform: rotate(180deg); }
+    
+    .collapsible-header:hover {
+      background: rgba(187, 134, 252, 0.1);
+    }
+    
+    .collapsible-header::after {
+      content: "▼";
+      font-size: 14px;
+      transition: transform 0.3s ease;
+    }
+    
+    .collapsible-header.open::after {
+      transform: rotate(180deg);
+    }
 
-    .section { display: none; animation: fadeIn 0.4s; }
-    .section.open { display: block; }
-    @keyframes fadeIn { from {opacity:0; transform:translateY(-10px)} to {opacity:1;} }
+    .section {
+      display: none;
+      animation: slideDown 0.3s ease;
+    }
+    
+    .section.open {
+      display: block;
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-    /* MICRO Profile — 40% of original height */
-  /* MICRO Profile — NO WRAP + CLEAN OVERFLOW */
-  .profile-compact {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 7px 9px;
-    margin: 8px 0 6px;
-    padding: 0 4px;
-  }
+    .profile-compact {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 12px 0;
+      padding: 0 8px;
+    }
 
-  .profile-compact > div {
-    background: rgba(80,60,120,0.25);
-    border-radius: 9px;
-    padding: 6px 8px;
-    border: 1px solid rgba(120,100,255,0.3);
-    backdrop-filter: blur(8px);
-    min-height: 44px;
-    overflow: hidden;                /* ← crucial */
-  }
+    .profile-compact > div {
+      background: rgba(80, 60, 140, 0.3);
+      border-radius: 12px;
+      padding: 10px 12px;
+      border: 1px solid rgba(150, 120, 255, 0.3);
+      backdrop-filter: blur(8px);
+      min-height: 50px;
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
 
-  .profile-compact label {
-    display: block;
-    font-size: 9.2px;
-    color: #888;
-    text-transform: uppercase;
-    margin-bottom: 2px;
-    letter-spacing: 0.4px;
-    opacity: 0.9;
-  }
+    .profile-compact > div:hover {
+      background: rgba(100, 80, 160, 0.4);
+      border-color: rgba(187, 134, 252, 0.5);
+      transform: translateY(-2px);
+    }
 
-  .profile-compact span {
-    font-weight: 700;
-    font-size: 12.8px;
-    color: #0ff;
-    word-break: break-all;           /* ← forces break inside long words */
-    overflow: hidden;                /* ← hides anything that would wrap */
-    text-overflow: ellipsis;         /* ← adds "..." at the end */
-    white-space: nowrap;             /* ← THIS IS THE KEY — NO WRAPPING EVER */
-    line-height: 1.35;
-    text-shadow: 0 0 6px rgba(0,255,255,0.4);
-  }
-    /* Glass Inputs */
+    .profile-compact label {
+      display: block;
+      font-size: 10px;
+      color: #999;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+
+    .profile-compact span {
+      font-weight: 700;
+      font-size: 13px;
+      color: #0ff;
+      word-break: break-all;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      line-height: 1.4;
+      text-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
+      cursor: pointer;
+    }
+
     input, button {
-      border: none; outline: none; border-radius: 12px; padding: 12px 14px;
-      background: rgba(255,255,255,0.12); backdrop-filter: blur(10px);
-      border: 1px solid rgba(120,100,255,0.4); color: white; font-size: 14px;
+      border: none;
+      outline: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(150, 120, 255, 0.3);
+      color: white;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      font-family: inherit;
     }
-    input::placeholder { color:#888; }
+    
+    input::placeholder {
+      color: #888;
+    }
 
-    /* MICRO Floating Buttons — 40% size + RIGHT ALIGNED */
-  .floating-btn {
-    width: 36px;            /* was 40px → now ~40% smaller overall */
-    height: 36px;
-    border-radius: 11px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;        /* was 18px */
-    font-weight: bold;
-    color: white;
-    box-shadow: 0 5px 14px rgba(0,0,0,0.45);
-    transition: all 0.22s ease;
-    flex-shrink: 0;
-  }
+    input:focus, button:hover {
+      border-color: rgba(187, 134, 252, 0.6);
+      background: rgba(255, 255, 255, 0.15);
+    }
 
-  .floating-btn:hover {
-    transform: translateY(-3px) scale(1.12);
-  }
+    .button-group-container {
+      margin: 16px 0;
+      padding: 12px;
+      background: rgba(20, 20, 40, 0.4);
+      border-radius: 16px;
+      border: 1px solid rgba(120, 100, 255, 0.2);
+      transition: all 0.3s ease;
+    }
 
-  /* Section labels (util-name) — tiny & right-aligned */
-  .util-name {
-    text-align: right;
-    font-weight: 700;
-    font-size: 9px;               /* was 10px */
-    color: #bb86fc;
-    margin: 12px 12px 4px 0;      /* tighter + more right offset */
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    opacity: 0.9;
-  }
+    .button-group-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
 
-  /* All button groups — right-aligned, tight wrap */
-  #advancedButtons,
-  #threadsButtons,
-  #utilityButtons,
-  #DataBtn1 {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 9px;                     /* was 12px → tighter */
-    justify-content: flex-end;    /* ← THIS PUSHES ALL BUTTONS TO THE RIGHT */
-    padding: 6px 12px 8px 12px;   /* reduced padding */
-    margin: 0;
-  }
+    .util-name {
+      font-weight: 700;
+      font-size: 11px;
+      color: #bb86fc;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .toggle-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: rgba(187, 134, 252, 0.2);
+      border: 1px solid rgba(187, 134, 252, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 14px;
+    }
+
+    .toggle-btn:hover {
+      background: rgba(187, 134, 252, 0.4);
+      transform: scale(1.1);
+    }
+
+    .toggle-btn.hidden::after {
+      content: "👁️";
+    }
+
+    .toggle-btn.visible::after {
+      content: "👁️‍🗨️";
+    }
+
+    .button-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: flex-end;
+      transition: all 0.3s ease;
+      max-height: 500px;
+      overflow: hidden;
+    }
+
+    .button-group.hidden {
+      max-height: 0;
+      opacity: 0;
+      margin: 0;
+    }
+
+    .floating-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: white;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .floating-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.6s;
+    }
+
+    .floating-btn:hover::before {
+      transform: translateX(100%);
+    }
+
+    .floating-btn:hover {
+      transform: translateY(-4px) scale(1.08);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .floating-btn:active {
+      transform: translateY(-2px) scale(1.02);
+    }
+
+    #twofaSection {
+      padding: 8px;
+    }
+
+    .twofa-display {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin: 8px 0;
+    }
+
+    .twofa-display button {
+      padding: 8px 12px;
+      font-size: 12px;
+      border-radius: 8px;
+      min-width: 50px;
+      font-weight: 600;
+    }
+
+    #totp {
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: 5px;
+      color: #0ff;
+      text-shadow: 0 0 12px rgba(0, 255, 255, 0.6);
+      min-width: 130px;
+      text-align: center;
+      font-family: 'Courier New', monospace;
+    }
+
+    #ipBar {
+      background: rgb(20, 20, 50);
+      border: 1px solid #444;
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin: 16px 0;
+      text-align: center;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      color: #0ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      transition: all 0.5s ease;
+    }
+
+    #ipBar button {
+      height: auto;
+      padding: 8px 12px;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 50px;
+    }
+
+    .daisy-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 16px 0;
+    }
+
+    #miniPhone {
+      background: #001122;
+      color: #0ff;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 2px solid #0ff;
+      text-align: left;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    #miniPhone:hover {
+      background: #002233;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    }
+
+    .daisy-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .daisy-buttons button {
+      min-width: 44px;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #miniWait {
+      margin: 12px 0;
+      padding: 12px;
+      background: #220000;
+      color: #f66;
+      border: 2px dashed #f00;
+      border-radius: 12px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 14px;
+      display: none;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+
+    #miniCode {
+      background: #001a00;
+      color: #0f0;
+      padding: 16px;
+      border-radius: 16px;
+      border: 3px solid #0f0;
+      text-align: center;
+      font-size: 32px;
+      font-weight: bold;
+      letter-spacing: 4px;
+      cursor: pointer;
+      margin: 12px 0;
+      display: none;
+      box-shadow: 0 0 20px rgba(0, 255, 0, 0.4);
+      transition: all 0.2s ease;
+    }
+
+    #miniCode:hover {
+      box-shadow: 0 0 30px rgba(0, 255, 0, 0.6);
+      transform: scale(1.02);
+    }
+
+    #miniLog {
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+      color: #0a0;
+      height: 60px;
+      overflow: auto;
+      background: #111;
+      padding: 8px;
+      border-radius: 10px;
+      margin-top: 8px;
+      line-height: 1.4;
+      border: 1px solid #333;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.95);
+      color: #0f9;
+      padding: 14px 28px;
+      border-radius: 30px;
+      font-weight: bold;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 99999;
+      box-shadow: 0 4px 24px rgba(0, 255, 150, 0.3);
+      border: 1px solid rgba(0, 255, 150, 0.3);
+    }
+    
+    .toast.show {
+      opacity: 1;
+    }
 
     .modal {
-    display: none;
-    position: fixed;
-    z-index: 99999;               /* highest possible */
-    left: 0; top: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.8);
-    backdrop-filter: blur(8px);
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    box-sizing: border-box;
-  }
+      display: none;
+      position: fixed;
+      z-index: 99999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      align-items: center;
+      justify-content: center;
+    }
 
-  .modal-content {
-    background: rgba(30,30,60,0.95);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(120,100,255,0.4);
-    border-radius: 20px;
-    padding: 24px;
-    width: 100%;
-    max-width: 380px;
-    max-height: 80vh;
-    overflow-y: auto;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-  }
+    .modal-content {
+      background: rgba(30, 30, 60, 0.98);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(150, 120, 255, 0.4);
+      border-radius: 24px;
+      padding: 28px;
+      width: 90%;
+      max-width: 420px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
+    }
 
-  #profileList {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
+    #profileList {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
 
-  #profileList li {
-    padding: 14px 16px;
-    margin: 8px 0;
-    background: rgba(120,100,255,0.2);
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 15px;
-    color: #fff;
-  }
+    #profileList li {
+      padding: 16px 18px;
+      margin: 10px 0;
+      background: rgba(120, 100, 255, 0.2);
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 15px;
+      color: #fff;
+      border: 1px solid rgba(150, 120, 255, 0.3);
+    }
 
-  #profileList li:hover {
-    background: rgba(187,134,252,0.5);
-    transform: translateY(-2px);
-  }
+    #profileList li:hover {
+      background: rgba(187, 134, 252, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(187, 134, 252, 0.3);
+    }
 
-  /* TOAST STYLES — WAS MISSING! */
-.toast {
-  position: fixed;
-  bottom: 80px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0,0,0,0.9);
-  color: #0f9;
-  padding: 12px 24px;
-  border-radius: 30px;
-  font-weight: bold;
-  font-size: 14px;
-  opacity: 0;
-  transition: opacity 0.3s;
-  z-index: 99999;
-  box-shadow: 0 0 20px rgba(0,255,150,0.4);
-}
-.toast.show { opacity: 1; }
+    .close {
+      float: right;
+      font-size: 36px;
+      cursor: pointer;
+      color: #aaa;
+      line-height: 1;
+      transition: color 0.2s ease;
+    }
 
-/* Modal already has styles — just make sure it's there */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 99999;
-  left: 0; top: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.8);
-  backdrop-filter: blur(8px);
-  align-items: center;
-  justify-content: center;
-}
+    .close:hover {
+      color: #fff;
+    }
 
-#ipBar {
-  background: rgb(20,20,50);        /* solid, no transparency */
-  border: 1px solid #333;           /* normal dark border */
-  border-radius: 12px;
-  padding: 10px 14px;
-  margin: 12px 0;
-  text-align: center;
-  font-family: monospace;
-  font-size: 12px;
-  color: #0ff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  flex-wrap: wrap;
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
 
-  /* 🔥 remove glowing effects */
-  backdrop-filter: none;            /* removes blur glow */
-  box-shadow: none;                 /* ensure no shadow glow */
-  text-shadow: none;                /* remove neon text glow if any */
-}
-    #ipBar button {
-    height: auto;        /* remove the tiny fixed height */
-    padding: 4px 8px;    /* give it space */
-    font-size: 14px;     /* normal size */
-    display: flex;       /* ensure perfect centering */
-    align-items: center;
-    justify-content: center;
-}
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+    }
 
+    ::-webkit-scrollbar-thumb {
+      background: rgba(187, 134, 252, 0.5);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(187, 134, 252, 0.7);
+    }
   </style>
 </head>
 <body>
 
-  <!-- Profile Card -->
   <div class="glass-card">
     <div class="collapsible-header open" onclick="toggleSection('profileSection')">
       <span>Profile: <span id="profileHeaderUsername" style="color:#0ff; font-weight:700;">—</span></span>
@@ -258,180 +540,144 @@
       <div class="profile-compact">
         <div><label>Container #</label><span id="name">—</span></div>
         <div><label>Username</label><span id="oldusername">—</span></div>
-        <div><label>Authenticator</label><span id="newusername" class="copyable">—</span></div>
+        <div><label>Authenticator</label><span id="newusername">—</span></div>
         <div><label>Password</label><span id="password">—</span></div>
       </div>
     </div>
   </div>
 
-<!-- 2FA — 45% SIZE (micro mode) -->
-<div class="glass-card">
-
-  <div class="collapsible-header open" onclick="toggleSection('twofaSection')">
-    <span style="flex:1;">2FA: 
-      <span id="countdown">--</span>
-    </span>
-
-    <div style="display:flex; justify-content:center; align-items:center; gap:8px; margin:4px 0;">
-      <button id="pasteBtn" style="padding:5px 9px; font-size:10.5px; border-radius:7px;">P</button>
-      
-      <div id="totp" style="font-size:24px; font-weight:900; letter-spacing:4px; color:#0ff; text-shadow:0 0 8px #0ff; min-width:110px; text-align:center;">
-        ------
+  <div class="glass-card">
+    <div class="collapsible-header open" onclick="toggleSection('twofaSection')">
+      <span style="flex:1;">2FA: <span id="countdown">--</span></span>
+      <div class="twofa-display">
+        <button id="pasteBtn">📋</button>
+        <div id="totp">------</div>
+        <button id="copyBtn">📄</button>
       </div>
-      
-      <button id="copyBtn" style="padding:5px 9px; font-size:10.5px; border-radius:7px;">C</button>
     </div>
-</div>
-
-  <div id="twofaSection" class="section open">
-    
-    <!-- Input + Send (tiny row) -->
-    <div style="display:flex; gap:5px; margin:7px 0 6px;">
-      <input id="secret" placeholder="Secret"
-             style="flex:1; padding:6px 8px; font-size:11.5px; border-radius:8px;" />
-      <button id="btn2fa" onclick="send2FAToSheet()"
-              style="padding:6px 8px; font-size:11px; border-radius:8px; min-width:48px;">
-        Send
-      </button>
+    <div id="twofaSection" class="section open">
+      <div style="display:flex; gap:8px; margin:10px 0;">
+        <input id="secret" placeholder="Enter 2FA Secret..." style="flex:1;" />
+        <button id="btn2fa" onclick="send2FAToSheet()">Send</button>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- NEW IP BAR WITH OLD IP DISPLAY -->
-<div id="ipBar">
-  <button id="rotateIpBtn" onclick="rotateIP()">🔄</button>
-  
-  <span id="oldIPDisplay" style="color:#888; font-size:11px;"></span>
-  <span id="currentIP">fetching...</span>
-  
-  <span style="margin-left:8px; color:#0af;">Age:</span>
-  <span id="ipAge">00:00</span>
-</div>
-
-
-  <!-- Wrap each button group like this for maximum right alignment -->
-<div style="display:flex; justify-content:flex-end; width:100%;">
-  <!-- Navigation Buttons (your original colors) -->
-  <div class="util-name">Container Navigation</div>
-  <div id="DataBtn1">
-    <div class="floating-btn floating-NxOnly" style="background:#000" onclick="nextProfile()">=</div>
-    <div class="floating-btn floating-Next" style="background:#000" onclick="runCont(); nextProfile()">Nx</div>
-    <div class="floating-btn floating-Prev" style="background:#000" onclick="prevProfile()">Pv</div>
+  <div id="ipBar">
+    <button id="rotateIpBtn" onclick="rotateIP()">🔄</button>
+    <span id="oldIPDisplay" style="color:#888; font-size:11px;"></span>
+    <span id="currentIP">fetching...</span>
+    <span style="margin-left:8px; color:#0af;">Age:</span>
+    <span id="ipAge">00:00</span>
   </div>
-</div>
-  
-  <!-- Wrap each button group like this for maximum right alignment -->
-<div style="display:flex; justify-content:flex-end; width:100%;">
-  <div class="util-name">IG Login</div>
-  <div id="advancedButtons">
-    <div class="floating-btn floating-CrC" style="background:linear-gradient(135deg,#8e24aa,#e91e63)" onclick="()">2FA</div>
-    <div class="floating-btn floating-TGP" style="background:linear-gradient(135deg,#e91e63,#6a1b9a,#ffb300)" onclick="copyText('password'); openCurrentIG()">🗝️</div>
-    <div class="floating-btn floating-TGAU" style="background:linear-gradient(135deg,#8e24aa,#e91e63,#ffb300)" onclick="copyText('newusername')">Au</div>
-    <div class="floating-btn floating-TGUN" style="background:linear-gradient(135deg,#ffb300,#6a1b9a)" onclick="copyText('oldusername'); openCurrentIG()">Un</div>
-    <div class="floating-btn floating-TGN" style="background:linear-gradient(135deg,#f44336,#ffb300)" onclick="copyText('name'); openCurrentIG()">Na</div>
-    <div class="floating-btn floating-CrC" style="background:linear-gradient(135deg,#8e24aa,#e91e63)" onclick="copyText('oldusername'); Createcon()">✍️</div>
-  </div>
-</div>
-  
-<div style="display:flex; justify-content:flex-end; width:100%;">
-  <div class="util-name">Threads Login</div>
-  <div id="threadsButtons">
-    <div class="floating-btn floating-copyUN" style="background:#4caf50" onclick="copyRandom(); openCurrentTG()">♳</div>
-    <div class="floating-btn floating-copyUN" style="background:#4caf50" onclick="copyText('oldusername'); runCreateTH()">✍️</div>
-    <div class="floating-btn floating-CopyunT" style="background:#ff9800" onclick="copyText('oldusername'); openCurrentTG()">Un</div>
-    <div class="floating-btn floating-Pw" style="background:#00acc1" onclick="copyText('password'); openCurrentTG()">🗝️</div>
-  </div>
-</div>
 
-<div style="display:flex; justify-content:flex-end; width:100%;">
-  <div class="util-name">For IG</div>
-  <div id="utilityButtons">
-    <div class="floating-btn floating-refresh" style="background:#ff4081" onclick="loadProfiles()">🔄️</div>
-    <div class="floating-btn floating-random" style="background:#3949ab" onclick="randomCelebrity()">🎲</div>
-    <div class="floating-btn floating-bio" style="background:#8e24aa" onclick="randomBio(); IGedit()">🌸</div>
-    <div class="floating-btn floating-caption" style="background:#00897b" onclick="randomCaption(); openCurrentIG()">📝</div>
-    <div class="floating-btn floating-first" style="background:#ff8f00" onclick="firstProfile()">🥇</div>
-    <div class="floating-btn floating-list" style="background:#43a047" onclick="showProfileList()">📂</div>
-  </div>
-</div>
-
-  <!-- FULL ORIGINAL DAISYSMS BOX — 100% UNTOUCHED -->
-  <div style="display:flex; align-items:center; gap:8px;">
-
-    <!-- LEFT SIDE: fixed-size phone box -->
-    <div id="miniPhone" onclick="copyPhone(this)"
-         style="background:#001122;color:#0ff;padding:9px;border-radius:10px;border:2px solid #0ff;
-                text-align:left;font-weight:bold;font-size:16px;cursor:pointer;margin:1px 0;word-break:break-all;
-                width:230px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
-        Tap "Rent" to get number
+  <div class="button-group-container">
+    <div class="button-group-header">
+      <span class="util-name">Container Navigation</span>
+      <div class="toggle-btn visible" onclick="toggleButtonGroup(this, 'navButtons')"></div>
     </div>
-
-    <!-- RIGHT SIDE: buttons (won’t move anymore) -->
-    <div style="display:flex; flex-direction:row; gap:6px;">
-        <button onclick="getBalance()" style="min-width:38px;padding:8px;background:#28a745;color:white;border:none;border-radius:9px;">✔️</button>
-        <button onclick="rentIGNumber()" style="min-width:38px;padding:12px;background:#007bff;color:white;border:none;border-radius:9px;font-size:12.5px;font-weight:bold;cursor:pointer;">🔑</button>
-        <button onclick="cancelNumber()" style="min-width:38px;padding:8px;background:#dc3545;color:white;border:none;border-radius:9px;font-size:12.5px;font-weight:bold;cursor:pointer;">❌</button>
+    <div id="navButtons" class="button-group">
+      <div class="floating-btn" style="background:#1a1a1a" onclick="nextProfile()">=</div>
+      <div class="floating-btn" style="background:#2a2a2a" onclick="runCont(); nextProfile()">Nx</div>
+      <div class="floating-btn" style="background:#1a1a1a" onclick="prevProfile()">Pv</div>
     </div>
-
-</div>
-
-  <div id="miniWait" style="margin:8px 0;padding:7px;background:#220000;color:#f66;border:2px dashed #f00;border-radius:9px;text-align:center;font-weight:bold;font-size:13px;display:none;animation:pulse 1.8s infinite;">
-    Waiting for code...
   </div>
 
-  <div id="miniCode" onclick="copyCode(this)"
-       style="background:#001a00;color:#0f0;padding:12px;border-radius:12px;border:3px solid #0f0;
-              text-align:center;font-size:28px;font-weight:bold;letter-spacing:3px;cursor:pointer;margin:8px 0;
-              display:none;box-shadow:0 0 12px #0f0;">
-    000000
+  <div class="button-group-container">
+    <div class="button-group-header">
+      <span class="util-name">IG Login</span>
+      <div class="toggle-btn visible" onclick="toggleButtonGroup(this, 'igButtons')"></div>
+    </div>
+    <div id="igButtons" class="button-group">
+      <div class="floating-btn" style="background:linear-gradient(135deg,#8e24aa,#e91e63)" onclick="twoFA()">2FA</div>
+      <div class="floating-btn" style="background:linear-gradient(135deg,#e91e63,#6a1b9a,#ffb300)" onclick="copyText('password'); openCurrentIG()">🗝️</div>
+      <div class="floating-btn" style="background:linear-gradient(135deg,#8e24aa,#e91e63,#ffb300)" onclick="copyText('newusername')">Au</div>
+      <div class="floating-btn" style="background:linear-gradient(135deg,#ffb300,#6a1b9a)" onclick="copyText('oldusername'); openCurrentIG()">Un</div>
+      <div class="floating-btn" style="background:linear-gradient(135deg,#f44336,#ffb300)" onclick="copyText('name'); openCurrentIG()">Na</div>
+      <div class="floating-btn" style="background:linear-gradient(135deg,#8e24aa,#e91e63)" onclick="copyText('oldusername'); Createcon()">✍️</div>
+    </div>
   </div>
 
-  <div id="miniLog" style="font-family:monospace;font-size:10px;color:#0a0;height:48px;overflow:auto;background:#111;padding:6px;border-radius:7px;margin-top:6px;line-height:1.3;">
+  <div class="button-group-container">
+    <div class="button-group-header">
+      <span class="util-name">Threads Login</span>
+      <div class="toggle-btn visible" onclick="toggleButtonGroup(this, 'threadsButtons')"></div>
+    </div>
+    <div id="threadsButtons" class="button-group">
+      <div class="floating-btn" style="background:#4caf50" onclick="copyRandom(); openCurrentTG()">♳</div>
+      <div class="floating-btn" style="background:#4caf50" onclick="copyText('oldusername'); runCreateTH()">✍️</div>
+      <div class="floating-btn" style="background:#ff9800" onclick="copyText('oldusername'); openCurrentTG()">Un</div>
+      <div class="floating-btn" style="background:#00acc1" onclick="copyText('password'); openCurrentTG()">🗝️</div>
+    </div>
   </div>
-</div>
 
-  <!-- TOAST — WAS MISSING! -->
+  <div class="button-group-container">
+    <div class="button-group-header">
+      <span class="util-name">For IG</span>
+      <div class="toggle-btn visible" onclick="toggleButtonGroup(this, 'utilityButtons')"></div>
+    </div>
+    <div id="utilityButtons" class="button-group">
+      <div class="floating-btn" style="background:#ff4081" onclick="loadProfiles()">🔄️</div>
+      <div class="floating-btn" style="background:#3949ab" onclick="randomCelebrity()">🎲</div>
+      <div class="floating-btn" style="background:#8e24aa" onclick="randomBio(); IGedit()">🌸</div>
+      <div class="floating-btn" style="background:#00897b" onclick="randomCaption(); openCurrentIG()">📝</div>
+      <div class="floating-btn" style="background:#ff8f00" onclick="firstProfile()">🥇</div>
+      <div class="floating-btn" style="background:#43a047" onclick="showProfileList()">📂</div>
+    </div>
+  </div>
+
+  <div class="glass-card">
+    <div class="collapsible-header open" onclick="toggleSection('daisySection')">
+      <span>Phone Rental (DaisySMS)</span>
+    </div>
+    <div id="daisySection" class="section open">
+      <div class="daisy-container">
+        <div id="miniPhone" onclick="copyPhone(this)">Tap "Rent" to get number</div>
+        <div class="daisy-buttons">
+          <button onclick="getBalance()" style="background:#28a745;">✔️</button>
+          <button onclick="rentIGNumber()" style="background:#007bff;">🔑</button>
+          <button onclick="cancelNumber()" style="background:#dc3545;">❌</button>
+        </div>
+      </div>
+
+      <div id="miniWait">Waiting for code...</div>
+      <div id="miniCode" onclick="copyCode(this)">000000</div>
+      <div id="miniLog"></div>
+    </div>
+  </div>
+
   <div id="toast" class="toast"></div>
 
-  <!-- PROFILE LIST MODAL — WAS MISSING! -->
   <div id="profileModal" class="modal">
     <div class="modal-content">
-      <span class="close" onclick="closeModal()" style="float:right;font-size:32px;cursor:pointer;color:#aaa;">×</span>
-      <h3 style="margin:0 0 16px 0;color:#bb86fc;text-align:center;">Select Profile</h3>
+      <span class="close" onclick="closeModal()">×</span>
+      <h3 style="margin:0 0 20px 0;color:#bb86fc;text-align:center;">Select Profile</h3>
       <ul id="profileList"></ul>
     </div>
   </div>
-</body>
-</html>
 
-<style>
-@keyframes pulse { 0%,100% {opacity:0.7} 50% {opacity:1} }
-</style>
-
-   <script>
-    // YOUR 100% ORIGINAL SCRIPT — NOT A SINGLE LINE REMOVED OR CHANGED
+  <script>
     let profiles = [], currentIndex = 0;
- 
+
     async function loadProfiles() {
       try {
-        const realAPI = "https://script.google.com/macros/s/AKfycbyA4s9bYHTiHAKgy0f72pQwjG5NRoQmY3ADKo4FxWiszCPAOvZmDz92OnBiSNuSqGq6/exec";
-        const API_URL = realAPI;
+        const API_URL = "https://script.google.com/macros/s/AKfycbyA4s9bYHTiHAKgy0f72pQwjG5NRoQmY3ADKo4FxWiszCPAOvZmDz92OnBiSNuSqGq6/exec";
         const res = await fetch(API_URL);
         profiles = await res.json();
         currentIndex = parseInt(localStorage.getItem("currentIndex") || "0");
         if (currentIndex >= profiles.length) currentIndex = 0;
         displayProfile();
       } catch (err) {
-        console.error("Load error details:", err);
+        console.error("Load error:", err);
         showToast("Load failed – check console");
       }
     }
 
     function updateHeaderUsername() {
-          const username = document.getElementById("oldusername").textContent.trim() || "—";
-          document.getElementById("profileHeaderUsername").textContent = username;
-        }
-     
+      const username = document.getElementById("oldusername").textContent.trim() || "—";
+      document.getElementById("profileHeaderUsername").textContent = username;
+    }
+
     function displayProfile() {
       if (!profiles.length) return;
       const p = profiles[currentIndex];
@@ -445,17 +691,18 @@
       localStorage.setItem("currentIndex", currentIndex);
       updateHeaderUsername();
     }
+
     async function send2FAToSheet() {
       const secretInput = document.getElementById("secret");
       const newSecret = secretInput.value.trim();
       if (!newSecret) {
-          showToast("No 2FA secret entered");
-          return;
+        showToast("No 2FA secret entered");
+        return;
       }
       const currentUser = profiles[currentIndex];
       if (!currentUser || !currentUser.id) {
-          showToast("Profile has no ID");
-          return;
+        showToast("Profile has no ID");
+        return;
       }
       const current2FA = (currentUser.newusername || "").toString().trim();
       if (current2FA && !confirm("2FA already exists! Overwrite it?")) {
@@ -463,175 +710,230 @@
         secretInput.select();
         return;
       }
-      
-      //const payload = {
-     //     id: currentUser.id,
-      //    newusername: newSecret
-     // };
+
       const payload = {
-          oldusername: currentUser.oldusername,   // ← THIS IS THE ONLY LINE YOU WERE MISSING
-          newusername: newSecret
+        oldusername: currentUser.oldusername,
+        newusername: newSecret
       };
-      
-      const realAPI = "https://script.google.com/macros/s/AKfycbyA4s9bYHTiHAKgy0f72pQwjG5NRoQmY3ADKo4FxWiszCPAOvZmDz92OnBiSNuSqGq6/exec";
+
+      const API_URL = "https://script.google.com/macros/s/AKfycbyA4s9bYHTiHAKgy0f72pQwjG5NRoQmY3ADKo4FxWiszCPAOvZmDz92OnBiSNuSqGq6/exec";
       try {
-          const response = await fetch(realAPI, {
-              method: "POST",
-              headers: { "Content-Type": "text/plain;charset=utf-8" },
-              body: JSON.stringify(payload)
-          });
-          const result = await response.json();
-          console.log("Response:", result);
-          if (result.success) {
-              showToast("2FA sent to sheet!");
-              secretInput.value = "";
-              currentUser.newusername = newSecret;
-              document.getElementById("newusername").textContent = newSecret;
-        await loadProfiles();
-        displayProfile();
-          } else {
-              showToast("Push failed: " + result.message);
-          }
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+        const result = await response.json();
+        if (result.success) {
+          showToast("2FA sent to sheet!");
+          secretInput.value = "";
+          currentUser.newusername = newSecret;
+          document.getElementById("newusername").textContent = newSecret;
+          await loadProfiles();
+          displayProfile();
+        } else {
+          showToast("Push failed: " + result.message);
+        }
       } catch (err) {
-          console.error(err);
-          showToast("Network error");
+        console.error(err);
+        showToast("Network error");
       }
     }
 
-     // PASTE BUTTON — FULL ORIGINAL FUNCTION
     document.getElementById('pasteBtn').addEventListener('click', async () => {
       try {
         const text = await navigator.clipboard.readText();
         document.getElementById('secret').value = text.trim();
-        update(); // refreshes the TOTP instantly
+        update();
         showToast("Secret pasted!");
       } catch (e) {
-        showToast("Paste blocked – allow clipboard access");
+        showToast("Paste blocked – allow clipboard");
       }
     });
-    
-    // COPY BUTTON — FULL ORIGINAL FUNCTION
+
     document.getElementById('copyBtn').addEventListener('click', async () => {
       const code = document.getElementById('totp').textContent.trim();
       if (code && code !== "------" && code !== "invalid") {
         await navigator.clipboard.writeText(code);
-        document.getElementById('copyBtn').textContent = "Copied!";
-        setTimeout(() => document.getElementById('copyBtn').textContent = "C", 1200);
         showToast("Code copied!");
       }
     });
-    
-    // BONUS: Click on the authenticator field itself to copy the secret (your original feature)
+
     document.getElementById("newusername").addEventListener("click", async () => {
       const val = document.getElementById("newusername").textContent.trim();
-      if (val) {
+      if (val && val !== "—") {
         await navigator.clipboard.writeText(val);
         showToast("2FA secret copied!");
       }
     });
-     
-    function prevProfile() { if (currentIndex > 0) { currentIndex--; displayProfile(); } }
-    function nextProfile() { if (currentIndex < profiles.length - 1) { currentIndex++; displayProfile(); } }
-    function firstProfile() { currentIndex = 0; displayProfile(); showToast("First profile"); }
+
+    function prevProfile() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        displayProfile();
+      }
+    }
+
+    function nextProfile() {
+      if (currentIndex < profiles.length - 1) {
+        currentIndex++;
+        displayProfile();
+      }
+    }
+
+    function firstProfile() {
+      currentIndex = 0;
+      displayProfile();
+      showToast("First profile");
+    }
+
     function Createcon() {
-      const name = document.getElementById('name').textContent.trim();
       const oldusername = document.getElementById('oldusername').textContent.trim();
-      const combined = oldusername;
-      //const combined = name + " " + oldusername;
-      if (combined) {
-        navigator.clipboard.writeText(combined);
-        showToast("name + username copied!");
+      if (oldusername) {
+        navigator.clipboard.writeText(oldusername);
+        showToast("Username copied!");
       }
       window.location.href = "shortcuts://run-shortcut?name=CreateIGCon";
     }
+
     function runCreateTH() {
-      const name = document.getElementById('name').textContent.trim();
       const oldusername = document.getElementById('oldusername').textContent.trim();
-      const combined = oldusername;
-      //const combined = name + " " + oldusername;
-      if (combined) {
-        navigator.clipboard.writeText(combined);
-        showToast("name + username copied!");
+      if (oldusername) {
+        navigator.clipboard.writeText(oldusername);
+        showToast("Username copied!");
       }
       window.location.href = "shortcuts://run-shortcut?name=CreateTh";
     }
+
     function runCont() {
       window.location.href = "shortcuts://run-shortcut?name=NextIGTH";
     }
+
     function openCurrentIG() {
       window.open("https://instagram.com/", "_blank");
     }
+
     function openCurrentTG() {
       window.open("https://threads.net/", "_blank");
     }
 
+    function IGedit() {
+      const username = document.getElementById("oldusername").textContent.trim();
+      if (!username || username === "—" || username === "") {
+        showToast("No username loaded!");
+        window.open("https://www.instagram.com/accounts/edit/", "_blank");
+        return;
+      }
+      const editUrl = `instagram://user?username=${username}`;
+      window.open(editUrl, "_blank");
+      showToast(`Opening edit page → @${username}`);
+    }
 
+    function twoFA() {
+      const username = document.getElementById("oldusername").textContent.trim();
+      if (!username || username === "—" || username === "") {
+        showToast("No username loaded!");
+        window.open("https://www.instagram.com/password_and_security/two_factor/", "_blank");
+        return;
+      }
+      window.open("https://accountscenter.instagram.com/password_and_security/two_factor/", "_blank");
+      showToast("Opening 2FA settings");
+    }
 
-function IGedit() {
-  const username = document.getElementById("oldusername").textContent.trim();
-  
-  if (!username || username === "—" || username === "") {
-    showToast("No username loaded!");
-    window.open("https://www.instagram.com/accounts/edit/", "_blank");
-    return;
-  }
-
-  const editUrl = `instagram://user?username=${username}`;
-  window.open(editUrl, "_blank");
-
-  showToast(`Opening edit page → @${username}`);
-}
-
-function twoFA() {
-  const username = document.getElementById("oldusername").textContent.trim();
-  if (!username || username === "—" || username === "") {
-    showToast("No username loaded!");
-    window.open("https://www.instagram.com/password_and_security/two_factor/", "_blank");
-    return;
-  }
-  // Direct link to 2FA settings for the logged-in account
-  // (this works even without username in URL because Instagram knows who you are)
-  window.open("https://accountscenter.instagram.com/password_and_security/two_factor/", "_blank");
-  showToast("Opening 2FA settings");
-}
-
-     
     function copyText(field) {
       const text = document.getElementById(field).textContent.trim();
-      if (text) {
+      if (text && text !== "—") {
         navigator.clipboard.writeText(text);
         showToast(field + " copied!");
       }
     }
+
     function showToast(msg) {
       const t = document.getElementById("toast");
       t.textContent = msg;
       t.classList.add("show");
       setTimeout(() => t.classList.remove("show"), 1800);
     }
+
     const celebrities = ["Selena Gomez","Kylie Jenner","Dwayne Johnson","Ariana Grande","Kim Kardashian","Beyoncé","Taylor Swift","Jennifer Lopez","Nicki Minaj","Miley Cyrus","Katy Perry","Zendaya","Cardi B","Billie Eilish","Olivia Rodrigo","Doja Cat","Lil Nas X","Travis Scott","Post Malone","Rihanna","Justin Bieber","Drake","Lana Del Rey","Halsey","Harry Styles","Dua Lipa","Bad Bunny","Shakira"];
+
     function randomCelebrity() {
       const rand = celebrities[Math.floor(Math.random() * celebrities.length)];
       navigator.clipboard.writeText(rand);
       window.open("https://www.instagram.com/explore/search/keyword/?q=" + encodeURIComponent(rand), "_blank");
       showToast("Searching: " + rand);
     }
+
     function randomBio() {
       const e = ["💖","💕","🌸","✨","🌷","💅","👑","💓","🦋","💜"];
       const bio = `18 ${e[Math.floor(Math.random()*e.length)]}\nSingle ${e[Math.floor(Math.random()*e.length)]}`;
       navigator.clipboard.writeText(bio);
       showToast("Bio copied!");
     }
+
     function randomCaption() {
       const c = ["no reason, just liked these","this light felt kinda nice","felt cute, might delete later","vibes","golden hour","soft girl era","main character energy","just a girl","healing era","doing it for me"];
       const cap = c[Math.floor(Math.random()*c.length)];
       navigator.clipboard.writeText(cap);
       showToast("Caption copied!");
     }
-    function showProfileList() { /* your original modal code */ }
-    function closeModal() { document.getElementById("profileModal").style.display = "none"; }
 
-    // FULL ORIGINAL TOTP
+    function copyRandom() {
+      const texts = [
+        "First post: I NEED FRIENDS!!",
+        "Wanna meet older guys",
+        "First post Trying to make friends on Threads."
+      ];
+      const pick = texts[Math.floor(Math.random() * texts.length)];
+      navigator.clipboard.writeText(pick)
+        .then(() => showToast(`Copied: "${pick}"`))
+        .catch(err => {
+          showToast("Copy failed");
+          console.error(err);
+        });
+    }
+
+    function showProfileList() {
+      const modal = document.getElementById("profileModal");
+      const list = document.getElementById("profileList");
+      list.innerHTML = "";
+      profiles.forEach((p, i) => {
+        const li = document.createElement("li");
+        li.textContent = [p.name, p.oldusername || p.username].filter(Boolean).join(" ") || `Profile ${i+1}`;
+        li.onclick = () => {
+          currentIndex = i;
+          displayProfile();
+          closeModal();
+        };
+        list.appendChild(li);
+      });
+      modal.style.display = "flex";
+    }
+
+    function closeModal() {
+      document.getElementById("profileModal").style.display = "none";
+    }
+
+    window.onclick = function(e) {
+      const modal = document.getElementById("profileModal");
+      if (e.target === modal) closeModal();
+    }
+
+    function toggleButtonGroup(btn, groupId) {
+      const group = document.getElementById(groupId);
+      const isHidden = group.classList.contains('hidden');
+      
+      if (isHidden) {
+        group.classList.remove('hidden');
+        btn.classList.remove('hidden');
+        btn.classList.add('visible');
+      } else {
+        group.classList.add('hidden');
+        btn.classList.remove('visible');
+        btn.classList.add('hidden');
+      }
+    }
+
     function base32toBytes(base32) {
       base32 = (base32 || '').replace(/=+$/,'').replace(/[^A-Z2-7]/gi,'').toUpperCase();
       const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
@@ -648,6 +950,7 @@ function twoFA() {
       }
       return new Uint8Array(bytes);
     }
+
     function counterToBuffer(counter) {
       const buf = new ArrayBuffer(8);
       const view = new DataView(buf);
@@ -655,11 +958,13 @@ function twoFA() {
       view.setUint32(4, counter >>> 0);
       return buf;
     }
+
     async function hmacSha1(keyBytes, counterBuf) {
       const cryptoKey = await crypto.subtle.importKey('raw', keyBytes, { name: 'HMAC', hash: 'SHA-1' }, false, ['sign']);
       const sig = await crypto.subtle.sign('HMAC', cryptoKey, counterBuf);
       return new Uint8Array(sig);
     }
+
     function truncate(hmacBytes, digits) {
       const offset = hmacBytes[hmacBytes.length - 1] & 0x0f;
       const code = ((hmacBytes[offset] & 0x7f) << 24) |
@@ -668,6 +973,7 @@ function twoFA() {
                    (hmacBytes[offset+3] & 0xff);
       return (code % 10**digits).toString().padStart(digits, '0');
     }
+
     async function generateTOTP(secret) {
       const keyBytes = base32toBytes(secret);
       if (keyBytes.length === 0) return null;
@@ -675,209 +981,162 @@ function twoFA() {
       const hmac = await hmacSha1(keyBytes, counterToBuffer(counter));
       return truncate(hmac, 6);
     }
+
     const secretEl = document.getElementById('secret');
     const codeEl = document.getElementById('totp');
     const countdownEl = document.getElementById('countdown');
+
     async function update() {
       const secret = secretEl.value.trim();
       const remaining = 30 - (Math.floor(Date.now() / 1000) % 30);
       countdownEl.textContent = remaining;
-      if (!secret) { codeEl.textContent = "------"; return; }
+      if (!secret) {
+        codeEl.textContent = "------";
+        return;
+      }
       const code = await generateTOTP(secret);
       codeEl.textContent = code || "invalid";
     }
+
     setInterval(update, 1000);
     update();
 
+    let ipStartTime = Date.now();
+    let lastKnownIP = "";
+    let isAutoRotating = false;
 
-// IP new Code
-let ipStartTime = Date.now();
-let lastKnownIP = "";
-let isAutoRotating = false;
-
-// Fetch IP once at start
-async function getCurrentIP() {
-  try {
-    const res = await fetch('https://api.ipify.org?format=json');
-    const data = await res.json();
-    return data.ip;
-  } catch (e) {
-    return "error";
-  }
-}
-
-// Trigger the real proxy rotation via your URL
-async function triggerProxyRotation() {
-  try {
-    const res = await fetch('https://i.fxdx.in/actionlinks/do/changeip/YTbojipTQnuowNvn2MkNoA');
-    const data = await res.json();
-    console.log("Proxy rotation triggered:", data.message); // Logs "changeip command has been sent"
-    return true;
-  } catch (e) {
-    console.error("Proxy rotation failed:", e);
-    return false;
-  }
-}
-
-// Run once when page loads
-getCurrentIP().then(ip => {
-  document.getElementById("currentIP").textContent = ip;
-  lastKnownIP = ip;
-  ipStartTime = Date.now();
-});
-
-// Update age counter every second
-setInterval(() => {
-  const seconds = Math.floor((Date.now() - ipStartTime) / 1000);
-  const m = String(Math.floor(seconds / 60)).padStart(2, '0');
-  const s = String(seconds % 60).padStart(2, '0');
-  document.getElementById("ipAge").textContent = `${m}:${s}`;
-}, 1000);
-
-// MAIN FUNCTION — NOW WITH AUTO-ROTATE LOOP + REAL PROXY URL
-async function rotateIP() {
-  if (isAutoRotating) {
-    // Stop the loop if already running
-    isAutoRotating = false;
-    showToast("Auto-rotation stopped");
-    return;
-  }
-
-  const ipSpan = document.getElementById("currentIP");
-  const oldDisplay = document.getElementById("oldIPDisplay");
-  const ageSpan = document.getElementById("ipAge");
-  const rotateBtn = document.getElementById("rotateIpBtn");
-
-  const oldIP = ipSpan.textContent.trim();
-
-  // Visual feedback: starting rotation
-  ipSpan.textContent = "starting...";
-  oldDisplay.textContent = "";
-  ageSpan.textContent = "00:00";
-  rotateBtn.textContent = "🛑"; // Change button to "Stop" during loop
-
-  // START AUTO-LOOP: Keep rotating until IP changes
-  isAutoRotating = true;
-  let attempts = 0;
-  const maxAttempts = 20; // Safety limit: stop after 20 tries (~1 min)
-
-  const autoLoop = async () => {
-    attempts++;
-    ipSpan.textContent = `attempt ${attempts}...`;
-    showToast(`Auto-rotating... (${attempts})`);
-
-    // Trigger your real proxy rotation URL
-    await triggerProxyRotation();
-
-    // Wait for IP to potentially change (your proxy might take 1-2s, so wait 3s total)
-    await new Promise(r => setTimeout(r, 3000));
-
-    // Check new IP
-    const newIP = await getCurrentIP();
-    ipSpan.textContent = newIP;
-    ipStartTime = Date.now();
-
-    // Show Old → New
-    if (oldIP && oldIP !== "fetching..." && oldIP !== "starting..." && oldIP !== "error") {
-      oldDisplay.textContent = `Old → ${oldIP}  →  `;
-    }
-
-    // SUCCESS = IP CHANGED → GREEN BLINK 5s + STOP LOOP
-    if (newIP !== oldIP && oldIP !== "starting..." && oldIP !== "fetching..." && newIP !== "error") {
-      ipSpan.style.color = "#00ff00";
-      ipSpan.style.textShadow = "0 0 15px #0f0";
-      ageSpan.style.color = "#00ff00";
-      oldDisplay.style.color = "#00ff00";
-
-           // Additional// GET BAR
-    const ipBar = document.getElementById("ipBar");
-
-    // ⭐ DARK GREEN BACKGROUND + BORDER
-    ipBar.style.transition = "background 0.5s ease, border-color 0.5s ease";
-    ipBar.style.background = "#006400";   // dark green solid
-    ipBar.style.borderColor = "#00ff00";  // bright green border
-
-    // ⭐ FADE BACK AFTER 5 SECONDS
-    setTimeout(() => {
-        ipBar.style.background = "rgba(20,20,50,0.6)";
-        ipBar.style.borderColor = "rgba(120,100,255,0.3)";
-    }, 5000);
-      
-      showToast(`SUCCESS! IP CHANGED after ${attempts} tries → ${newIP}`);
-      
-      rotateBtn.textContent = "🔄"; // Reset button
-      isAutoRotating = false;
-
-      setTimeout(() => {
-        ipSpan.style.color = "#0ff";
-        ipSpan.style.textShadow = "0 0 8px #0ff";
-        ageSpan.style.color = "#0ff";
-        oldDisplay.style.color = "#888";
-      }, 5000);
-
-      lastKnownIP = newIP;
-      return; // Stop the loop
-
-    // FAILED THIS ATTEMPT = RED BLINK 2s (quick, since looping)
-    } else {
-      ipSpan.style.color = "#ff0033";
-      ipSpan.style.textShadow = "0 0 15px #f00";
-      ageSpan.style.color = "#ff0033";
-      showToast(`No change yet... (${attempts}/${maxAttempts})`);
-
-      setTimeout(() => {
-        ipSpan.style.color = "#0ff";
-        ipSpan.style.textShadow = "0 0 8px #0ff";
-        ageSpan.style.color = "#0ff";
-      }, 2000); // Shorter red blink during loop
-
-      // Continue loop if not max attempts
-      if (attempts < maxAttempts && isAutoRotating) {
-        setTimeout(autoLoop, 1000); // Next attempt after 1s pause
-      } else if (attempts >= maxAttempts) {
-        showToast("Max attempts reached — stopping. IP did not change.");
-        rotateBtn.textContent = "Rotate";
-        isAutoRotating = false;
-        ipSpan.style.color = "#ff0033"; // Final red for full failure
-        setTimeout(() => ipSpan.style.color = "#0ff", 5000);
+    async function getCurrentIP() {
+      try {
+        const res = await fetch('https://api.ipify.org?format=json');
+        const data = await res.json();
+        return data.ip;
+      } catch (e) {
+        return "error";
       }
     }
-  };
 
-  // Kick off the loop
-  autoLoop();
-}
+    async function triggerProxyRotation() {
+      try {
+        const res = await fetch('https://i.fxdx.in/actionlinks/do/changeip/YTbojipTQnuowNvn2MkNoA');
+        const data = await res.json();
+        console.log("Proxy rotation triggered:", data.message);
+        return true;
+      } catch (e) {
+        console.error("Proxy rotation failed:", e);
+        return false;
+      }
+    }
 
-// Profile Function
-    function showProfileList() {
-  const modal = document.getElementById("profileModal");
-  const list = document.getElementById("profileList");
-  list.innerHTML = "";   // ← this line caused the error when #profileList was missing
-  profiles.forEach((p, i) => {
-    const li = document.createElement("li");
-    li.textContent = [p.name, p.oldusername || p.username].filter(Boolean).join(" ") || `Profile ${i+1}`;
-    li.onclick = () => { currentIndex = i; displayProfile(); closeModal(); };
-    li.style = "padding:11px 14px;margin:4px 8px;background:rgba(255,255,255,0.1);border-radius:10px;cursor:pointer;transition:0.2s;";
-    li.onmouseover = () => li.style.background = "rgba(187,134,252,0.3)";
-    li.onmouseout  = () => li.style.background = "rgba(255,255,255,0.1)";
-    list.appendChild(li);
-  });
-  modal.style.display = "block";
-}
+    getCurrentIP().then(ip => {
+      document.getElementById("currentIP").textContent = ip;
+      lastKnownIP = ip;
+      ipStartTime = Date.now();
+    });
 
-function closeModal() {
-  document.getElementById("profileModal").style.display = "none";
-}
+    setInterval(() => {
+      const seconds = Math.floor((Date.now() - ipStartTime) / 1000);
+      const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+      const s = String(seconds % 60).padStart(2, '0');
+      document.getElementById("ipAge").textContent = `${m}:${s}`;
+    }, 1000);
 
-// Close modal when clicking outside
-window.onclick = function(e) {
-  const modal = document.getElementById("profileModal");
-  if (e.target === modal) closeModal();
-}
+    async function rotateIP() {
+      if (isAutoRotating) {
+        isAutoRotating = false;
+        showToast("Auto-rotation stopped");
+        return;
+      }
 
-   // DAISYSMS — FINAL VERSION (5-second poll + auto-stop when code arrives)
+      const ipSpan = document.getElementById("currentIP");
+      const oldDisplay = document.getElementById("oldIPDisplay");
+      const ageSpan = document.getElementById("ipAge");
+      const rotateBtn = document.getElementById("rotateIpBtn");
+      const ipBar = document.getElementById("ipBar");
 
-// DAISYSMS — FINAL COST-OPTIMIZED (No Area Codes, Dec 2025)
+      const oldIP = ipSpan.textContent.trim();
+
+      ipSpan.textContent = "starting...";
+      oldDisplay.textContent = "";
+      ageSpan.textContent = "00:00";
+      rotateBtn.textContent = "🛑";
+
+      isAutoRotating = true;
+      let attempts = 0;
+      const maxAttempts = 20;
+
+      const autoLoop = async () => {
+        attempts++;
+        ipSpan.textContent = `attempt ${attempts}...`;
+        showToast(`Auto-rotating... (${attempts})`);
+
+        await triggerProxyRotation();
+        await new Promise(r => setTimeout(r, 3000));
+
+        const newIP = await getCurrentIP();
+        ipSpan.textContent = newIP;
+        ipStartTime = Date.now();
+
+        if (oldIP && oldIP !== "fetching..." && oldIP !== "starting..." && oldIP !== "error") {
+          oldDisplay.textContent = `Old → ${oldIP}  →  `;
+        }
+
+        if (newIP !== oldIP && oldIP !== "starting..." && oldIP !== "fetching..." && newIP !== "error") {
+          ipSpan.style.color = "#00ff00";
+          ipSpan.style.textShadow = "0 0 15px #0f0";
+          ageSpan.style.color = "#00ff00";
+          oldDisplay.style.color = "#00ff00";
+
+          ipBar.style.transition = "background 0.5s ease, border-color 0.5s ease";
+          ipBar.style.background = "#006400";
+          ipBar.style.borderColor = "#00ff00";
+
+          setTimeout(() => {
+            ipBar.style.background = "rgb(20,20,50)";
+            ipBar.style.borderColor = "#444";
+          }, 5000);
+
+          showToast(`SUCCESS! IP CHANGED after ${attempts} tries → ${newIP}`);
+
+          rotateBtn.textContent = "🔄";
+          isAutoRotating = false;
+
+          setTimeout(() => {
+            ipSpan.style.color = "#0ff";
+            ipSpan.style.textShadow = "0 0 8px #0ff";
+            ageSpan.style.color = "#0ff";
+            oldDisplay.style.color = "#888";
+          }, 5000);
+
+          lastKnownIP = newIP;
+          return;
+
+        } else {
+          ipSpan.style.color = "#ff0033";
+          ipSpan.style.textShadow = "0 0 15px #f00";
+          ageSpan.style.color = "#ff0033";
+          showToast(`No change yet... (${attempts}/${maxAttempts})`);
+
+          setTimeout(() => {
+            ipSpan.style.color = "#0ff";
+            ipSpan.style.textShadow = "0 0 8px #0ff";
+            ageSpan.style.color = "#0ff";
+          }, 2000);
+
+          if (attempts < maxAttempts && isAutoRotating) {
+            setTimeout(autoLoop, 1000);
+          } else if (attempts >= maxAttempts) {
+            showToast("Max attempts reached — stopping. IP did not change.");
+            rotateBtn.textContent = "🔄";
+            isAutoRotating = false;
+            ipSpan.style.color = "#ff0033";
+            setTimeout(() => ipSpan.style.color = "#0ff", 5000);
+          }
+        }
+      };
+
+      autoLoop();
+    }
+
     const API_KEY = 'G1wJwY6tehQmO7uiX3v7nCTSZrU3oc';
     const BASE = 'https://daisysms.com/stubs/handler_api.php';
     const P = u => `https://corsproxy.io/?${encodeURIComponent(u)}`;
@@ -886,107 +1145,135 @@ window.onclick = function(e) {
     const wait = document.getElementById('miniWait');
     const logEl = document.getElementById('miniLog');
     let rentalId = null, phoneNum = null, poll = null;
-    function log(t){ logEl.innerHTML += t + '<br>'; logEl.scrollTop = 9999; }
-    async function api(a, p={}){
-        let u = `${BASE}?api_key=${API_KEY}&action=${a}`;
-        for(let k in p) u += `&${k}=${p[k]}`;
-        const r = await fetch(P(u));
-        const body = (await r.text()).trim();
-        const h = {}; r.headers.forEach((v,k)=>h[k.toLowerCase()]=v);
-        return {body, h};
-    }
-    async function getBalance(){
-        const {body} = await api('getBalance');
-        if(body.startsWith('ACCESS_BALANCE:')) log('Balance: $'+body.split(':')[1]);
-    }
-    async function rentIGNumber(){
-        const {body} = await api('getNumber', {service:'ig', max_price:'0.8'});
-        if(body.startsWith('ACCESS_NUMBER:')){
-            const [_, id, num] = body.split(':');
-            rentalId = id; phoneNum = num;
-            phone.textContent = num;
-            wait.style.display = 'block';
-            code.style.display = 'none';
-            log('Rented: '+num);
-            startPoll();
-        } else { phone.textContent = 'Failed'; log('Failed: '+body); }
-    }
-    async function check(){
-        if(!rentalId) return;
-        const {body, h} = await api('getStatus', {id:rentalId, text:1});
-        let c = null;
-        if(body.includes('STATUS_OK')){
-            const m = body.match(/\d{4,8}/) || (h['x-text']||'').match(/\d{4,8}/);
-            if(m) c = m[0];
-        }
-        if(c){
-            code.textContent = c;
-            code.style.display = 'block';
-            wait.style.display = 'none';
-            log('CODE: '+c);
-            clearInterval(poll); poll=null;
-        }
-    }
-    function startPoll(){ if(poll) clearInterval(poll); poll=setInterval(check,6000); check(); }
-    function copyPhone(el){
-        if(!phoneNum) return;
-        navigator.clipboard.writeText(phoneNum);
-        el.textContent='Copied!';
-        setTimeout(()=>el.textContent=phoneNum,1200);
-    }
-    function copyCode(el){
-        const c = el.textContent;
-        navigator.clipboard.writeText(c);
-        el.textContent='Copied!';
-        setTimeout(()=>el.textContent=c,1500);
-    }
-    async function cancelNumber(){
-        if(!rentalId) return;
-        const {body} = await api('setStatus',{id:rentalId, status:8});
-        if(body.includes('ACCESS_CANCEL')){
-            log('Canceled & refunded');
-            phone.textContent = 'Canceled';
-            wait.style.display = code.style.display = 'none';
-            clearInterval(poll); poll=null; rentalId=phoneNum=null;
-        }
-    }
-    getBalance();
 
-// END of DAISY
+    function log(t) {
+      logEl.innerHTML += t + '<br>';
+      logEl.scrollTop = 9999;
+    }
+
+    async function api(a, p={}) {
+      let u = `${BASE}?api_key=${API_KEY}&action=${a}`;
+      for(let k in p) u += `&${k}=${p[k]}`;
+      const r = await fetch(P(u));
+      const body = (await r.text()).trim();
+      const h = {};
+      r.headers.forEach((v,k) => h[k.toLowerCase()] = v);
+      return {body, h};
+    }
+
+    async function getBalance() {
+      const {body} = await api('getBalance');
+      if(body.startsWith('ACCESS_BALANCE:')) {
+        log('Balance: ' + body.split(':')[1]);
+        showToast('Balance: ' + body.split(':')[1]);
+      }
+    }
+
+    async function rentIGNumber() {
+      if (poll) {
+        clearInterval(poll);
+        poll = null;
+      }
+      rentalId = null;
+      phoneNum = null;
+      code.style.display = 'none';
+      wait.style.display = 'none';
+
+      const {body} = await api('getNumber', {service:'ig', max_price:'0.8'});
+      if(body.startsWith('ACCESS_NUMBER:')) {
+        const [_, id, num] = body.split(':');
+        rentalId = id;
+        phoneNum = num;
+        phone.textContent = num;
+        wait.style.display = 'block';
+        code.style.display = 'none';
+        log('Rented: ' + num + ' (ID: ' + id + ')');
+        showToast('Number rented: ' + num);
+        startPoll();
+      } else {
+        phone.textContent = 'Failed: ' + body;
+        log('Failed: ' + body);
+        showToast('Rental failed: ' + body);
+      }
+    }
+
+    async function check() {
+      if(!rentalId) return;
+      const {body, h} = await api('getStatus', {id:rentalId, text:1});
+      let c = null;
+      if(body.includes('STATUS_OK')) {
+        const m = body.match(/\d{4,8}/) || (h['x-text']||'').match(/\d{4,8}/);
+        if(m) c = m[0];
+      }
+      if(c) {
+        code.textContent = c;
+        code.style.display = 'block';
+        wait.style.display = 'none';
+        log('CODE: ' + c);
+        showToast('Code received: ' + c);
+        clearInterval(poll);
+        poll = null;
+      }
+    }
+
+    function startPoll() {
+      if(poll) clearInterval(poll);
+      poll = setInterval(check, 6000);
+      check();
+    }
+
+    function copyPhone(el) {
+      if(!phoneNum) return;
+      navigator.clipboard.writeText(phoneNum);
+      const original = el.textContent;
+      el.textContent = 'Copied!';
+      showToast('Phone copied!');
+      setTimeout(() => el.textContent = original, 1200);
+    }
+
+    function copyCode(el) {
+      const c = el.textContent;
+      navigator.clipboard.writeText(c);
+      const original = el.textContent;
+      el.textContent = 'Copied!';
+      showToast('Code copied!');
+      setTimeout(() => el.textContent = original, 1500);
+    }
+
+    async function cancelNumber() {
+      if(!rentalId) {
+        showToast('No active rental to cancel');
+        return;
+      }
+      const {body} = await api('setStatus', {id:rentalId, status:8});
+      if(body.includes('ACCESS_CANCEL')) {
+        log('Canceled & refunded (ID: ' + rentalId + ')');
+        showToast('Number canceled & refunded');
+        phone.textContent = 'Tap "Rent" to get number';
+        wait.style.display = 'none';
+        code.style.display = 'none';
+        
+        if (poll) {
+          clearInterval(poll);
+          poll = null;
+        }
+        rentalId = null;
+        phoneNum = null;
+      } else {
+        log('Cancel failed: ' + body);
+        showToast('Cancel failed: ' + body);
+      }
+    }
+
     function toggleSection(id) {
       const el = document.getElementById(id);
       const header = el.previousElementSibling;
       el.classList.toggle('open');
       header.classList.toggle('open');
     }
-//random
-     function copyRandom() {
-  const texts = [
-    "First post: I NEED FRIENDS!!",
-    "Wanna meet older guys",
-    "First post Trying to make friends on Threads."
-  ];
 
-  // Pick random text
-  const pick = texts[Math.floor(Math.random() * texts.length)];
-
-  // Copy to clipboard
-  navigator.clipboard.writeText(pick)
-    .then(() => {
-      // Success feedback
-      document.getElementById('status').textContent = `Copied: "${pick}"`;
-      document.getElementById('status').style.color = "lime";
-    })
-    .catch(err => {
-      // If clipboard fails (e.g. not HTTPS or old browser)
-      document.getElementById('status').textContent = "Copy failed (use HTTPS or newer browser)";
-      document.getElementById('status').style.color = "red";
-      console.error(err);
-    });
-}
-     
     loadProfiles();
-  
+    getBalance();
   </script>
 </body>
 </html>
