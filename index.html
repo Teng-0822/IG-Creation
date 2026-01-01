@@ -22,6 +22,7 @@
       overscroll-behavior: none;
     }
 
+    /* Modern Glass Card */
     .glass-card {
       background: rgba(25, 25, 50, 0.6);
       backdrop-filter: blur(20px);
@@ -40,6 +41,7 @@
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
     }
 
+    /* Collapsible Header */
     .collapsible-header {
       display: flex;
       justify-content: space-between;
@@ -86,6 +88,7 @@
       }
     }
 
+    /* Profile Compact Grid */
     .profile-compact {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -134,6 +137,7 @@
       cursor: pointer;
     }
 
+    /* Inputs & Buttons */
     input, button {
       border: none;
       outline: none;
@@ -157,6 +161,7 @@
       background: rgba(255, 255, 255, 0.15);
     }
 
+    /* Button Groups Container */
     .button-group-container {
       margin: 16px 0;
       padding: 12px;
@@ -208,6 +213,7 @@
       content: "👁️‍🗨️";
     }
 
+    /* Button Group */
     .button-group {
       display: flex;
       flex-wrap: wrap;
@@ -224,6 +230,7 @@
       margin: 0;
     }
 
+    /* Floating Buttons */
     .floating-btn {
       width: 44px;
       height: 44px;
@@ -267,6 +274,7 @@
       transform: translateY(-2px) scale(1.02);
     }
 
+    /* 2FA Section Styling */
     #twofaSection {
       padding: 8px;
     }
@@ -298,6 +306,7 @@
       font-family: 'Courier New', monospace;
     }
 
+    /* IP Bar */
     #ipBar {
       background: rgb(20, 20, 50);
       border: 1px solid #444;
@@ -326,6 +335,7 @@
       min-width: 50px;
     }
 
+    /* DaisySMS Section */
     .daisy-container {
       display: flex;
       align-items: center;
@@ -424,6 +434,7 @@
       border: 1px solid #333;
     }
 
+    /* Toast */
     .toast {
       position: fixed;
       bottom: 80px;
@@ -446,6 +457,7 @@
       opacity: 1;
     }
 
+    /* Modal */
     .modal {
       display: none;
       position: fixed;
@@ -510,6 +522,7 @@
       color: #fff;
     }
 
+    /* Scrollbar Styling */
     ::-webkit-scrollbar {
       width: 8px;
       height: 8px;
@@ -532,6 +545,7 @@
 </head>
 <body>
 
+  <!-- Profile Card -->
   <div class="glass-card">
     <div class="collapsible-header open" onclick="toggleSection('profileSection')">
       <span>Profile: <span id="profileHeaderUsername" style="color:#0ff; font-weight:700;">—</span></span>
@@ -546,6 +560,7 @@
     </div>
   </div>
 
+  <!-- 2FA Card -->
   <div class="glass-card">
     <div class="collapsible-header open" onclick="toggleSection('twofaSection')">
       <span style="flex:1;">2FA: <span id="countdown">--</span></span>
@@ -563,6 +578,7 @@
     </div>
   </div>
 
+  <!-- IP Bar -->
   <div id="ipBar">
     <button id="rotateIpBtn" onclick="rotateIP()">🔄</button>
     <span id="oldIPDisplay" style="color:#888; font-size:11px;"></span>
@@ -571,6 +587,7 @@
     <span id="ipAge">00:00</span>
   </div>
 
+  <!-- Button Groups with Toggle -->
   <div class="button-group-container">
     <div class="button-group-header">
       <span class="util-name">Container Navigation</span>
@@ -626,6 +643,7 @@
     </div>
   </div>
 
+  <!-- DaisySMS Section -->
   <div class="glass-card">
     <div class="collapsible-header open" onclick="toggleSection('daisySection')">
       <span>Phone Rental (DaisySMS)</span>
@@ -646,8 +664,10 @@
     </div>
   </div>
 
+  <!-- Toast -->
   <div id="toast" class="toast"></div>
 
+  <!-- Profile List Modal -->
   <div id="profileModal" class="modal">
     <div class="modal-content">
       <span class="close" onclick="closeModal()">×</span>
@@ -659,6 +679,7 @@
   <script>
     let profiles = [], currentIndex = 0;
 
+    // Load profiles
     async function loadProfiles() {
       try {
         const API_URL = "https://script.google.com/macros/s/AKfycbyA4s9bYHTiHAKgy0f72pQwjG5NRoQmY3ADKo4FxWiszCPAOvZmDz92OnBiSNuSqGq6/exec";
@@ -740,6 +761,7 @@
       }
     }
 
+    // 2FA Controls
     document.getElementById('pasteBtn').addEventListener('click', async () => {
       try {
         const text = await navigator.clipboard.readText();
@@ -767,6 +789,7 @@
       }
     });
 
+    // Navigation
     function prevProfile() {
       if (currentIndex > 0) {
         currentIndex--;
@@ -919,6 +942,7 @@
       if (e.target === modal) closeModal();
     }
 
+    // Toggle button groups
     function toggleButtonGroup(btn, groupId) {
       const group = document.getElementById(groupId);
       const isHidden = group.classList.contains('hidden');
@@ -934,6 +958,7 @@
       }
     }
 
+    // TOTP Functions
     function base32toBytes(base32) {
       base32 = (base32 || '').replace(/=+$/,'').replace(/[^A-Z2-7]/gi,'').toUpperCase();
       const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
@@ -1001,6 +1026,7 @@
     setInterval(update, 1000);
     update();
 
+    // IP Rotation
     let ipStartTime = Date.now();
     let lastKnownIP = "";
     let isAutoRotating = false;
@@ -1137,6 +1163,7 @@
       autoLoop();
     }
 
+    // DaisySMS - FIXED VERSION
     const API_KEY = 'G1wJwY6tehQmO7uiX3v7nCTSZrU3oc';
     const BASE = 'https://daisysms.com/stubs/handler_api.php';
     const P = u => `https://corsproxy.io/?${encodeURIComponent(u)}`;
@@ -1164,12 +1191,13 @@
     async function getBalance() {
       const {body} = await api('getBalance');
       if(body.startsWith('ACCESS_BALANCE:')) {
-        log('Balance: ' + body.split(':')[1]);
-        showToast('Balance: ' + body.split(':')[1]);
+        log('Balance:  + body.split(':')[1]);
+        showToast('Balance:  + body.split(':')[1]);
       }
     }
 
     async function rentIGNumber() {
+      // Reset everything before new rental
       if (poll) {
         clearInterval(poll);
         poll = null;
@@ -1199,20 +1227,62 @@
 
     async function check() {
       if(!rentalId) return;
-      const {body, h} = await api('getStatus', {id:rentalId, text:1});
-      let c = null;
-      if(body.includes('STATUS_OK')) {
-        const m = body.match(/\d{4,8}/) || (h['x-text']||'').match(/\d{4,8}/);
-        if(m) c = m[0];
-      }
-      if(c) {
-        code.textContent = c;
-        code.style.display = 'block';
-        wait.style.display = 'none';
-        log('CODE: ' + c);
-        showToast('Code received: ' + c);
-        clearInterval(poll);
-        poll = null;
+      
+      try {
+        const {body, h} = await api('getStatus', {id:rentalId, text:1});
+        
+        // Log the full response for debugging
+        console.log('DaisySMS Response:', body);
+        console.log('Headers:', h);
+        
+        let c = null;
+        
+        // Check multiple possible response formats
+        if (body.includes('STATUS_OK')) {
+          // Try to extract code from body first
+          const bodyMatch = body.match(/STATUS_OK:(\d{4,8})/);
+          if (bodyMatch) {
+            c = bodyMatch[1];
+          } else {
+            // Try general digit search in body
+            const generalMatch = body.match(/\d{4,8}/);
+            if (generalMatch) c = generalMatch[0];
+          }
+          
+          // If not in body, check headers
+          if (!c && h['x-text']) {
+            const headerMatch = h['x-text'].match(/\d{4,8}/);
+            if (headerMatch) c = headerMatch[0];
+          }
+          
+          // Also check x-code header if it exists
+          if (!c && h['x-code']) {
+            const codeMatch = h['x-code'].match(/\d{4,8}/);
+            if (codeMatch) c = codeMatch[0];
+          }
+        }
+        
+        // Check for any status that might contain a code
+        if (!c && (body.includes('STATUS_WAIT_CODE') || body.includes('STATUS_WAIT_RESEND'))) {
+          log('Waiting for code...');
+        }
+        
+        if (c) {
+          code.textContent = c;
+          code.style.display = 'block';
+          wait.style.display = 'none';
+          log('CODE RECEIVED: ' + c);
+          showToast('✅ Code received: ' + c);
+          
+          // Copy code to clipboard automatically
+          navigator.clipboard.writeText(c).catch(err => console.log('Auto-copy failed:', err));
+          
+          clearInterval(poll);
+          poll = null;
+        }
+      } catch (err) {
+        console.error('Error checking status:', err);
+        log('Check error: ' + err.message);
       }
     }
 
@@ -1253,6 +1323,7 @@
         wait.style.display = 'none';
         code.style.display = 'none';
         
+        // CRITICAL: Reset all state variables
         if (poll) {
           clearInterval(poll);
           poll = null;
@@ -1272,6 +1343,7 @@
       header.classList.toggle('open');
     }
 
+    // Initialize
     loadProfiles();
     getBalance();
   </script>
