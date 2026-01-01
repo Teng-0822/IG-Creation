@@ -1137,50 +1137,65 @@
       autoLoop();
     }
 
-    const API_KEY = 'G1wJwY6tehQmO7uiX3v7nCTSZrU3oc';
-    const BASE = 'https://daisysms.com/stubs/handler_api.php';
-    const P = u => `https://corsproxy.io/?${encodeURIComponent(u)}`;
-    const phone = document.getElementById('miniPhone');
-    const code = document.getElementById('miniCode');
-    const wait = document.getElementById('miniWait');
-    const logEl = document.getElementById('miniLog');
-    let rentalId = null, phoneNum = null, poll = null;
+   const API_KEY = 'G1wJwY6tehQmO7uiX3v7nCTSZrU3oc';
+  const BASE = 'https://daisysms.com/stubs/handler_api.php';
+  const P = u => `https://corsproxy.io/?${encodeURIComponent(u)}`;  // Note: corsproxy.io can be unreliable. If issues persist, consider a custom proxy server or browser extension.
+  const phone = document.getElementById('miniPhone');
+  const code = document.getElementById('miniCode');
+  const wait = document.getElementById('miniWait');
+  const logEl = document.getElementById('miniLog');
+  let rentalId = null, phoneNum = null, poll = null;
 
-    function log(t) {
-      logEl.innerHTML += t + '<br>';
-      logEl.scrollTop = 9999;
-    }
+  function log(t) {
+    logEl.innerHTML += t + '<br>';
+    logEl.scrollTop = 9999;
+    console.log('[DaisySMS Log]:', t);  // Also log to console for easier debugging
+  }
 
-    async function api(a, p={}) {
-      let u = `${BASE}?api_key=${API_KEY}&action=${a}`;
-      for(let k in p) u += `&${k}=${p[k]}`;
+  async function api(a, p = {}) {
+    let u = `${BASE}?api_key=${API_KEY}&action=${a}`;
+    for (let k in p) u += `&${k}=${p[k]}`;
+    try {
       const r = await fetch(P(u));
       const body = (await r.text()).trim();
       const h = {};
-      r.headers.forEach((v,k) => h[k.toLowerCase()] = v);
-      return {body, h};
+      r.headers.forEach((v, k) => h[k.toLowerCase()] = v);
+      return { body, h };
+    } catch (e) {
+      log('API Error: ' + e.message);
+      throw e;
     }
+  }
 
-    async function getBalance() {
-      const {body} = await api('getBalance');
-      if(body.startsWith('ACCESS_BALANCE:')) {
+  async function getBalance() {
+    try {
+      const { body } = await api('getBalance');
+      if (body.startsWith('ACCESS_BALANCE:')) {
         log('Balance: ' + body.split(':')[1]);
         showToast('Balance: ' + body.split(':')[1]);
+      } else {
+        log('Balance check failed: ' + body);
+        showToast('Balance check failed');
       }
+    } catch (e) {
+      log('Balance error: ' + e.message);
+      showToast('Balance error');
     }
+  }
 
-    async function rentIGNumber() {
-      if (poll) {
-        clearInterval(poll);
-        poll = null;
-      }
-      rentalId = null;
-      phoneNum = null;
-      code.style.display = 'none';
-      wait.style.display = 'none';
+  async function rentIGNumber() {
+    if (poll) {
+      clearInterval(poll);
+      poll = null;
+    }
+    rentalId = null;
+    phoneNum = null;
+    code.style.display = 'none';
+    wait.style.display = 'none';
 
-      const {body} = await api('getNumber', {service:'ig', max_price:'0.8'});
-      if(body.startsWith('ACCESS_NUMBER:')) {
+    try {
+      const { body } = await api('getNumber', { service: 'ig', max_price: '0.8' });
+      if (body.startsWith('ACCESS_NUMBER:')) {
         const [_, id, num] = body.split(':');
         rentalId = id;
         phoneNum = num;
@@ -1192,67 +1207,93 @@
         startPoll();
       } else {
         phone.textContent = 'Failed: ' + body;
-        log('Failed: ' + body);
+        log('Rental failed: ' + body);
         showToast('Rental failed: ' + body);
       }
+    } catch (e) {
+      log('Rental error: ' + e.message);
+      showToast('Rental error');
     }
+  }
 
-    async function check() {
-      if(!rentalId) return;
-      const {body, h} = await api('getStatus', {id:rentalId, text:1});
+  async function check() {
+    if (!rentalId) return;
+    try {
+      const { body, h } = await api('getStatus', { id: rentalId, text: 1 });
+      log('Status Response Body: ' + body);
+      log('Status Response Headers: ' + JSON.stringify(h));
+
       let c = null;
-      if(body.includes('STATUS_OK')) {
-        const m = body.match(/\d{4,8}/) || (h['x-text']||'').match(/\d{4,8}/);
-        if(m) c = m[0];
+      // Check for STATUS_OK and extract code (more flexible regex for 4-8 digits)
+      if (body.includes('STATUS_OK') || body.includes('OK')) {
+        const match = body.match(/(\d{4,8})/) || (h['x-text'] || '').match(/(\d{4,8})/) || (h['text'] || '').match(/(\d{4,8})/);
+        if (match) c = match[1];
       }
-      if(c) {
+
+      if (c) {
         code.textContent = c;
         code.style.display = 'block';
         wait.style.display = 'none';
-        log('CODE: ' + c);
+        log('CODE RECEIVED: ' + c);
         showToast('Code received: ' + c);
         clearInterval(poll);
         poll = null;
+      } else {
+        log('No code yet. Retrying...');
       }
+    } catch (e) {
+      log('Status check error: ' + e.message);
+      // Retry once on error
+      setTimeout(check, 2000);
     }
+  }
 
-    function startPoll() {
-      if(poll) clearInterval(poll);
-      poll = setInterval(check, 6000);
-      check();
-    }
-
-    function copyPhone(el) {
-      if(!phoneNum) return;
-      navigator.clipboard.writeText(phoneNum);
-      const original = el.textContent;
-      el.textContent = 'Copied!';
-      showToast('Phone copied!');
-      setTimeout(() => el.textContent = original, 1200);
-    }
-
-    function copyCode(el) {
-      const c = el.textContent;
-      navigator.clipboard.writeText(c);
-      const original = el.textContent;
-      el.textContent = 'Copied!';
-      showToast('Code copied!');
-      setTimeout(() => el.textContent = original, 1500);
-    }
-
-    async function cancelNumber() {
-      if(!rentalId) {
-        showToast('No active rental to cancel');
-        return;
+  function startPoll() {
+    if (poll) clearInterval(poll);
+    poll = setInterval(check, 3000);  // Faster polling: every 3 seconds
+    check();  // Immediate check
+    // Timeout after 5 minutes to prevent infinite polling
+    setTimeout(() => {
+      if (poll) {
+        clearInterval(poll);
+        poll = null;
+        log('Polling timed out after 5 minutes. Code may have expired.');
+        showToast('Polling timed out. Try renting again.');
       }
-      const {body} = await api('setStatus', {id:rentalId, status:8});
-      if(body.includes('ACCESS_CANCEL')) {
+    }, 300000);
+  }
+
+  function copyPhone(el) {
+    if (!phoneNum) return;
+    navigator.clipboard.writeText(phoneNum);
+    const original = el.textContent;
+    el.textContent = 'Copied!';
+    showToast('Phone copied!');
+    setTimeout(() => el.textContent = original, 1200);
+  }
+
+  function copyCode(el) {
+    const c = el.textContent;
+    navigator.clipboard.writeText(c);
+    const original = el.textContent;
+    el.textContent = 'Copied!';
+    showToast('Code copied!');
+    setTimeout(() => el.textContent = original, 1500);
+  }
+
+  async function cancelNumber() {
+    if (!rentalId) {
+      showToast('No active rental to cancel');
+      return;
+    }
+    try {
+      const { body } = await api('setStatus', { id: rentalId, status: 8 });
+      if (body.includes('ACCESS_CANCEL')) {
         log('Canceled & refunded (ID: ' + rentalId + ')');
         showToast('Number canceled & refunded');
         phone.textContent = 'Tap "Rent" to get number';
         wait.style.display = 'none';
         code.style.display = 'none';
-        
         if (poll) {
           clearInterval(poll);
           poll = null;
@@ -1263,7 +1304,11 @@
         log('Cancel failed: ' + body);
         showToast('Cancel failed: ' + body);
       }
+    } catch (e) {
+      log('Cancel error: ' + e.message);
+      showToast('Cancel error');
     }
+  }
 
     function toggleSection(id) {
       const el = document.getElementById(id);
