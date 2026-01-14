@@ -2,1323 +2,1041 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <title>TOOLS</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap');
     
-    * { 
-      box-sizing: border-box; 
-      margin: 0; 
-      padding: 0; 
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      touch-action: manipulation;
     }
     
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(135deg, #0a0a15 0%, #1a0033 50%, #0f0f1e 100%);
-      color: #eee;
-      min-height: 100vh;
-      padding: 16px;
-      overscroll-behavior: none;
-    }
-
-    .glass-card {
-      background: rgba(25, 25, 50, 0.6);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-radius: 24px;
-      border: 1px solid rgba(150, 120, 255, 0.2);
-      padding: 8px;
-      margin-bottom: 20px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
-                  inset 0 1px 0 rgba(255, 255, 255, 0.1);
-      transition: all 0.3s ease;
-    }
-
-    .glass-card:hover {
-      border-color: rgba(187, 134, 252, 0.4);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
-    }
-
-    .collapsible-header {
+      font-family: 'Rajdhani', sans-serif;
+      background: linear-gradient(145deg, #0d0221 0%, #150634 30%, #1a0a2e 60%, #0f0318 100%);
+      color: #fff;
+      height: 100vh;
+      height: 100dvh;
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
+    }
+
+    /* Animated Background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(ellipse at 20% 20%, rgba(255, 0, 128, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(0, 255, 255, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(128, 0, 255, 0.05) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Header */
+    .header {
+      background: rgba(15, 5, 30, 0.95);
+      border-bottom: 1px solid rgba(255, 0, 128, 0.3);
+      padding: 6px 10px;
+      display: flex;
       align-items: center;
-      cursor: pointer;
-      padding: 12px 8px;
-      font-weight: 700;
-      color: #bb86fc;
-      transition: all 0.3s ease;
-      border-radius: 16px;
-    }
-    
-    .collapsible-header:hover {
-      background: rgba(187, 134, 252, 0.1);
-    }
-    
-    .collapsible-header::after {
-      content: "▼";
-      font-size: 14px;
-      transition: transform 0.3s ease;
-    }
-    
-    .collapsible-header.open::after {
-      transform: rotate(180deg);
+      justify-content: space-between;
+      position: relative;
+      z-index: 10;
+      box-shadow: 0 2px 20px rgba(255, 0, 128, 0.2);
     }
 
-    .section {
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #ff0080, #00ffff, #ff0080, transparent);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .back-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #ff0080, #7b2ff7);
+      border: none;
       display: none;
-      animation: slideDown 0.3s ease;
-    }
-    
-    .section.open {
-      display: block;
-    }
-    
-    @keyframes slideDown {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+      color: #fff;
     }
 
-    .profile-compact {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin: 12px 0;
-      padding: 0 8px;
+    .back-btn.visible { display: flex; }
+
+    .header-title {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 900;
+      font-size: 14px;
+      background: linear-gradient(90deg, #ff0080, #00ffff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 30px rgba(255, 0, 128, 0.5);
     }
 
-    .profile-compact > div {
-      background: rgba(80, 60, 140, 0.3);
-      border-radius: 12px;
-      padding: 10px 12px;
-      border: 1px solid rgba(150, 120, 255, 0.3);
-      backdrop-filter: blur(8px);
-      min-height: 50px;
-      overflow: hidden;
-      transition: all 0.2s ease;
-    }
-
-    .profile-compact > div:hover {
-      background: rgba(100, 80, 160, 0.4);
-      border-color: rgba(187, 134, 252, 0.5);
-      transform: translateY(-2px);
-    }
-
-    .profile-compact label {
-      display: block;
+    .header-profile {
       font-size: 10px;
-      color: #999;
-      text-transform: uppercase;
-      margin-bottom: 4px;
-      letter-spacing: 0.5px;
+      color: #00ffff;
       font-weight: 600;
     }
 
-    .profile-compact span {
-      font-weight: 700;
-      font-size: 13px;
-      color: #0ff;
-      word-break: break-all;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      line-height: 1.4;
-      text-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
-      cursor: pointer;
-    }
-
-    input, button {
-      border: none;
-      outline: none;
-      border-radius: 12px;
-      padding: 12px 16px;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(150, 120, 255, 0.3);
-      color: white;
-      font-size: 14px;
-      transition: all 0.2s ease;
-      font-family: inherit;
-    }
-    
-    input::placeholder {
+    .ip-box {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-family: 'Orbitron', monospace;
+      font-size: 9px;
       color: #888;
+      min-width: 70px;
+      text-align: center;
+      transition: all 0.3s;
     }
 
-    input:focus, button:hover {
-      border-color: rgba(187, 134, 252, 0.6);
-      background: rgba(255, 255, 255, 0.15);
+    .ip-box.loading { border-color: #fff; color: #fff; }
+    .ip-box.success { 
+      border-color: #0f0; 
+      color: #0f0; 
+      box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+      background: rgba(0, 255, 0, 0.1);
     }
 
-    .button-group-container {
-      margin: 16px 0;
-      padding: 12px;
-      background: rgba(20, 20, 40, 0.4);
-      border-radius: 16px;
-      border: 1px solid rgba(120, 100, 255, 0.2);
-      transition: all 0.3s ease;
+    .rotate-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #00ffff, #0080ff);
+      border: none;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s;
     }
 
-    .button-group-header {
+    .rotate-btn.rotating { animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .header-right {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
+      gap: 6px;
     }
 
-    .util-name {
-      font-weight: 700;
-      font-size: 11px;
-      color: #bb86fc;
+    /* Main Content */
+    .main {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Views */
+    .view {
+      display: none;
+      flex: 1;
+      padding: 8px;
+      overflow-y: auto;
+    }
+
+    .view.active {
+      display: flex;
+      flex-direction: column;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Menu */
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      justify-content: center;
+      flex: 1;
+    }
+
+    .menu-item {
+      background: linear-gradient(135deg, rgba(255, 0, 128, 0.15), rgba(128, 0, 255, 0.15));
+      border: 1px solid rgba(255, 0, 128, 0.3);
+      border-radius: 12px;
+      padding: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.2s;
+    }
+
+    .menu-item:hover {
+      transform: translateX(5px);
+      border-color: #ff0080;
+      box-shadow: 0 0 20px rgba(255, 0, 128, 0.3);
+    }
+
+    .menu-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .menu-icon.insta { background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+    .menu-icon.threads { background: #000; border: 2px solid #fff; }
+    .menu-icon.daisy { background: linear-gradient(135deg, #00c853, #00e676); }
+
+    .menu-text { flex: 1; }
+    .menu-title { font-size: 15px; font-weight: 700; color: #fff; }
+    .menu-sub { font-size: 10px; color: #888; }
+    .menu-arrow { color: #ff0080; font-size: 16px; }
+
+    /* Cards */
+    .card {
+      background: rgba(20, 10, 40, 0.6);
+      border: 1px solid rgba(255, 0, 128, 0.2);
+      border-radius: 10px;
+      padding: 8px;
+      margin-bottom: 6px;
+    }
+
+    .card-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 9px;
+      color: #ff0080;
+      margin-bottom: 6px;
       text-transform: uppercase;
       letter-spacing: 1px;
     }
 
-    .toggle-btn {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      background: rgba(187, 134, 252, 0.2);
-      border: 1px solid rgba(187, 134, 252, 0.4);
+    /* Profile Grid */
+    .profile-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 4px;
+    }
+
+    .field {
+      background: rgba(0, 255, 255, 0.05);
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      border-radius: 6px;
+      padding: 4px 6px;
+      text-align: center;
+      min-width: 0;
+    }
+
+    .field label {
+      display: block;
+      font-size: 7px;
+      color: #888;
+      text-transform: uppercase;
+    }
+
+    .field span, .field input {
+      font-size: 9px;
+      font-weight: 700;
+      color: #00ffff;
+      cursor: pointer;
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      background: transparent;
+      border: none;
+      width: 100%;
+      text-align: center;
+      outline: none;
+    }
+
+    .field.fade span {
+      mask-image: linear-gradient(to right, #000 60%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to right, #000 60%, transparent 100%);
+    }
+
+    /* 2FA */
+    .twofa-row {
       display: flex;
       align-items: center;
-      justify-content: center;
+      gap: 6px;
+    }
+
+    .twofa-code {
+      flex: 1;
+      text-align: center;
+      font-family: 'Orbitron', monospace;
+      font-size: 20px;
+      font-weight: 900;
+      color: #00ffff;
+      text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+      letter-spacing: 3px;
+    }
+
+    .twofa-countdown {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 12px;
+      color: #ff0080;
+      font-weight: 700;
+      min-width: 20px;
+    }
+
+    .twofa-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      border: none;
       cursor: pointer;
-      transition: all 0.2s ease;
-      font-size: 14px;
+      font-size: 12px;
     }
 
-    .toggle-btn:hover {
-      background: rgba(187, 134, 252, 0.4);
-      transform: scale(1.1);
+    .twofa-input-row {
+      display: flex;
+      gap: 4px;
+      margin-top: 6px;
     }
 
-    .toggle-btn.hidden::after {
-      content: "👁️";
+    .twofa-input-row input {
+      flex: 1;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(128, 0, 255, 0.3);
+      border-radius: 6px;
+      padding: 6px 8px;
+      color: #fff;
+      font-size: 10px;
     }
 
-    .toggle-btn.visible::after {
-      content: "👁️‍🗨️";
+    .twofa-input-row button {
+      padding: 6px 12px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #ff0080, #7b2ff7);
+      border: none;
+      color: #fff;
+      font-weight: 700;
+      font-size: 10px;
+      cursor: pointer;
     }
 
-    .button-group {
+    /* Button Grid */
+    .btn-grid {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
-      justify-content: flex-end;
-      transition: all 0.3s ease;
-      max-height: 500px;
-      overflow: hidden;
+      gap: 6px;
     }
 
-    .button-group.hidden {
-      max-height: 0;
-      opacity: 0;
-      margin: 0;
-    }
-
-    .floating-btn {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
+    .btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px;
+      font-size: 12px;
       font-weight: 700;
-      color: white;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      color: #fff;
       cursor: pointer;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: none;
+      transition: all 0.15s;
       position: relative;
       overflow: hidden;
     }
 
-    .floating-btn::before {
+    .btn:active {
+      transform: scale(0.95);
+    }
+
+    .btn::after {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .btn:hover::after { opacity: 1; }
+
+    .save-btn {
       width: 100%;
-      height: 100%;
-      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      transform: translateX(-100%);
-      transition: transform 0.6s;
-    }
-
-    .floating-btn:hover::before {
-      transform: translateX(100%);
-    }
-
-    .floating-btn:hover {
-      transform: translateY(-4px) scale(1.08);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-    }
-
-    .floating-btn:active {
-      transform: translateY(-2px) scale(1.02);
-    }
-
-    #twofaSection {
       padding: 8px;
-    }
-
-    .twofa-display {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 12px;
-      margin: 8px 0;
-    }
-
-    .twofa-display button {
-      padding: 8px 12px;
-      font-size: 12px;
       border-radius: 8px;
-      min-width: 50px;
-      font-weight: 600;
-    }
-
-    #totp {
-      font-size: 28px;
-      font-weight: 900;
-      letter-spacing: 5px;
-      color: #0ff;
-      text-shadow: 0 0 12px rgba(0, 255, 255, 0.6);
-      min-width: 130px;
-      text-align: center;
-      font-family: 'Courier New', monospace;
-    }
-
-    #ipBar {
-      background: rgb(20, 20, 50);
-      border: 1px solid #444;
-      border-radius: 16px;
-      padding: 14px 16px;
-      margin: 16px 0;
-      text-align: center;
-      font-family: 'Courier New', monospace;
-      font-size: 13px;
-      color: #0ff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      transition: all 0.5s ease;
-    }
-
-    #ipBar button {
-      height: auto;
-      padding: 8px 12px;
-      font-size: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 50px;
-    }
-
-    .daisy-container {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 16px 0;
-    }
-
-    #miniPhone {
-      background: #001122;
-      color: #0ff;
-      padding: 12px 16px;
-      border-radius: 12px;
-      border: 2px solid #0ff;
-      text-align: left;
-      font-weight: bold;
-      font-size: 15px;
+      background: linear-gradient(135deg, #00c853, #00e676);
+      border: none;
+      color: #fff;
+      font-weight: 700;
+      font-size: 11px;
       cursor: pointer;
-      flex: 1;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      transition: all 0.2s ease;
+      margin-top: 6px;
     }
 
-    #miniPhone:hover {
-      background: #002233;
-      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    /* Daisy */
+    .daisy-phone {
+      background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(0, 128, 255, 0.1));
+      border: 2px solid #00ffff;
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+      font-family: 'Orbitron', monospace;
+      font-size: 14px;
+      font-weight: 700;
+      color: #00ffff;
+      cursor: pointer;
+      margin-bottom: 8px;
     }
 
-    .daisy-buttons {
+    .daisy-btns {
       display: flex;
       gap: 8px;
+      margin-bottom: 8px;
     }
 
-    .daisy-buttons button {
-      min-width: 44px;
-      padding: 12px;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: bold;
+    .daisy-btns button {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 700;
+      font-size: 12px;
       cursor: pointer;
     }
 
-    #miniWait {
-      margin: 12px 0;
-      padding: 12px;
-      background: #220000;
-      color: #f66;
-      border: 2px dashed #f00;
-      border-radius: 12px;
+    .daisy-wait {
+      background: rgba(255, 0, 0, 0.1);
+      border: 2px dashed #ff0080;
+      border-radius: 8px;
+      padding: 10px;
       text-align: center;
-      font-weight: bold;
-      font-size: 14px;
+      color: #ff0080;
+      font-weight: 700;
       display: none;
       animation: pulse 1.5s infinite;
     }
 
     @keyframes pulse {
-      0%, 100% { opacity: 0.7; }
+      0%, 100% { opacity: 0.6; }
       50% { opacity: 1; }
     }
 
-    #miniCode {
-      background: #001a00;
-      color: #0f0;
-      padding: 16px;
-      border-radius: 16px;
+    .daisy-code {
+      background: linear-gradient(135deg, rgba(0, 255, 0, 0.1), rgba(0, 200, 0, 0.1));
       border: 3px solid #0f0;
-      text-align: center;
-      font-size: 32px;
-      font-weight: bold;
-      letter-spacing: 4px;
-      cursor: pointer;
-      margin: 12px 0;
-      display: none;
-      box-shadow: 0 0 20px rgba(0, 255, 0, 0.4);
-      transition: all 0.2s ease;
-    }
-
-    #miniCode:hover {
-      box-shadow: 0 0 30px rgba(0, 255, 0, 0.6);
-      transform: scale(1.02);
-    }
-
-    #miniLog {
-      font-family: 'Courier New', monospace;
-      font-size: 10px;
-      color: #0a0;
-      height: 60px;
-      overflow: auto;
-      background: #111;
-      padding: 8px;
       border-radius: 10px;
-      margin-top: 8px;
-      line-height: 1.4;
-      border: 1px solid #333;
+      padding: 14px;
+      text-align: center;
+      font-family: 'Orbitron', monospace;
+      font-size: 28px;
+      font-weight: 900;
+      color: #0f0;
+      text-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+      cursor: pointer;
+      display: none;
+      margin-bottom: 8px;
     }
 
+    .daisy-log {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 6px;
+      font-family: monospace;
+      font-size: 8px;
+      color: #0a0;
+      height: 50px;
+      overflow-y: auto;
+    }
+
+    /* Toast */
     .toast {
       position: fixed;
-      bottom: 80px;
+      bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(0, 0, 0, 0.95);
-      color: #0f9;
-      padding: 14px 28px;
-      border-radius: 30px;
-      font-weight: bold;
-      font-size: 14px;
+      background: rgba(0, 0, 0, 0.9);
+      border: 1px solid #ff0080;
+      color: #00ffff;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
       opacity: 0;
-      transition: opacity 0.3s ease;
-      z-index: 99999;
-      box-shadow: 0 4px 24px rgba(0, 255, 150, 0.3);
-      border: 1px solid rgba(0, 255, 150, 0.3);
-    }
-    
-    .toast.show {
-      opacity: 1;
+      transition: opacity 0.2s;
+      z-index: 9999;
+      box-shadow: 0 0 20px rgba(255, 0, 128, 0.4);
     }
 
+    .toast.show { opacity: 1; }
+
+    /* Modal */
     .modal {
       display: none;
       position: fixed;
-      z-index: 99999;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(10px);
+      inset: 0;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 9999;
       align-items: center;
       justify-content: center;
     }
 
     .modal-content {
-      background: rgba(30, 30, 60, 0.98);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(150, 120, 255, 0.4);
-      border-radius: 24px;
-      padding: 28px;
+      background: linear-gradient(135deg, #150634, #1a0a2e);
+      border: 1px solid #ff0080;
+      border-radius: 16px;
+      padding: 16px;
       width: 90%;
-      max-width: 420px;
-      max-height: 80vh;
+      max-width: 350px;
+      max-height: 70vh;
       overflow-y: auto;
-      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
+    }
+
+    .modal h3 {
+      font-family: 'Orbitron', sans-serif;
+      color: #ff0080;
+      text-align: center;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+
+    .modal .close {
+      float: right;
+      font-size: 24px;
+      cursor: pointer;
+      color: #888;
     }
 
     #profileList {
       list-style: none;
-      padding: 0;
-      margin: 0;
     }
 
     #profileList li {
-      padding: 16px 18px;
-      margin: 10px 0;
-      background: rgba(120, 100, 255, 0.2);
-      border-radius: 14px;
+      padding: 10px;
+      margin: 6px 0;
+      background: rgba(255, 0, 128, 0.1);
+      border: 1px solid rgba(255, 0, 128, 0.3);
+      border-radius: 8px;
       cursor: pointer;
-      transition: all 0.2s ease;
-      font-size: 15px;
-      color: #fff;
-      border: 1px solid rgba(150, 120, 255, 0.3);
+      font-size: 12px;
+      transition: all 0.2s;
     }
 
     #profileList li:hover {
-      background: rgba(187, 134, 252, 0.5);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(187, 134, 252, 0.3);
+      background: rgba(255, 0, 128, 0.2);
+      transform: translateX(5px);
     }
 
-    .close {
-      float: right;
-      font-size: 36px;
-      cursor: pointer;
-      color: #aaa;
-      line-height: 1;
-      transition: color 0.2s ease;
-    }
-
-    .close:hover {
-      color: #fff;
-    }
-
-    ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 10px;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: rgba(187, 134, 252, 0.5);
-      border-radius: 10px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: rgba(187, 134, 252, 0.7);
-    }
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #ff0080; border-radius: 4px; }
   </style>
 </head>
 <body>
 
-  <div class="glass-card">
-    <div class="collapsible-header open" onclick="toggleSection('profileSection')">
-      <span>Profile: <span id="profileHeaderUsername" style="color:#0ff; font-weight:700;">—</span></span>
-    </div>
-    <div id="profileSection" class="section open">
-      <div class="profile-compact">
-        <div><label>Container #</label><span id="name">—</span></div>
-        <div><label>Username</label><span id="oldusername">—</span></div>
-        <div><label>Authenticator</label><span id="newusername">—</span></div>
-        <div><label>Password</label><span id="password">—</span></div>
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <button class="back-btn" id="backBtn" onclick="goBack()">←</button>
+      <div>
+        <div class="header-title" id="headerTitle">⚡ TOOLS</div>
+        <div class="header-profile" id="headerProfile">—</div>
       </div>
     </div>
+    <div class="header-right">
+      <div class="ip-box" id="ipBox">...</div>
+      <button class="rotate-btn" id="rotateBtn" onclick="rotateIP()">🔄</button>
+    </div>
   </div>
 
-  <div class="glass-card">
-    <div class="collapsible-header open" onclick="toggleSection('twofaSection')">
-      <span style="flex:1;">2FA: <span id="countdown">--</span></span>
-      <div class="twofa-display">
-        <button id="pasteBtn">📋</button>
-        <div id="totp">------</div>
-        <button id="copyBtn">📄</button>
+  <!-- Main -->
+  <div class="main">
+
+    <!-- Menu -->
+    <div class="view active" id="menuView">
+      <div class="menu">
+        <div class="menu-item" onclick="showView('instaView')">
+          <div class="menu-icon insta">📸</div>
+          <div class="menu-text">
+            <div class="menu-title">Setup Insta</div>
+            <div class="menu-sub">Profile • 2FA • Login • Tools</div>
+          </div>
+          <div class="menu-arrow">›</div>
+        </div>
+        <div class="menu-item" onclick="showView('threadsView')">
+          <div class="menu-icon threads">🧵</div>
+          <div class="menu-text">
+            <div class="menu-title">Setup Threads</div>
+            <div class="menu-sub">Profile • 2FA • Login</div>
+          </div>
+          <div class="menu-arrow">›</div>
+        </div>
+        <div class="menu-item" onclick="showView('daisyView')">
+          <div class="menu-icon daisy">📱</div>
+          <div class="menu-text">
+            <div class="menu-title">Daisy SMS</div>
+            <div class="menu-sub">Phone Rental Service</div>
+          </div>
+          <div class="menu-arrow">›</div>
+        </div>
       </div>
     </div>
-    <div id="twofaSection" class="section open">
-      <div style="display:flex; gap:8px; margin:10px 0;">
-        <input id="secret" placeholder="Enter 2FA Secret..." style="flex:1;" />
-        <button id="btn2fa" onclick="send2FAToSheet()">Send</button>
+
+    <!-- Insta View -->
+    <div class="view" id="instaView">
+      <!-- Profile -->
+      <div class="card">
+        <div class="card-title">👤 Profile</div>
+        <div class="profile-grid">
+          <div class="field"><label>Container</label><span id="i_name" onclick="copyThis(this)">—</span></div>
+          <div class="field"><label>Username</label><input id="i_user" value="—"/></div>
+          <div class="field fade"><label>2FA</label><span id="i_2fa" onclick="copyThis(this)">—</span></div>
+          <div class="field"><label>Pass</label><span id="i_pass" onclick="copyThis(this)">—</span></div>
+        </div>
+        <button class="save-btn" onclick="saveProfile()">💾 SAVE</button>
       </div>
-    </div>
-  </div>
 
-  <div id="ipBar">
-    <button id="rotateIpBtn" onclick="rotateIP()">🔄</button>
-    <span id="oldIPDisplay" style="color:#888; font-size:11px;"></span>
-    <span id="currentIP">fetching...</span>
-    <span style="margin-left:8px; color:#0af;">Age:</span>
-    <span id="ipAge">00:00</span>
-  </div>
-
-  <div class="button-group-container">
-    <div class="button-group-header">
-      <span class="util-name">Container Navigation</span>
-      <div class="toggle-btn visible" onclick="toggleButtonGroup(this, 'navButtons')"></div>
-    </div>
-    <div id="navButtons" class="button-group">
-      <div class="floating-btn" style="background:#1a1a1a" onclick="nextProfile()">=</div>
-      <div class="floating-btn" style="background:#2a2a2a" onclick="runCont(); nextProfile()">Nx</div>
-      <div class="floating-btn" style="background:#1a1a1a" onclick="prevProfile()">Pv</div>
-    </div>
-  </div>
-
-  <div class="button-group-container">
-    <div class="button-group-header">
-      <span class="util-name">IG Login</span>
-      <div class="toggle-btn visible" onclick="toggleButtonGroup(this, 'igButtons')"></div>
-    </div>
-    <div id="igButtons" class="button-group">
-      <div class="floating-btn" style="background:linear-gradient(135deg,#8e24aa,#e91e63)" onclick="twoFA()">2FA</div>
-      <div class="floating-btn" style="background:linear-gradient(135deg,#e91e63,#6a1b9a,#ffb300)" onclick="copyText('password'); openCurrentIG()">🗝️</div>
-      <div class="floating-btn" style="background:linear-gradient(135deg,#8e24aa,#e91e63,#ffb300)" onclick="copyText('newusername')">Au</div>
-      <div class="floating-btn" style="background:linear-gradient(135deg,#ffb300,#6a1b9a)" onclick="copyText('oldusername'); openCurrentIG()">Un</div>
-      <div class="floating-btn" style="background:linear-gradient(135deg,#f44336,#ffb300)" onclick="copyText('name'); openCurrentIG()">Na</div>
-      <div class="floating-btn" style="background:linear-gradient(135deg,#8e24aa,#e91e63)" onclick="copyText('oldusername'); Createcon()">✍️</div>
-    </div>
-  </div>
-
-  <div class="button-group-container">
-    <div class="button-group-header">
-      <span class="util-name">Threads Login</span>
-      <div class="toggle-btn visible" onclick="toggleButtonGroup(this, 'threadsButtons')"></div>
-    </div>
-    <div id="threadsButtons" class="button-group">
-      <div class="floating-btn" style="background:#4caf50" onclick="copyRandom(); openCurrentTG()">♳</div>
-      <div class="floating-btn" style="background:#4caf50" onclick="copyText('oldusername'); runCreateTH()">✍️</div>
-      <div class="floating-btn" style="background:#ff9800" onclick="copyText('oldusername'); openCurrentTG()">Un</div>
-      <div class="floating-btn" style="background:#00acc1" onclick="copyText('password'); openCurrentTG()">🗝️</div>
-    </div>
-  </div>
-
-  <div class="button-group-container">
-    <div class="button-group-header">
-      <span class="util-name">For IG</span>
-      <div class="toggle-btn visible" onclick="toggleButtonGroup(this, 'utilityButtons')"></div>
-    </div>
-    <div id="utilityButtons" class="button-group">
-      <div class="floating-btn" style="background:#ff4081" onclick="loadProfiles()">🔄️</div>
-      <div class="floating-btn" style="background:#3949ab" onclick="randomCelebrity()">🎲</div>
-      <div class="floating-btn" style="background:#8e24aa" onclick="randomBio(); IGedit()">🌸</div>
-      <div class="floating-btn" style="background:#00897b" onclick="randomCaption(); openCurrentIG()">📝</div>
-      <div class="floating-btn" style="background:#ff8f00" onclick="firstProfile()">🥇</div>
-      <div class="floating-btn" style="background:#43a047" onclick="showProfileList()">📂</div>
-    </div>
-  </div>
-
-  <div class="glass-card">
-    <div class="collapsible-header open" onclick="toggleSection('daisySection')">
-      <span>Phone Rental (DaisySMS)</span>
-    </div>
-    <div id="daisySection" class="section open">
-      <div class="daisy-container">
-        <div id="miniPhone" onclick="copyPhone(this)">Tap "Rent" to get number</div>
-        <div class="daisy-buttons">
-          <button onclick="getBalance()" style="background:#28a745;">✔️</button>
-          <button onclick="rentIGNumber()" style="background:#007bff;">🔑</button>
-          <button onclick="cancelNumber()" style="background:#dc3545;">❌</button>
+      <!-- 2FA -->
+      <div class="card">
+        <div class="card-title">🔐 2FA Code</div>
+        <div class="twofa-row">
+          <div class="twofa-countdown" id="i_cd">--</div>
+          <div class="twofa-code" id="i_totp">------</div>
+          <button class="twofa-btn" style="background:#6c5ce7" onclick="pasteSecret()">📋</button>
+          <button class="twofa-btn" style="background:#00cec9" onclick="copyTotp()">📄</button>
+        </div>
+        <div class="twofa-input-row">
+          <input id="i_secret" placeholder="Enter 2FA secret..."/>
+          <button onclick="send2FA()">SEND</button>
         </div>
       </div>
 
-      <div id="miniWait">Waiting for code...</div>
-      <div id="miniCode" onclick="copyCode(this)">000000</div>
-      <div id="miniLog"></div>
+      <!-- Nav -->
+      <div class="card">
+        <div class="card-title">🧭 Navigation</div>
+        <div class="btn-grid">
+          <button class="btn" style="background:#333" onclick="nextProfile()">=</button>
+          <button class="btn" style="background:#444" onclick="runCont();nextProfile()">Nx</button>
+          <button class="btn" style="background:#333" onclick="prevProfile()">Pv</button>
+          <button class="btn" style="background:#ff8f00" onclick="firstProfile()">🥇</button>
+          <button class="btn" style="background:#43a047" onclick="showProfileList()">📂</button>
+          <button class="btn" style="background:#e91e63" onclick="loadProfiles()">🔄</button>
+        </div>
+      </div>
+
+      <!-- IG Login -->
+      <div class="card">
+        <div class="card-title">🔑 IG Login</div>
+        <div class="btn-grid">
+          <button class="btn" style="background:linear-gradient(135deg,#8e24aa,#e91e63)" onclick="twoFA()">2FA</button>
+          <button class="btn" style="background:linear-gradient(135deg,#e91e63,#6a1b9a)" onclick="copyPass();openIG()">🗝️</button>
+          <button class="btn" style="background:linear-gradient(135deg,#8e24aa,#ff0080)" onclick="copy2FA()">Au</button>
+          <button class="btn" style="background:linear-gradient(135deg,#ffb300,#6a1b9a)" onclick="copyUser();openIG()">Un</button>
+          <button class="btn" style="background:linear-gradient(135deg,#f44336,#ffb300)" onclick="copyName();openIG()">Na</button>
+          <button class="btn" style="background:linear-gradient(135deg,#8e24aa,#e91e63)" onclick="copyUser();Createcon()">✍️</button>
+        </div>
+      </div>
+
+      <!-- For IG -->
+      <div class="card">
+        <div class="card-title">✨ For IG</div>
+        <div class="btn-grid">
+          <button class="btn" style="background:linear-gradient(135deg,#3949ab,#1e88e5)" onclick="randomCeleb()">🎲</button>
+          <button class="btn" style="background:linear-gradient(135deg,#8e24aa,#e91e63)" onclick="randomBio();IGedit()">🌸</button>
+          <button class="btn" style="background:linear-gradient(135deg,#00897b,#26a69a)" onclick="randomCaption();openIG()">📝</button>
+        </div>
+      </div>
     </div>
+
+    <!-- Threads View -->
+    <div class="view" id="threadsView">
+      <!-- Profile -->
+      <div class="card">
+        <div class="card-title">👤 Profile</div>
+        <div class="profile-grid">
+          <div class="field"><label>Container</label><span id="t_name" onclick="copyThis(this)">—</span></div>
+          <div class="field"><label>Username</label><input id="t_user" value="—"/></div>
+          <div class="field fade"><label>2FA</label><span id="t_2fa" onclick="copyThis(this)">—</span></div>
+          <div class="field"><label>Pass</label><span id="t_pass" onclick="copyThis(this)">—</span></div>
+        </div>
+        <button class="save-btn" onclick="saveProfile()">💾 SAVE</button>
+      </div>
+
+      <!-- 2FA -->
+      <div class="card">
+        <div class="card-title">🔐 2FA Code</div>
+        <div class="twofa-row">
+          <div class="twofa-countdown" id="t_cd">--</div>
+          <div class="twofa-code" id="t_totp">------</div>
+          <button class="twofa-btn" style="background:#6c5ce7" onclick="pasteSecret()">📋</button>
+          <button class="twofa-btn" style="background:#00cec9" onclick="copyTotp()">📄</button>
+        </div>
+        <div class="twofa-input-row">
+          <input id="t_secret" placeholder="Enter 2FA secret..."/>
+          <button onclick="send2FA()">SEND</button>
+        </div>
+      </div>
+
+      <!-- Nav -->
+      <div class="card">
+        <div class="card-title">🧭 Navigation</div>
+        <div class="btn-grid">
+          <button class="btn" style="background:#333" onclick="nextProfile()">=</button>
+          <button class="btn" style="background:#444" onclick="runCont();nextProfile()">Nx</button>
+          <button class="btn" style="background:#333" onclick="prevProfile()">Pv</button>
+          <button class="btn" style="background:#ff8f00" onclick="firstProfile()">🥇</button>
+          <button class="btn" style="background:#43a047" onclick="showProfileList()">📂</button>
+          <button class="btn" style="background:#e91e63" onclick="loadProfiles()">🔄</button>
+        </div>
+      </div>
+
+      <!-- Threads Login -->
+      <div class="card">
+        <div class="card-title">🔑 Threads Login</div>
+        <div class="btn-grid">
+          <button class="btn" style="background:#4caf50" onclick="copyRandom();openTH()">♳</button>
+          <button class="btn" style="background:#4caf50" onclick="copyUser();runCreateTH()">✍️</button>
+          <button class="btn" style="background:#ff9800" onclick="copyUser();openTH()">Un</button>
+          <button class="btn" style="background:#00acc1" onclick="copyPass();openTH()">🗝️</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Daisy View -->
+    <div class="view" id="daisyView">
+      <div class="card" style="flex:1;display:flex;flex-direction:column;">
+        <div class="card-title">📱 Phone Rental</div>
+        <div class="daisy-phone" id="dPhone" onclick="copyPhone()">Tap RENT to get number</div>
+        <div class="daisy-btns">
+          <button style="background:#28a745" onclick="getBalance()">✔️ BAL</button>
+          <button style="background:#007bff" onclick="rentNumber()">🔑 RENT</button>
+          <button style="background:#dc3545" onclick="cancelNumber()">❌ END</button>
+        </div>
+        <div class="daisy-wait" id="dWait">⏳ Waiting for code...</div>
+        <div class="daisy-code" id="dCode" onclick="copyCode()">000000</div>
+        <div class="daisy-log" id="dLog" style="flex:1;"></div>
+      </div>
+    </div>
+
   </div>
 
-  <div id="toast" class="toast"></div>
+  <div class="toast" id="toast"></div>
 
-  <div id="profileModal" class="modal">
+  <div class="modal" id="modal">
     <div class="modal-content">
       <span class="close" onclick="closeModal()">×</span>
-      <h3 style="margin:0 0 20px 0;color:#bb86fc;text-align:center;">Select Profile</h3>
+      <h3>Select Profile</h3>
       <ul id="profileList"></ul>
     </div>
   </div>
 
   <script>
-    let profiles = [], currentIndex = 0;
+    // State
+    let profiles=[], idx=0, currentView='menuView', isRotating=false, lastIP='';
+    const celebs=["Selena Gomez","Kylie Jenner","Dwayne Johnson","Ariana Grande","Kim Kardashian","Beyoncé","Taylor Swift","Jennifer Lopez","Nicki Minaj","Miley Cyrus","Katy Perry","Zendaya","Cardi B","Billie Eilish","Olivia Rodrigo","Doja Cat","Lil Nas X","Travis Scott","Post Malone","Rihanna","Justin Bieber","Drake","Lana Del Rey","Halsey","Harry Styles","Dua Lipa","Bad Bunny","Shakira"];
+    let remainingCelebs=[...celebs];
+    const API="https://script.google.com/macros/s/AKfycbwF2WtipPSpJIt29ED00NbBWlfrYUJk-yUy5-IiyNSlUXIeoKLWqd6SYigSXX0wmt0v/exec";
 
-    async function loadProfiles() {
-      try {
-        const API_URL = "https://script.google.com/macros/s/AKfycbyA4s9bYHTiHAKgy0f72pQwjG5NRoQmY3ADKo4FxWiszCPAOvZmDz92OnBiSNuSqGq6/exec";
-        const res = await fetch(API_URL);
-        profiles = await res.json();
-        currentIndex = parseInt(localStorage.getItem("currentIndex") || "0");
-        if (currentIndex >= profiles.length) currentIndex = 0;
-        displayProfile();
-      } catch (err) {
-        console.error("Load error:", err);
-        showToast("Load failed – check console");
-      }
+    // Navigation
+    function showView(id){
+      document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      currentView=id;
+      const b=document.getElementById('backBtn');
+      const t=document.getElementById('headerTitle');
+      if(id==='menuView'){b.classList.remove('visible');t.textContent='⚡ TOOLS';}
+      else{b.classList.add('visible');t.textContent=id==='instaView'?'📸 INSTA':id==='threadsView'?'🧵 THREADS':'📱 DAISY';}
+    }
+    function goBack(){showView('menuView');}
+
+    // Profiles
+    async function loadProfiles(){
+      try{
+        const r=await fetch(API);
+        profiles=await r.json();
+        idx=parseInt(localStorage.getItem('idx')||'0');
+        if(idx>=profiles.length)idx=0;
+        display();
+        toast('Loaded!');
+      }catch(e){toast('Load failed');}
     }
 
-    function updateHeaderUsername() {
-      const username = document.getElementById("oldusername").textContent.trim() || "—";
-      document.getElementById("profileHeaderUsername").textContent = username;
-    }
-
-    function displayProfile() {
-      if (!profiles.length) return;
-      const p = profiles[currentIndex];
-      document.getElementById("name").textContent = p.name;
-      document.getElementById("oldusername").textContent = p.oldusername;
-      document.getElementById("newusername").textContent = p.newusername;
-      document.getElementById("password").textContent = p.password;
-      const secretInput = document.getElementById("secret");
-      secretInput.value = p.newusername?.trim() || "";
-      update();
-      localStorage.setItem("currentIndex", currentIndex);
-      updateHeaderUsername();
-    }
-
-    async function send2FAToSheet() {
-      const secretInput = document.getElementById("secret");
-      const newSecret = secretInput.value.trim();
-      if (!newSecret) {
-        showToast("No 2FA secret entered");
-        return;
-      }
-      const currentUser = profiles[currentIndex];
-      if (!currentUser || !currentUser.id) {
-        showToast("Profile has no ID");
-        return;
-      }
-      const current2FA = (currentUser.newusername || "").toString().trim();
-      if (current2FA && !confirm("2FA already exists! Overwrite it?")) {
-        showToast("Send cancelled");
-        secretInput.select();
-        return;
-      }
-
-      const payload = {
-        oldusername: currentUser.oldusername,
-        newusername: newSecret
-      };
-
-      const API_URL = "https://script.google.com/macros/s/AKfycbyA4s9bYHTiHAKgy0f72pQwjG5NRoQmY3ADKo4FxWiszCPAOvZmDz92OnBiSNuSqGq6/exec";
-      try {
-        const response = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify(payload)
-        });
-        const result = await response.json();
-        if (result.success) {
-          showToast("2FA sent to sheet!");
-          secretInput.value = "";
-          currentUser.newusername = newSecret;
-          document.getElementById("newusername").textContent = newSecret;
-          await loadProfiles();
-          displayProfile();
-        } else {
-          showToast("Push failed: " + result.message);
-        }
-      } catch (err) {
-        console.error(err);
-        showToast("Network error");
-      }
-    }
-
-    document.getElementById('pasteBtn').addEventListener('click', async () => {
-      try {
-        const text = await navigator.clipboard.readText();
-        document.getElementById('secret').value = text.trim();
-        update();
-        showToast("Secret pasted!");
-      } catch (e) {
-        showToast("Paste blocked – allow clipboard");
-      }
-    });
-
-    document.getElementById('copyBtn').addEventListener('click', async () => {
-      const code = document.getElementById('totp').textContent.trim();
-      if (code && code !== "------" && code !== "invalid") {
-        await navigator.clipboard.writeText(code);
-        showToast("Code copied!");
-      }
-    });
-
-    document.getElementById("newusername").addEventListener("click", async () => {
-      const val = document.getElementById("newusername").textContent.trim();
-      if (val && val !== "—") {
-        await navigator.clipboard.writeText(val);
-        showToast("2FA secret copied!");
-      }
-    });
-
-    function prevProfile() {
-      if (currentIndex > 0) {
-        currentIndex--;
-        displayProfile();
-      }
-    }
-
-    function nextProfile() {
-      if (currentIndex < profiles.length - 1) {
-        currentIndex++;
-        displayProfile();
-      }
-    }
-
-    function firstProfile() {
-      currentIndex = 0;
-      displayProfile();
-      showToast("First profile");
-    }
-
-    function Createcon() {
-      const oldusername = document.getElementById('oldusername').textContent.trim();
-      if (oldusername) {
-        navigator.clipboard.writeText(oldusername);
-        showToast("Username copied!");
-      }
-      window.location.href = "shortcuts://run-shortcut?name=CreateIGCon";
-    }
-
-    function runCreateTH() {
-      const oldusername = document.getElementById('oldusername').textContent.trim();
-      if (oldusername) {
-        navigator.clipboard.writeText(oldusername);
-        showToast("Username copied!");
-      }
-      window.location.href = "shortcuts://run-shortcut?name=CreateTh";
-    }
-
-    function runCont() {
-      window.location.href = "shortcuts://run-shortcut?name=NextIGTH";
-    }
-
-    function openCurrentIG() {
-      window.open("https://instagram.com/", "_blank");
-    }
-
-    function openCurrentTG() {
-      window.open("https://threads.net/", "_blank");
-    }
-
-    function IGedit() {
-      const username = document.getElementById("oldusername").textContent.trim();
-      if (!username || username === "—" || username === "") {
-        showToast("No username loaded!");
-        window.open("https://www.instagram.com/accounts/edit/", "_blank");
-        return;
-      }
-      const editUrl = `instagram://user?username=${username}`;
-      window.open(editUrl, "_blank");
-      showToast(`Opening edit page → @${username}`);
-    }
-
-    function twoFA() {
-      const username = document.getElementById("oldusername").textContent.trim();
-      if (!username || username === "—" || username === "") {
-        showToast("No username loaded!");
-        window.open("https://www.instagram.com/password_and_security/two_factor/", "_blank");
-        return;
-      }
-      window.open("https://accountscenter.instagram.com/password_and_security/two_factor/", "_blank");
-      showToast("Opening 2FA settings");
-    }
-
-    function copyText(field) {
-      const text = document.getElementById(field).textContent.trim();
-      if (text && text !== "—") {
-        navigator.clipboard.writeText(text);
-        showToast(field + " copied!");
-      }
-    }
-
-    function showToast(msg) {
-      const t = document.getElementById("toast");
-      t.textContent = msg;
-      t.classList.add("show");
-      setTimeout(() => t.classList.remove("show"), 1800);
-    }
-
-    const celebrities = ["Selena Gomez","Kylie Jenner","Dwayne Johnson","Ariana Grande","Kim Kardashian","Beyoncé","Taylor Swift","Jennifer Lopez","Nicki Minaj","Miley Cyrus","Katy Perry","Zendaya","Cardi B","Billie Eilish","Olivia Rodrigo","Doja Cat","Lil Nas X","Travis Scott","Post Malone","Rihanna","Justin Bieber","Drake","Lana Del Rey","Halsey","Harry Styles","Dua Lipa","Bad Bunny","Shakira"];
-
-    function randomCelebrity() {
-      const rand = celebrities[Math.floor(Math.random() * celebrities.length)];
-      navigator.clipboard.writeText(rand);
-      window.open("https://www.instagram.com/explore/search/keyword/?q=" + encodeURIComponent(rand), "_blank");
-      showToast("Searching: " + rand);
-    }
-
-    function randomBio() {
-      const e = ["💖","💕","🌸","✨","🌷","💅","👑","💓","🦋","💜"];
-      const bio = `18 ${e[Math.floor(Math.random()*e.length)]}\nSingle ${e[Math.floor(Math.random()*e.length)]}`;
-      navigator.clipboard.writeText(bio);
-      showToast("Bio copied!");
-    }
-
-    function randomCaption() {
-      const c = ["no reason, just liked these","this light felt kinda nice","felt cute, might delete later","vibes","golden hour","soft girl era","main character energy","just a girl","healing era","doing it for me"];
-      const cap = c[Math.floor(Math.random()*c.length)];
-      navigator.clipboard.writeText(cap);
-      showToast("Caption copied!");
-    }
-
-    function copyRandom() {
-      const texts = [
-        "First post: I NEED FRIENDS!!",
-        "Wanna meet older guys",
-        "First post Trying to make friends on Threads."
-      ];
-      const pick = texts[Math.floor(Math.random() * texts.length)];
-      navigator.clipboard.writeText(pick)
-        .then(() => showToast(`Copied: "${pick}"`))
-        .catch(err => {
-          showToast("Copy failed");
-          console.error(err);
-        });
-    }
-
-    function showProfileList() {
-      const modal = document.getElementById("profileModal");
-      const list = document.getElementById("profileList");
-      list.innerHTML = "";
-      profiles.forEach((p, i) => {
-        const li = document.createElement("li");
-        li.textContent = [p.name, p.oldusername || p.username].filter(Boolean).join(" ") || `Profile ${i+1}`;
-        li.onclick = () => {
-          currentIndex = i;
-          displayProfile();
-          closeModal();
-        };
-        list.appendChild(li);
+    function display(){
+      if(!profiles.length)return;
+      const p=profiles[idx];
+      ['i','t'].forEach(x=>{
+        document.getElementById(x+'_name').textContent=p.name||'—';
+        document.getElementById(x+'_user').value=p.username||'—';
+        document.getElementById(x+'_2fa').textContent=p.twofa||'—';
+        document.getElementById(x+'_pass').textContent=p.password||'—';
+        document.getElementById(x+'_secret').value=p.twofa?.trim()||'';
       });
-      modal.style.display = "flex";
+      document.getElementById('headerProfile').textContent=p.username||'—';
+      localStorage.setItem('idx',idx);
+      updateTotp();
     }
 
-    function closeModal() {
-      document.getElementById("profileModal").style.display = "none";
+    async function saveProfile(){
+      const p=profiles[idx];
+      if(!p)return toast('No profile');
+      const newUser=currentView==='threadsView'?document.getElementById('t_user').value.trim():document.getElementById('i_user').value.trim();
+      if(!newUser||newUser==='—')return toast('Invalid username');
+      try{
+        const r=await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({oldusername:p.username,newUsername:newUser})});
+        const res=await r.json();
+        if(res.success){toast('Saved!');p.username=newUser;display();}
+        else toast('Failed: '+res.message);
+      }catch(e){toast('Network error');}
     }
 
-    window.onclick = function(e) {
-      const modal = document.getElementById("profileModal");
-      if (e.target === modal) closeModal();
-    }
+    function prevProfile(){if(idx>0){idx--;display();}}
+    function nextProfile(){if(idx<profiles.length-1){idx++;display();}}
+    function firstProfile(){idx=0;display();toast('First');}
 
-    function toggleButtonGroup(btn, groupId) {
-      const group = document.getElementById(groupId);
-      const isHidden = group.classList.contains('hidden');
-      
-      if (isHidden) {
-        group.classList.remove('hidden');
-        btn.classList.remove('hidden');
-        btn.classList.add('visible');
-      } else {
-        group.classList.add('hidden');
-        btn.classList.remove('visible');
-        btn.classList.add('hidden');
+    function showProfileList(){
+      const ul=document.getElementById('profileList');
+      ul.innerHTML='';
+      profiles.forEach((p,i)=>{
+        const li=document.createElement('li');
+        li.textContent=[p.name,p.username].filter(Boolean).join(' ')||'Profile '+(i+1);
+        li.onclick=()=>{idx=i;display();closeModal();};
+        ul.appendChild(li);
+      });
+      document.getElementById('modal').style.display='flex';
+    }
+    function closeModal(){document.getElementById('modal').style.display='none';}
+    window.onclick=e=>{if(e.target===document.getElementById('modal'))closeModal();};
+
+    // 2FA
+    function b32(s){
+      s=(s||'').replace(/=+$/,'').replace(/[^A-Z2-7]/gi,'').toUpperCase();
+      const a='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+      let b=0,v=0,r=[];
+      for(let i=0;i<s.length;i++){const x=a.indexOf(s[i]);if(x===-1)continue;v=(v<<5)|x;b+=5;if(b>=8){b-=8;r.push((v>>b)&0xFF);}}
+      return new Uint8Array(r);
+    }
+    function ctr(c){const b=new ArrayBuffer(8),v=new DataView(b);v.setUint32(0,Math.floor(c/2**32));v.setUint32(4,c>>>0);return b;}
+    async function hmac(k,c){const key=await crypto.subtle.importKey('raw',k,{name:'HMAC',hash:'SHA-1'},false,['sign']);return new Uint8Array(await crypto.subtle.sign('HMAC',key,c));}
+    function trunc(h,d){const o=h[h.length-1]&0x0f,c=((h[o]&0x7f)<<24)|((h[o+1]&0xff)<<16)|((h[o+2]&0xff)<<8)|(h[o+3]&0xff);return(c%10**d).toString().padStart(d,'0');}
+    async function totp(s){const k=b32(s);if(!k.length)return null;return trunc(await hmac(k,ctr(Math.floor(Date.now()/1000/30))),6);}
+
+    async function updateTotp(){
+      const rem=30-(Math.floor(Date.now()/1000)%30);
+      for(const x of['i','t']){
+        document.getElementById(x+'_cd').textContent=rem;
+        const s=document.getElementById(x+'_secret').value.trim();
+        document.getElementById(x+'_totp').textContent=s?(await totp(s)||'invalid'):'------';
       }
     }
+    setInterval(updateTotp,1000);
 
-    function base32toBytes(base32) {
-      base32 = (base32 || '').replace(/=+$/,'').replace(/[^A-Z2-7]/gi,'').toUpperCase();
-      const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
-      let bits = 0, value = 0, bytes = [];
-      for (let i = 0; i < base32.length; i++) {
-        const idx = alphabet.indexOf(base32[i]);
-        if (idx === -1) continue;
-        value = (value << 5) | idx;
-        bits += 5;
-        if (bits >= 8) {
-          bits -= 8;
-          bytes.push((value >> bits) & 0xFF);
-        }
-      }
-      return new Uint8Array(bytes);
+    async function pasteSecret(){
+      try{
+        const t=await navigator.clipboard.readText();
+        const x=currentView==='threadsView'?'t':'i';
+        document.getElementById(x+'_secret').value=t.trim();
+        updateTotp();toast('Pasted!');
+      }catch(e){toast('Paste blocked');}
     }
 
-    function counterToBuffer(counter) {
-      const buf = new ArrayBuffer(8);
-      const view = new DataView(buf);
-      view.setUint32(0, Math.floor(counter / 2**32));
-      view.setUint32(4, counter >>> 0);
-      return buf;
+    async function copyTotp(){
+      const x=currentView==='threadsView'?'t':'i';
+      const c=document.getElementById(x+'_totp').textContent;
+      if(c&&c!=='------'&&c!=='invalid'){await navigator.clipboard.writeText(c);toast('Code copied!');}
     }
 
-    async function hmacSha1(keyBytes, counterBuf) {
-      const cryptoKey = await crypto.subtle.importKey('raw', keyBytes, { name: 'HMAC', hash: 'SHA-1' }, false, ['sign']);
-      const sig = await crypto.subtle.sign('HMAC', cryptoKey, counterBuf);
-      return new Uint8Array(sig);
+    async function send2FA(){
+      const x=currentView==='threadsView'?'t':'i';
+      const secret=document.getElementById(x+'_secret').value.trim();
+      if(!secret)return toast('No secret');
+      const p=profiles[idx];
+      if(!p)return toast('No profile');
+      if(p.twofa&&!confirm('Overwrite existing 2FA?'))return;
+      try{
+        const r=await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({oldusername:p.username,new2fa:secret})});
+        const res=await r.json();
+        if(res.success){toast('2FA saved!');p.twofa=secret;display();}
+        else toast('Failed');
+      }catch(e){toast('Network error');}
     }
 
-    function truncate(hmacBytes, digits) {
-      const offset = hmacBytes[hmacBytes.length - 1] & 0x0f;
-      const code = ((hmacBytes[offset] & 0x7f) << 24) |
-                   ((hmacBytes[offset+1] & 0xff) << 16) |
-                   ((hmacBytes[offset+2] & 0xff) << 8) |
-                   (hmacBytes[offset+3] & 0xff);
-      return (code % 10**digits).toString().padStart(digits, '0');
+    // Copy helpers
+    function copyThis(el){const t=el.textContent.trim();if(t&&t!=='—'){navigator.clipboard.writeText(t);toast('Copied!');}}
+    function copyUser(){const p=profiles[idx];if(p?.username){navigator.clipboard.writeText(p.username);toast('Username copied!');}}
+    function copyPass(){const p=profiles[idx];if(p?.password){navigator.clipboard.writeText(p.password);toast('Password copied!');}}
+    function copy2FA(){const p=profiles[idx];if(p?.twofa){navigator.clipboard.writeText(p.twofa);toast('2FA copied!');}}
+    function copyName(){const p=profiles[idx];if(p?.name){navigator.clipboard.writeText(p.name);toast('Name copied!');}}
+
+    // Actions
+    function openIG(){window.open('https://instagram.com/','_blank');}
+    function openTH(){window.open('https://threads.net/','_blank');}
+    function IGedit(){const u=profiles[idx]?.username;if(u)window.open(`instagram://user?username=${u}`,'_blank');else window.open('https://www.instagram.com/accounts/edit/','_blank');}
+    function twoFA(){window.open('https://accountscenter.instagram.com/password_and_security/two_factor/','_blank');}
+    function Createcon(){window.location.href='shortcuts://run-shortcut?name=CreateIGCon';}
+    function runCreateTH(){window.location.href='shortcuts://run-shortcut?name=CreateTh';}
+    function runCont(){window.location.href='shortcuts://run-shortcut?name=NextIGTH';}
+
+    function randomCeleb(){
+      if(!remainingCelebs.length){remainingCelebs=[...celebs];toast('List reset!');}
+      const i=Math.floor(Math.random()*remainingCelebs.length);
+      const c=remainingCelebs.splice(i,1)[0];
+      navigator.clipboard.writeText(c);
+      window.open('https://www.instagram.com/explore/search/keyword/?q='+encodeURIComponent(c),'_blank');
+      toast(`${c} (${remainingCelebs.length} left)`);
     }
 
-    async function generateTOTP(secret) {
-      const keyBytes = base32toBytes(secret);
-      if (keyBytes.length === 0) return null;
-      const counter = Math.floor(Date.now() / 1000 / 30);
-      const hmac = await hmacSha1(keyBytes, counterToBuffer(counter));
-      return truncate(hmac, 6);
+    function randomBio(){
+      const e=['💖','💕','🌸','✨','🌷','💅','👑','💓','🦋','💜'];
+      navigator.clipboard.writeText(`18 ${e[Math.floor(Math.random()*e.length)]}\nSingle ${e[Math.floor(Math.random()*e.length)]}`);
+      toast('Bio copied!');
     }
 
-    const secretEl = document.getElementById('secret');
-    const codeEl = document.getElementById('totp');
-    const countdownEl = document.getElementById('countdown');
-
-    async function update() {
-      const secret = secretEl.value.trim();
-      const remaining = 30 - (Math.floor(Date.now() / 1000) % 30);
-      countdownEl.textContent = remaining;
-      if (!secret) {
-        codeEl.textContent = "------";
-        return;
-      }
-      const code = await generateTOTP(secret);
-      codeEl.textContent = code || "invalid";
+    function randomCaption(){
+      const c=['no reason, just liked these','this light felt kinda nice','felt cute, might delete later','vibes','golden hour','soft girl era','main character energy','just a girl','healing era','doing it for me'];
+      navigator.clipboard.writeText(c[Math.floor(Math.random()*c.length)]);
+      toast('Caption copied!');
     }
 
-    setInterval(update, 1000);
-    update();
-
-    let ipStartTime = Date.now();
-    let lastKnownIP = "";
-    let isAutoRotating = false;
-
-    async function getCurrentIP() {
-      try {
-        const res = await fetch('https://api.ipify.org?format=json');
-        const data = await res.json();
-        return data.ip;
-      } catch (e) {
-        return "error";
-      }
+    function copyRandom(){
+      const t=['First post: I NEED FRIENDS!!','Wanna meet older guys','First post Trying to make friends on Threads.'];
+      navigator.clipboard.writeText(t[Math.floor(Math.random()*t.length)]);
+      toast('Copied!');
     }
 
-    async function triggerProxyRotation() {
-      try {
-        const res = await fetch('https://i.fxdx.in/actionlinks/do/changeip/YTbojipTQnuowNvn2MkNoA');
-        const data = await res.json();
-        console.log("Proxy rotation triggered:", data.message);
-        return true;
-      } catch (e) {
-        console.error("Proxy rotation failed:", e);
-        return false;
-      }
+    // IP
+    async function getIP(){try{return(await(await fetch('https://api.ipify.org?format=json')).json()).ip;}catch(e){return'error';}}
+    async function triggerRotate(){try{await fetch('https://i.fxdx.in/actionlinks/do/changeip/YTbojipTQnuowNvn2MkNoA');return true;}catch(e){return false;}}
+
+    async function rotateIP(){
+      if(isRotating){isRotating=false;toast('Stopped');document.getElementById('rotateBtn').classList.remove('rotating');return;}
+      const box=document.getElementById('ipBox'),btn=document.getElementById('rotateBtn');
+      const oldIP=box.textContent;
+      box.textContent='...';box.className='ip-box loading';btn.classList.add('rotating');
+      isRotating=true;let att=0;
+      const loop=async()=>{
+        att++;box.textContent='#'+att;toast('Attempt '+att);
+        await triggerRotate();await new Promise(r=>setTimeout(r,3000));
+        const newIP=await getIP();
+        if(newIP!==oldIP&&oldIP!=='...'&&newIP!=='error'){
+          box.textContent=newIP;box.className='ip-box success';btn.classList.remove('rotating');
+          toast('SUCCESS: '+newIP);isRotating=false;lastIP=newIP;
+          setTimeout(()=>box.className='ip-box',5000);
+        }else if(att<20&&isRotating){setTimeout(loop,1000);}
+        else{toast('Max attempts');btn.classList.remove('rotating');isRotating=false;box.textContent=newIP;box.className='ip-box';}
+      };
+      loop();
     }
 
-    getCurrentIP().then(ip => {
-      document.getElementById("currentIP").textContent = ip;
-      lastKnownIP = ip;
-      ipStartTime = Date.now();
-    });
+    // Daisy
+    const DAPI='https://daisysms.com/stubs/handler_api.php',DKEY='G1wJwY6tehQmO7uiX3v7nCTSZrU3oc';
+    const P=u=>`https://corsproxy.io/?${encodeURIComponent(u)}`;
+    let rental=null,phone=null,poll=null;
 
-    setInterval(() => {
-      const seconds = Math.floor((Date.now() - ipStartTime) / 1000);
-      const m = String(Math.floor(seconds / 60)).padStart(2, '0');
-      const s = String(seconds % 60).padStart(2, '0');
-      document.getElementById("ipAge").textContent = `${m}:${s}`;
-    }, 1000);
+    function dlog(t){const l=document.getElementById('dLog');l.innerHTML+=t+'<br>';l.scrollTop=9999;}
 
-    async function rotateIP() {
-      if (isAutoRotating) {
-        isAutoRotating = false;
-        showToast("Auto-rotation stopped");
-        return;
-      }
+    async function dapi(a,p={}){
+      let u=`${DAPI}?api_key=${DKEY}&action=${a}`;
+      for(let k in p)u+=`&${k}=${p[k]}`;
+      try{const r=await fetch(P(u));return{body:(await r.text()).trim()};}catch(e){dlog('Error: '+e.message);throw e;}
+    }
 
-      const ipSpan = document.getElementById("currentIP");
-      const oldDisplay = document.getElementById("oldIPDisplay");
-      const ageSpan = document.getElementById("ipAge");
-      const rotateBtn = document.getElementById("rotateIpBtn");
-      const ipBar = document.getElementById("ipBar");
+    async function getBalance(){
+      try{const{body}=await dapi('getBalance');if(body.startsWith('ACCESS_BALANCE:')){const b=body.split(':')[1];dlog('Balance: '+b);toast('Balance: '+b);}else{dlog(body);toast('Failed');}}catch(e){toast('Error');}
+    }
 
-      const oldIP = ipSpan.textContent.trim();
+    async function rentNumber(){
+      if(poll){clearInterval(poll);poll=null;}
+      rental=null;phone=null;
+      document.getElementById('dCode').style.display='none';
+      document.getElementById('dWait').style.display='none';
+      try{
+        const{body}=await dapi('getNumber',{service:'ig',max_price:'0.8'});
+        if(body.startsWith('ACCESS_NUMBER:')){
+          const[_,id,num]=body.split(':');
+          rental=id;phone=num;
+          document.getElementById('dPhone').textContent=num;
+          document.getElementById('dWait').style.display='block';
+          dlog('Rented: '+num);toast('Rented: '+num);
+          startPoll();
+        }else{document.getElementById('dPhone').textContent='Failed';dlog(body);toast(body);}
+      }catch(e){toast('Error');}
+    }
 
-      ipSpan.textContent = "starting...";
-      oldDisplay.textContent = "";
-      ageSpan.textContent = "00:00";
-      rotateBtn.textContent = "🛑";
-
-      isAutoRotating = true;
-      let attempts = 0;
-      const maxAttempts = 20;
-
-      const autoLoop = async () => {
-        attempts++;
-        ipSpan.textContent = `attempt ${attempts}...`;
-        showToast(`Auto-rotating... (${attempts})`);
-
-        await triggerProxyRotation();
-        await new Promise(r => setTimeout(r, 3000));
-
-        const newIP = await getCurrentIP();
-        ipSpan.textContent = newIP;
-        ipStartTime = Date.now();
-
-        if (oldIP && oldIP !== "fetching..." && oldIP !== "starting..." && oldIP !== "error") {
-          oldDisplay.textContent = `Old → ${oldIP}  →  `;
-        }
-
-        if (newIP !== oldIP && oldIP !== "starting..." && oldIP !== "fetching..." && newIP !== "error") {
-          ipSpan.style.color = "#00ff00";
-          ipSpan.style.textShadow = "0 0 15px #0f0";
-          ageSpan.style.color = "#00ff00";
-          oldDisplay.style.color = "#00ff00";
-
-          ipBar.style.transition = "background 0.5s ease, border-color 0.5s ease";
-          ipBar.style.background = "#006400";
-          ipBar.style.borderColor = "#00ff00";
-
-          setTimeout(() => {
-            ipBar.style.background = "rgb(20,20,50)";
-            ipBar.style.borderColor = "#444";
-          }, 5000);
-
-          showToast(`SUCCESS! IP CHANGED after ${attempts} tries → ${newIP}`);
-
-          rotateBtn.textContent = "🔄";
-          isAutoRotating = false;
-
-          setTimeout(() => {
-            ipSpan.style.color = "#0ff";
-            ipSpan.style.textShadow = "0 0 8px #0ff";
-            ageSpan.style.color = "#0ff";
-            oldDisplay.style.color = "#888";
-          }, 5000);
-
-          lastKnownIP = newIP;
-          return;
-
-        } else {
-          ipSpan.style.color = "#ff0033";
-          ipSpan.style.textShadow = "0 0 15px #f00";
-          ageSpan.style.color = "#ff0033";
-          showToast(`No change yet... (${attempts}/${maxAttempts})`);
-
-          setTimeout(() => {
-            ipSpan.style.color = "#0ff";
-            ipSpan.style.textShadow = "0 0 8px #0ff";
-            ageSpan.style.color = "#0ff";
-          }, 2000);
-
-          if (attempts < maxAttempts && isAutoRotating) {
-            setTimeout(autoLoop, 1000);
-          } else if (attempts >= maxAttempts) {
-            showToast("Max attempts reached — stopping. IP did not change.");
-            rotateBtn.textContent = "🔄";
-            isAutoRotating = false;
-            ipSpan.style.color = "#ff0033";
-            setTimeout(() => ipSpan.style.color = "#0ff", 5000);
+    async function checkCode(){
+      if(!rental)return;
+      try{
+        const{body}=await dapi('getStatus',{id:rental,text:1});
+        dlog('Status: '+body);
+        if(body.includes('STATUS_OK')||body.includes('OK')){
+          const m=body.match(/(\d{4,8})/);
+          if(m){
+            document.getElementById('dCode').textContent=m[1];
+            document.getElementById('dCode').style.display='block';
+            document.getElementById('dWait').style.display='none';
+            dlog('CODE: '+m[1]);toast('Code: '+m[1]);
+            clearInterval(poll);poll=null;
           }
         }
-      };
-
-      autoLoop();
+      }catch(e){dlog('Error');}
     }
 
-   const API_KEY = 'G1wJwY6tehQmO7uiX3v7nCTSZrU3oc';
-  const BASE = 'https://daisysms.com/stubs/handler_api.php';
-  const P = u => `https://corsproxy.io/?${encodeURIComponent(u)}`;  // Note: corsproxy.io can be unreliable. If issues persist, consider a custom proxy server or browser extension.
-  const phone = document.getElementById('miniPhone');
-  const code = document.getElementById('miniCode');
-  const wait = document.getElementById('miniWait');
-  const logEl = document.getElementById('miniLog');
-  let rentalId = null, phoneNum = null, poll = null;
-
-  function log(t) {
-    logEl.innerHTML += t + '<br>';
-    logEl.scrollTop = 9999;
-    console.log('[DaisySMS Log]:', t);  // Also log to console for easier debugging
-  }
-
-  async function api(a, p = {}) {
-    let u = `${BASE}?api_key=${API_KEY}&action=${a}`;
-    for (let k in p) u += `&${k}=${p[k]}`;
-    try {
-      const r = await fetch(P(u));
-      const body = (await r.text()).trim();
-      const h = {};
-      r.headers.forEach((v, k) => h[k.toLowerCase()] = v);
-      return { body, h };
-    } catch (e) {
-      log('API Error: ' + e.message);
-      throw e;
-    }
-  }
-
-  async function getBalance() {
-    try {
-      const { body } = await api('getBalance');
-      if (body.startsWith('ACCESS_BALANCE:')) {
-        log('Balance: ' + body.split(':')[1]);
-        showToast('Balance: ' + body.split(':')[1]);
-      } else {
-        log('Balance check failed: ' + body);
-        showToast('Balance check failed');
-      }
-    } catch (e) {
-      log('Balance error: ' + e.message);
-      showToast('Balance error');
-    }
-  }
-
-  async function rentIGNumber() {
-    if (poll) {
-      clearInterval(poll);
-      poll = null;
-    }
-    rentalId = null;
-    phoneNum = null;
-    code.style.display = 'none';
-    wait.style.display = 'none';
-
-    try {
-      const { body } = await api('getNumber', { service: 'ig', max_price: '0.8' });
-      if (body.startsWith('ACCESS_NUMBER:')) {
-        const [_, id, num] = body.split(':');
-        rentalId = id;
-        phoneNum = num;
-        phone.textContent = num;
-        wait.style.display = 'block';
-        code.style.display = 'none';
-        log('Rented: ' + num + ' (ID: ' + id + ')');
-        showToast('Number rented: ' + num);
-        startPoll();
-      } else {
-        phone.textContent = 'Failed: ' + body;
-        log('Rental failed: ' + body);
-        showToast('Rental failed: ' + body);
-      }
-    } catch (e) {
-      log('Rental error: ' + e.message);
-      showToast('Rental error');
-    }
-  }
-
-  async function check() {
-    if (!rentalId) return;
-    try {
-      const { body, h } = await api('getStatus', { id: rentalId, text: 1 });
-      log('Status Response Body: ' + body);
-      log('Status Response Headers: ' + JSON.stringify(h));
-
-      let c = null;
-      // Check for STATUS_OK and extract code (more flexible regex for 4-8 digits)
-      if (body.includes('STATUS_OK') || body.includes('OK')) {
-        const match = body.match(/(\d{4,8})/) || (h['x-text'] || '').match(/(\d{4,8})/) || (h['text'] || '').match(/(\d{4,8})/);
-        if (match) c = match[1];
-      }
-
-      if (c) {
-        code.textContent = c;
-        code.style.display = 'block';
-        wait.style.display = 'none';
-        log('CODE RECEIVED: ' + c);
-        showToast('Code received: ' + c);
-        clearInterval(poll);
-        poll = null;
-      } else {
-        log('No code yet. Retrying...');
-      }
-    } catch (e) {
-      log('Status check error: ' + e.message);
-      // Retry once on error
-      setTimeout(check, 2000);
-    }
-  }
-
-  function startPoll() {
-    if (poll) clearInterval(poll);
-    poll = setInterval(check, 3000);  // Faster polling: every 3 seconds
-    check();  // Immediate check
-    // Timeout after 5 minutes to prevent infinite polling
-    setTimeout(() => {
-      if (poll) {
-        clearInterval(poll);
-        poll = null;
-        log('Polling timed out after 5 minutes. Code may have expired.');
-        showToast('Polling timed out. Try renting again.');
-      }
-    }, 300000);
-  }
-
-  function copyPhone(el) {
-    if (!phoneNum) return;
-    navigator.clipboard.writeText(phoneNum);
-    const original = el.textContent;
-    el.textContent = 'Copied!';
-    showToast('Phone copied!');
-    setTimeout(() => el.textContent = original, 1200);
-  }
-
-  function copyCode(el) {
-    const c = el.textContent;
-    navigator.clipboard.writeText(c);
-    const original = el.textContent;
-    el.textContent = 'Copied!';
-    showToast('Code copied!');
-    setTimeout(() => el.textContent = original, 1500);
-  }
-
-  async function cancelNumber() {
-    if (!rentalId) {
-      showToast('No active rental to cancel');
-      return;
-    }
-    try {
-      const { body } = await api('setStatus', { id: rentalId, status: 8 });
-      if (body.includes('ACCESS_CANCEL')) {
-        log('Canceled & refunded (ID: ' + rentalId + ')');
-        showToast('Number canceled & refunded');
-        phone.textContent = 'Tap "Rent" to get number';
-        wait.style.display = 'none';
-        code.style.display = 'none';
-        if (poll) {
-          clearInterval(poll);
-          poll = null;
-        }
-        rentalId = null;
-        phoneNum = null;
-      } else {
-        log('Cancel failed: ' + body);
-        showToast('Cancel failed: ' + body);
-      }
-    } catch (e) {
-      log('Cancel error: ' + e.message);
-      showToast('Cancel error');
-    }
-  }
-
-    function toggleSection(id) {
-      const el = document.getElementById(id);
-      const header = el.previousElementSibling;
-      el.classList.toggle('open');
-      header.classList.toggle('open');
+    function startPoll(){
+      if(poll)clearInterval(poll);
+      poll=setInterval(checkCode,3000);checkCode();
+      setTimeout(()=>{if(poll){clearInterval(poll);poll=null;dlog('Timeout');toast('Timeout');}},300000);
     }
 
-    loadProfiles();
-    getBalance();
+    function copyPhone(){if(phone){navigator.clipboard.writeText(phone);toast('Phone copied!');}}
+    function copyCode(){const c=document.getElementById('dCode').textContent;navigator.clipboard.writeText(c);toast('Code copied!');}
+
+    async function cancelNumber(){
+      if(!rental)return toast('No rental');
+      try{
+        const{body}=await dapi('setStatus',{id:rental,status:8});
+        if(body.includes('ACCESS_CANCEL')){
+          dlog('Canceled');toast('Canceled');
+          document.getElementById('dPhone').textContent='Tap RENT to get number';
+          document.getElementById('dWait').style.display='none';
+          document.getElementById('dCode').style.display='none';
+          if(poll){clearInterval(poll);poll=null;}
+          rental=null;phone=null;
+        }else{dlog(body);toast('Failed');}
+      }catch(e){toast('Error');}
+    }
+
+    // Toast
+    function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1500);}
+
+    // Init
+    async function init(){
+      await loadProfiles();
+      const ip=await getIP();
+      document.getElementById('ipBox').textContent=ip;lastIP=ip;
+      getBalance();
+    }
+    init();
   </script>
 </body>
 </html>
