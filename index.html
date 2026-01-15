@@ -136,9 +136,9 @@
     @keyframes spin { to { transform: rotate(360deg); } }
 
     .ip-status {
-      width: 14px;
-      height: 14px;
-      border-radius: 4px;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
       background: rgba(100, 100, 100, 0.5);
       border: 2px solid #555;
       transition: all 0.3s;
@@ -148,19 +148,11 @@
     .ip-status.loading {
       background: #ffcc00;
       border-color: #ffcc00;
-      box-shadow: 0 0 10px rgba(255, 204, 0, 0.8);
-      animation: pulseYellow 1s infinite;
-    }
-
-    @keyframes pulseYellow {
-      0%, 100% { box-shadow: 0 0 6px rgba(255, 204, 0, 0.5); }
-      50% { box-shadow: 0 0 14px rgba(255, 204, 0, 1); }
     }
 
     .ip-status.success {
       background: #00ff00;
       border-color: #00ff00;
-      box-shadow: 0 0 12px rgba(0, 255, 0, 0.8);
     }
 
     .header-right {
@@ -587,8 +579,8 @@
     <div class="header-left">
       <button class="back-btn" id="backBtn" onclick="goBack()">←</button>
       <div>
-        <div class="header-title" id="headerTitle">⚡ Account Creation</div>
-        <div class="header-profile" id="headerProfile">——————————————————————————————————————————————————————————————————————————————</div>
+        <div class="header-title" id="headerTitle">⚡ TOOLS</div>
+        <div class="header-profile" id="headerProfile">—</div>
       </div>
     </div>
     <div class="header-right">
